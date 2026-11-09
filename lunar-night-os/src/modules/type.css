@@ -68,8 +68,9 @@
   /* Pin a landscape monitor under the header so sliders update in view. */
   .m-type .ty-stage.is-land {
     position: sticky;
-    top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
-    padding-block: var(--s2);
+    /* Tuck 12px under the header so no content peeks through the seam. */
+    top: calc(var(--header-h) - 12px + env(safe-area-inset-top, 0px));
+    padding-block: 14px var(--s2);
     border-bottom: 1px solid var(--line);
   }
 }
@@ -80,7 +81,7 @@
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: var(--r2);
-  background: #050506;
+  background: var(--obsidian);
   position: relative;
 }
 .m-type .ty-frame::before,
@@ -109,12 +110,12 @@
   display: block;
   max-width: 100%;
   /* Preview-only checkerboard: dark and quiet so the type reads, never in the file. */
-  background-color: #0d0e12;
+  background-color: var(--graphite);
   background-image:
-    linear-gradient(45deg, #15161c 25%, transparent 25%),
-    linear-gradient(-45deg, #15161c 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #15161c 75%),
-    linear-gradient(-45deg, transparent 75%, #15161c 75%);
+    linear-gradient(45deg, var(--graphite-2) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--graphite-2) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--graphite-2) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--graphite-2) 75%);
   background-size: 16px 16px;
   background-position:
     0 0,
@@ -124,7 +125,7 @@
   box-shadow: 0 0 0 1px var(--line-2);
 }
 .m-type .ty-readout {
-  font-family: var(--f-mono);
+  font-family: var(--f-data, var(--f-mono));
   font-size: var(--t-xs);
   letter-spacing: 0.14em;
   color: var(--silver-3);
@@ -216,9 +217,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 1px var(--line-2);
 }
 .m-type .ty-swatch span {
   min-width: 0;
@@ -293,7 +292,7 @@
   fill: var(--graphite-3);
 }
 .m-type .ty-thumb .bar {
-  fill: #000;
+  fill: var(--obsidian);
   stroke: var(--line-2);
   stroke-width: 6;
 }
@@ -320,7 +319,7 @@
   font-size: var(--t-sm);
 }
 .m-type .ty-nums {
-  font-family: var(--f-mono);
+  font-family: var(--f-data, var(--f-mono));
   font-size: var(--t-xs);
   letter-spacing: 0.06em;
   color: var(--silver-2);
@@ -367,13 +366,7 @@
   padding: var(--s4);
   border: 1px solid var(--line);
   border-radius: var(--r2);
-  background:
-    radial-gradient(
-      120% 90% at 50% 0%,
-      rgba(229, 169, 60, 0.06),
-      transparent 60%
-    ),
-    #0a0a0d;
+  background: var(--obsidian);
   min-width: 0;
 }
 .m-type .ty-spec-top {
@@ -392,8 +385,8 @@
   font-size: clamp(2.4rem, 11vw, 3.4rem);
   line-height: 1;
   letter-spacing: -0.02em;
-  color: var(--bone);
-  text-shadow: 0 0 22px rgba(229, 169, 60, 0.18);
+  color: var(--ty-film-bone, var(--bone));
+  text-shadow: 0 0 22px var(--ty-film-glow, transparent);
   overflow-wrap: anywhere;
 }
 .m-type .ty-act {
@@ -402,7 +395,7 @@
   font-weight: 500;
   font-size: var(--t-xs);
   letter-spacing: 0.24em;
-  color: var(--amber);
+  color: var(--ty-film-amber, var(--amber));
 }
 .m-type .ty-f-cormorant {
   font-family: "Cormorant Garamond", Georgia, serif;
@@ -430,13 +423,13 @@
   line-height: 2;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--silver);
+  color: var(--ty-film-silver, var(--silver));
 }
 .m-type .ty-meta-sample p {
   overflow-wrap: anywhere;
 }
 .m-type .ty-meta-sample p:first-child {
-  color: var(--amber);
+  color: var(--ty-film-amber, var(--amber));
 }
 .m-type .ty-spec-foot {
   display: flex;
@@ -464,4 +457,30 @@
   font-size: var(--t-sm);
   color: var(--silver-2);
   line-height: 1.45;
+}
+
+/* role rules above the specimens */
+.m-type .ty-roles {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+.m-type .ty-role {
+  display: grid;
+  gap: 4px;
+  padding: var(--s3) var(--s4);
+  border-left: 2px solid var(--amber);
+  background: var(--graphite);
+  border-radius: 0 var(--r1) var(--r1) 0;
+  min-width: 0;
+}
+.m-type .ty-role b {
+  color: var(--bone);
+  font-weight: 600;
+}
+.m-type .ty-role span {
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  overflow-wrap: anywhere;
 }

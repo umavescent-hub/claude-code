@@ -3,8 +3,12 @@
 
 .m-forge .fs {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s2);
   min-width: 0;
+}
+.m-forge .fs .ln-section {
+  grid-template-columns: minmax(0, 1fr);
 }
 .m-forge .fs .ln-btn.small {
   min-height: 40px;

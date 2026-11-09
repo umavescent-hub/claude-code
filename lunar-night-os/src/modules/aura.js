@@ -1330,9 +1330,11 @@ Return JSON only, exactly this shape:
         if (onProgress) onProgress(i + 1, n)
       }
       scores.sort((a, b) => b.score - a.score)
-      // Top 3, at least 1 s apart.
+      // Top 3, at least 1 s apart, skipping near-colourless runners-up.
       const top = []
+      const floor = scores.length ? scores[0].score * 0.25 : 0
       for (const s of scores) {
+        if (top.length && s.score < floor) break
         if (top.every(x => Math.abs(x.t - s.t) >= 1)) top.push(s)
         if (top.length === 3) break
       }
@@ -1581,7 +1583,7 @@ Return JSON only, exactly this shape:
             scanStatus.textContent = `Scoring frame ${i} of ${n}…`
           })
           frames = r.top
-          scanStatus.textContent = `Scored ${r.n} frames across ${r.dur.toFixed(1)} s. The most colourful three are below; the first is selected. The title colour check now uses the worst case inside the title box.`
+          scanStatus.textContent = `Scored ${r.n} frames across ${r.dur.toFixed(1)} s. The most colourful frames are below (up to three, at least 1 s apart); the first is selected. The title colour check now uses the worst case inside the title box.`
           framesBox.replaceChildren(
             ...frames.map((f, i) =>
               h(

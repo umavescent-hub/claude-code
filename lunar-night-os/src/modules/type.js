@@ -656,6 +656,27 @@
     }
   }
   /**
+   * Blur filters end in a rectangular support with alpha 1–3 and noisy colour, which
+   * reads as a faint box around the text on dark footage. Lift the floor: alpha below
+   * ~2% goes to zero and the rest is rescaled, so the tail fades out along a rounded
+   * contour with no step. Processed in row bands to keep memory flat at 4K.
+   */
+  function softFloor(ctx, W, H) {
+    const t = 5
+    const band = Math.max(1, Math.floor(4194304 / Math.max(1, W)))
+    for (let y = 0; y < H; y += band) {
+      const hh = Math.min(band, H - y)
+      const img = ctx.getImageData(0, y, W, hh)
+      const d = img.data
+      for (let i = 3; i < d.length; i += 4) {
+        const a = d[i]
+        if (a === 0) continue
+        d[i] = a <= t ? 0 : Math.round(((a - t) * 255) / (255 - t))
+      }
+      ctx.putImageData(img, 0, y)
+    }
+  }
+  /**
    * Paint a title card into canvas (pixel size = export size × k).
    * Aura glow: the text layer is laid back three times through growing blurs in its
    * own colour, plus a warmer, wider, slightly dropped under-glow — a projected print
@@ -689,22 +710,32 @@
       tctx.fillStyle = WARM[s.titleColor] || WARM.bone
       tctx.fillRect(0, 0, W, H)
       tctx.globalCompositeOperation = 'source-over'
-      ctx.save()
-      ctx.globalCompositeOperation = 'lighter'
-      ctx.filter = `blur(${(R * 1.35).toFixed(2)}px)`
-      ctx.globalAlpha = Math.min(1, I * 0.8)
-      ctx.drawImage(tint, 0, R * 0.14)
+      // Build the bloom in its own buffer, additively.
+      const bloom = scratchCanvas('bloom', W, H, keep)
+      const bctx = bloom.getContext('2d', { willReadFrequently: true })
+      bctx.save()
+      bctx.clearRect(0, 0, W, H)
+      bctx.globalCompositeOperation = 'lighter'
+      bctx.filter = `blur(${(R * 1.35).toFixed(2)}px)`
+      bctx.globalAlpha = Math.min(1, I * 0.8)
+      bctx.drawImage(tint, 0, R * 0.14)
       const passes = [
         [0.1, 0.9],
         [0.36, 0.62],
         [1, 0.42],
       ]
       for (const [f, a] of passes) {
-        ctx.filter = `blur(${Math.max(0.3, R * f).toFixed(2)}px)`
-        ctx.globalAlpha = Math.min(1, I * a)
-        ctx.drawImage(layer, 0, 0)
+        bctx.filter = `blur(${Math.max(0.3, R * f).toFixed(2)}px)`
+        bctx.globalAlpha = Math.min(1, I * a)
+        bctx.drawImage(layer, 0, 0)
       }
-      ctx.restore()
+      bctx.restore()
+      softFloor(bctx, W, H)
+      ctx.drawImage(bloom, 0, 0)
+      if (!keep) {
+        bloom.width = 0
+        bloom.height = 0
+      }
       if (!keep) {
         tint.width = 0
         tint.height = 0
@@ -743,6 +774,7 @@
     size: 1.7,
     color: 'silver',
     face: 'jetbrains',
+    safeBand: true,
   }
   const HIST = Array.from({ length: 56 }, (_, i) => {
     // A Lunar Night histogram shape: crushed-black spike, violet shadow hump,
@@ -791,11 +823,21 @@
       trackEm: tr,
       alpha,
     })
+    // The stamp's frame: the full picture, or (9:16) the area inside the app UI bands.
+    const band = H > W && s.safeBand
+    const g = W / 1080
+    const fx0 = 0
+    const fy0 = band ? 130 * g : 0
+    const fx1 = band ? W - 140 * g : W
+    const fy1 = band ? H - 484 * g : H
     if (s.corners)
-      ops.push(...brackets(m, m, W - m, H - m, 5.2 * U, lw, c, 0.85))
-    const ix = m + 2.2 * U
-    const top = m + 2.4 * U
-    const bottom = H - m - 2.4 * U
+      ops.push(
+        ...brackets(fx0 + m, fy0 + m, fx1 - m, fy1 - m, 5.2 * U, lw, c, 0.85),
+      )
+    const ix = fx0 + m + 2.2 * U
+    const rx = fx1 - m - 2.2 * U
+    const top = fy0 + m + 2.4 * U
+    const bottom = fy1 - m - 2.4 * U
     // top-left: REC + timecode
     let x = ix
     if (s.rec) {
@@ -808,17 +850,17 @@
     const tc = tcOk(s.tc) ? s.tc : '00:00:00:00'
     ops.push(T(`TC ${tc}`, f(px), x, top, 'left'))
     // top-right: fps + shutter angle, label under it
-    ops.push(T(`${s.fps} FPS · ${angleOf(s)}°`, f(px), W - ix, top, 'right'))
+    ops.push(T(`${s.fps} FPS · ${angleOf(s)}°`, f(px), rx, top, 'right'))
     if (s.label)
       ops.push(
-        T(up(s.label), f(px * 0.86), W - ix, top + px * 1.9, 'right', c, 0.7),
+        T(up(s.label), f(px * 0.86), rx, top + px * 1.9, 'right', c, 0.7),
       )
     // bottom-right: histogram glyph
     let histW = 0
     if (s.hist) {
       histW = 12 * U
       const hh = 4.6 * U
-      const x1 = W - ix
+      const x1 = rx
       const x0 = x1 - histW
       const yb = bottom + px * 0.5
       const bw = histW / HIST.length
@@ -847,7 +889,7 @@
     }
     // bottom-left: the camera line (split in two when it would hit the histogram)
     const line = hudLensLine(s)
-    const room = W - ix * 2 - (histW ? histW + 3 * U : 0)
+    const room = rx - ix - (histW ? histW + 3 * U : 0)
     if (measure(line, f(px), tr) <= room) {
       ops.push(T(line, f(px), ix, bottom, 'left'))
     } else {
@@ -1062,9 +1104,15 @@
     if (g.left) R(0, g.top, g.left, GH - g.top - g.bottom)
     const L = (x1, y1, x2, y2, stroke, w, dash, alpha = 1) =>
       sh.push({ k: 'line', x1, y1, x2, y2, stroke, w, dash, alpha })
-    // thirds + centre cross
-    for (const x of [GW / 3, (GW * 2) / 3]) L(x, 0, x, GH, silver, 2, null, 0.3)
-    for (const y of [GH / 3, (GH * 2) / 3]) L(0, y, GW, y, silver, 2, null, 0.3)
+    // thirds (inside the safe box only, so they never cut the band labels) + centre cross
+    const sx0 = g.left
+    const sx1 = GW - g.right
+    const sy0 = g.top
+    const sy1 = GH - g.bottom
+    for (const x of [GW / 3, (GW * 2) / 3])
+      if (x > sx0 && x < sx1) L(x, sy0, x, sy1, silver, 2, null, 0.3)
+    for (const y of [GH / 3, (GH * 2) / 3])
+      if (y > sy0 && y < sy1) L(sx0, y, sx1, y, silver, 2, null, 0.3)
     L(GW / 2 - 36, GH / 2, GW / 2 + 36, GH / 2, silver, 2, null, 0.8)
     L(GW / 2, GH / 2 - 36, GW / 2, GH / 2 + 36, silver, 2, null, 0.8)
     // safe rectangle edges
@@ -1105,6 +1153,22 @@
       'middle',
       -90,
     )
+    // Labels inside the picture sit on a small obsidian plate (mono advance ≈ 0.6 em + tracking).
+    const plate = (text, cx, cy, size) => {
+      const w = text.length * size * 0.74 + size * 1.4
+      const hh = size * 2
+      sh.push({
+        k: 'rect',
+        x: Math.round(cx - w / 2),
+        y: Math.round(cy - hh / 2),
+        w: Math.round(w),
+        h: Math.round(hh),
+        fill: '#08080A',
+        alpha: 0.72,
+      })
+    }
+    plate('GUIDE ONLY · DELETE BEFORE EXPORT', (x0 + x1) / 2, y0 + 44, 24)
+    plate('TEXT LIVES INSIDE THE DASHED LINE', (x0 + x1) / 2, y1 - 40, 20)
     Tx('GUIDE ONLY · DELETE BEFORE EXPORT', (x0 + x1) / 2, y0 + 44, 24, amber)
     Tx(
       'TEXT LIVES INSIDE THE DASHED LINE',
@@ -1785,6 +1849,7 @@
           tog('corners', 'Corner frame lines'),
           tog('cross', 'Centre cross'),
           tog('hist', 'Histogram glyph'),
+          tog('safeBand', '9:16: inside the app UI bands'),
         ),
       ),
       group('Look', face.el, size.el, colour.el, canvasSeg.el),
@@ -2091,28 +2156,33 @@
         ),
       ),
     )
+    const P = LN.palette
     return h(
       'div',
-      { class: 'ln-stack ty-fonts' },
-      ui.table(
-        ['Role', 'Faces', 'Case', 'CapCut spacing', 'Line spacing'],
-        [
-          [
-            'Chapter titles',
-            'Cormorant Garamond SemiBold Italic, Instrument Serif, Playfair Display',
-            'As written',
-            '−2 to 0',
-            'Default',
-          ],
-          [
-            'Batch codes, lens callouts, GPS',
-            'JetBrains Mono, Space Mono, Courier Prime',
-            'ALL CAPS',
-            '+15 to +28',
-            '+8',
-          ],
-        ],
-        { label: 'Font system' },
+      {
+        class: 'ln-stack ty-fonts',
+        style: {
+          '--ty-film-amber': P.gradeAmber,
+          '--ty-film-bone': P.bone,
+          '--ty-film-silver': P.gradeSilver,
+          '--ty-film-glow': `${P.gradeAmber}2e`,
+        },
+      },
+      h(
+        'div',
+        { class: 'ty-roles' },
+        h(
+          'div',
+          { class: 'ty-role' },
+          h('b', null, 'Chapter titles · serif'),
+          h('span', null, 'As written · CapCut spacing −2 to 0 · default line'),
+        ),
+        h(
+          'div',
+          { class: 'ty-role' },
+          h('b', null, 'Batch codes, lens callouts, GPS · mono'),
+          h('span', null, 'ALL CAPS · spacing +15 to +28 · line spacing +8'),
+        ),
       ),
       h('div', { class: 'ty-specs' }, disp),
       h('div', { class: 'ty-specs' }, meta),

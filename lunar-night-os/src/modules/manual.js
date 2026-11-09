@@ -345,6 +345,9 @@
     return out
   }
 
+  // Look inside a chapter (it may not be in the document yet).
+  const byId = (root, id) =>
+    Array.from(root.querySelectorAll('[id]')).find(x => x.id === id) || null
   const escRe = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   function markText(text, terms) {
     // Build highlighted nodes from plain text: text nodes + <mark> elements.
@@ -687,7 +690,7 @@
     }
     function jump(i, secId) {
       if (i !== cur) showChapter(i)
-      const target = secId ? document.getElementById(secId) : null
+      const target = secId ? byId(arts[i], secId) : null
       if (target && arts[i].contains(target)) {
         target.scrollIntoView({ block: 'start', behavior: smooth() })
         target.focus({ preventScroll: true })
@@ -730,16 +733,14 @@
         if (hd.getBoundingClientRect().top <= line) active = hd
         else break
       }
-      if (!active) active = arts[cur].querySelector('h1, h2, h3')
-      if (active && active.id !== lastSaved) {
+      // Nothing crossed the reading line yet (page top, or the router's
+      // scrollTo(0, 0)): keep the saved spot instead of overwriting it.
+      if (!active) return
+      if (active.id !== lastSaved) {
         lastSaved = active.id
         setActive(active.id)
       }
-      if (
-        !resumeBtn.hidden &&
-        active &&
-        active.id !== CHAPTERS[cur].headings[0]?.id
-      )
+      if (!resumeBtn.hidden && active.id === resumeBtn.dataset.sec)
         resumeBtn.hidden = true
     }
     window.addEventListener(
@@ -850,7 +851,7 @@
     /* first frame */
     showChapter(cur)
     if (pos && pos.sec && cur >= 0) {
-      const el = document.getElementById(pos.sec)
+      const el = byId(arts[cur], pos.sec)
       const firstId = CHAPTERS[cur].headings[0]?.id
       if (el && arts[cur].contains(el) && pos.sec !== firstId) {
         resumeBtn.dataset.sec = pos.sec

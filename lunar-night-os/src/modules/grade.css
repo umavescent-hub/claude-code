@@ -7,11 +7,6 @@
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   align-items: start;
 }
-@media (max-width: 900px) {
-  .m-grade .gr-lab {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
 .m-grade .gr-lab-view {
   display: grid;
   gap: var(--s2);
@@ -54,7 +49,7 @@
 }
 .m-grade .gr-tag {
   position: absolute;
-  top: var(--s2);
+  bottom: calc(10% + var(--s2));
   padding: 3px 7px;
   border-radius: var(--r1);
   background: rgba(7, 7, 9, 0.72);
@@ -171,6 +166,27 @@
   color: var(--amber);
 }
 
+@media (max-width: 900px) {
+  .m-grade .gr-lab {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--s3);
+  }
+  /* Phone: the preview rides along while the sliders scroll under it. */
+  .m-grade .gr-lab-view {
+    display: contents;
+  }
+  .m-grade .gr-stage {
+    position: sticky;
+    top: var(--gr-sticky-top, var(--header-h));
+    z-index: 3;
+    box-shadow:
+      0 -12px 0 0 var(--obsidian),
+      0 12px 28px rgba(0, 0, 0, 0.65);
+  }
+  .m-grade .gr-tools {
+    margin-bottom: var(--s3);
+  }
+}
 /* ---------- Look line, intensity band */
 .m-grade .gr-lookline {
   font-family: var(--f-body);
@@ -306,6 +322,7 @@
   overflow-wrap: anywhere;
 }
 .m-grade .gr-file-meta span {
+  font-family: var(--f-data, var(--f-mono));
   font-size: var(--t-xs);
   color: var(--silver-3);
   letter-spacing: 0.04em;
@@ -441,6 +458,7 @@
   border-radius: 2px;
 }
 .m-grade .gr-adj-v {
+  font-family: var(--f-data, var(--f-mono));
   text-align: right;
   color: var(--bone);
   font-weight: 500;
@@ -484,7 +502,7 @@
   line-height: 1.45;
 }
 .m-grade .gr-fig figcaption b {
-  font-family: var(--f-mono);
+  font-family: var(--f-data, var(--f-mono));
   font-weight: 500;
   font-size: var(--t-xs);
   color: var(--bone);
@@ -535,7 +553,7 @@
 }
 .m-grade .gr-curve .g-axis {
   fill: var(--silver-3);
-  font-family: var(--f-mono);
+  font-family: var(--f-data, var(--f-mono));
   font-size: 9px;
   text-anchor: middle;
 }
@@ -639,8 +657,7 @@
 /* ---------- Layer stack */
 .m-grade .gr-layers-wrap {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--s4);
+  gap: var(--s2);
   max-width: 720px;
 }
 .m-grade .gr-layers {
@@ -696,20 +713,8 @@
   line-height: 1.4;
 }
 .m-grade .gr-layer-axis {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  justify-items: center;
-  gap: 6px;
   font-size: var(--t-xs);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--silver-3);
-  writing-mode: vertical-rl;
-}
-.m-grade .gr-layer-axis i {
-  width: 1px;
-  background: linear-gradient(var(--line-2), var(--silver-3));
-}
-.m-grade .gr-layer-axis span {
-  white-space: nowrap;
 }

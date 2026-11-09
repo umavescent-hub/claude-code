@@ -571,7 +571,7 @@ void main(){
       ? h(
           'p',
           { class: 'bake-lede' },
-          'CapCut on the phone can’t load a .cube file, so the Pixel renders a new MP4 here, frame by frame, with the look in the pixels. The audio is copied across untouched.',
+          'Pick a clip from the camera roll. The Pixel re-renders it frame by frame with the look in the pixels, and copies the audio across untouched.',
         )
       : h(
           'header',
@@ -596,6 +596,7 @@ void main(){
     const lblBefore = h('span', { class: 'bake-tag l' }, 'Before')
     const lblAfter = h('span', { class: 'bake-tag r' }, 'After')
     const slate = h('div', { class: 'bake-slate' })
+    const lookSlate = h('span', { class: 'bake-slatelook' })
     const stage = h(
       'div',
       { class: 'bake-stage', style: { '--wipe': '50%', '--ar': '0.8' } },
@@ -917,7 +918,8 @@ void main(){
       } catch (e) {
         console.warn('[bake] preview failed', e)
       }
-      lblAfter.textContent = `After · ${lookOf(st.look) ? lookOf(st.look).name : ''} ${st.intensity}%`
+      lblAfter.textContent = `After · ${st.intensity}%`
+      lookSlate.textContent = lookOf(st.look) ? lookOf(st.look).name : ''
     }
     let raf = 0
     const schedulePreview = () => {
@@ -1005,6 +1007,7 @@ void main(){
       h('span', null, 'REF'),
       h('span', null, `${before.width}×${before.height}`),
       h('span', null, 'sRGB'),
+      lookSlate,
     )
     renderSpecsIdle()
     updateLookNotes()
@@ -1049,6 +1052,12 @@ void main(){
     /* ---------------------------------------------------- errors */
     function showError(title, msg) {
       const box = ui.callout('warn', msg, title)
+      if (!st.busy) {
+        bakeBtn.disabled = true
+        readyNote.textContent = st.file
+          ? 'This clip can’t be baked here. See the note below.'
+          : 'The bake can’t run in this browser. See the note below.'
+      }
       if (inGrade) {
         const target = document.getElementById('gr-recipes')
         if (target)
@@ -1256,7 +1265,7 @@ void main(){
           showError(
             `This browser can’t decode ${codecName(vcodec)}`,
             vcodec === 'hevc'
-              ? `The clip is HEVC (H.265). Chrome on most Pixels decodes it with the phone’s hardware, but this browser can’t. Record the clips you plan to bake in H.264, or ${RECIPE}.`
+              ? `This browser can’t decode HEVC (H.265). Open the page in Chrome on the Pixel and pick the clip again. If it still fails, record the clips you plan to bake in H.264, or ${RECIPE}.`
               : `The clip uses ${codecName(vcodec)}, which this browser can’t decode. Record in H.264 for the bake, or ${RECIPE}.`,
           )
           return
@@ -1306,6 +1315,7 @@ void main(){
             ? `${LN.fmt.num(st.probe.fps, st.probe.fps % 1 ? 2 : 0)} fps`
             : 'VFR',
         ),
+        lookSlate,
       )
       renderPreview()
     }
@@ -1620,7 +1630,7 @@ void main(){
       const savedLine = h(
         'p',
         { class: 'bake-fine', hidden: true },
-        'Saved. It lands in Downloads; CapCut finds it under Import › Videos.',
+        'Saved. In CapCut, start a New project and tick it from your videos.',
       )
       result.replaceChildren(
         h(
@@ -1668,7 +1678,7 @@ void main(){
               'div',
               { class: 'bake-next' },
               h('span', { class: 'bake-fine' }, 'In CapCut'),
-              ui.path('New project', 'Videos', r.filename),
+              ui.path('New project', r.filename, 'Add'),
               h(
                 'p',
                 { class: 'bake-fine' },
@@ -1696,8 +1706,13 @@ void main(){
       h(
         'li',
         null,
-        h('b', null, letter),
-        h('div', null, h('strong', null, title), h('span', null, body)),
+        h('b', { class: 'bake-rl' }, letter),
+        h(
+          'div',
+          null,
+          h('strong', { class: 'bake-rn' }, title),
+          h('span', { class: 'bake-rd' }, body),
+        ),
       )
     return h(
       'div',
@@ -1739,11 +1754,18 @@ void main(){
     return ui.callout(
       'warn',
       h(
-        'span',
-        null,
-        `This clip is ${what}. The looks are built for SDR Rec.709, so this bake may clip or shift the highlights. For LUT work, record with 10-bit HDR off: `,
-        ui.path('Pixel Camera', 'Video settings', '10-bit HDR', 'Off'),
-        '.',
+        'div',
+        { class: 'ln-stack' },
+        h(
+          'span',
+          null,
+          `This clip is ${what}. The looks are built for SDR Rec.709, so this bake may clip or shift the highlights. For LUT work, record with 10-bit HDR off.`,
+        ),
+        h(
+          'div',
+          { class: 'ln-row' },
+          ui.path('Pixel Camera', 'Video settings', '10-bit HDR', 'Off'),
+        ),
       ),
       'HDR source',
     )

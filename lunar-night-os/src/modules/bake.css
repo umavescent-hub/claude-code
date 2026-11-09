@@ -43,20 +43,20 @@
   background: var(--graphite);
   min-width: 0;
 }
-.m-grade .bake-routes li > b {
+.m-grade .bake-rl {
   font-family: var(--f-display);
   font-size: var(--t-xl);
   font-weight: 400;
   line-height: 1;
   color: var(--amber);
 }
-.m-grade .bake-routes li strong {
+.m-grade .bake-rn {
   display: block;
   font-size: var(--t-sm);
   color: var(--bone);
   font-weight: 500;
 }
-.m-grade .bake-routes li span {
+.m-grade .bake-rd {
   font-size: var(--t-xs);
   color: var(--silver-2);
 }
@@ -525,4 +525,10 @@
   display: grid;
   gap: var(--s3);
   padding: 0 var(--s4) var(--s4);
+}
+.m-grade .bake-slate .bake-slatelook {
+  color: var(--amber);
+}
+.m-grade .bake-slate .bake-slatelook:empty {
+  display: none;
 }

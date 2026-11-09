@@ -1,6 +1,11 @@
 /* Lunar Night OS: modules/edit.css, The Cut (03). Every selector sits under .m-edit. */
 
 /* ---------- shared bits */
+/* Grid items default to min-width: auto; let wide tables scroll inside .ln-scroll. */
+.m-edit .ln-stack > *,
+.m-edit .ln-section > * {
+  min-width: 0;
+}
 .m-edit .edit-two {
   display: grid;
   gap: var(--s3);
@@ -10,7 +15,7 @@
 .m-edit .edit-stats {
   display: grid;
   gap: var(--s2);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 120px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
   min-width: 0;
 }
 .m-edit .edit-step {
@@ -584,4 +589,12 @@
 }
 .m-edit .ln-table tr.sel td {
   background: var(--amber-soft);
+}
+
+.m-edit .edit-nowrap .ln-table td {
+  white-space: nowrap;
+}
+
+.m-edit .edit-plan .ln-table td:nth-child(-n + 4) {
+  white-space: nowrap;
 }

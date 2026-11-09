@@ -153,10 +153,11 @@
   function promptBox(getPrompt, o = {}) {
     const pre = h('pre', { class: 'fs-prompt-text', tabindex: '0' })
     const meta = h('span', { class: 'ln-faint' })
-    const withBrain = o.brain !== false
+    const brainOn = () =>
+      typeof o.brain === 'function' ? !!o.brain() : o.brain !== false
     const copy = () =>
-      LN.copy(withBrain ? LN.ai.compose(getPrompt()) : getPrompt(), {
-        label: withBrain ? 'Prompt copied with your Brand Brain' : 'Copied',
+      LN.copy(brainOn() ? LN.ai.compose(getPrompt()) : getPrompt(), {
+        label: brainOn() ? 'Copied with your Brand Brain' : 'Copied',
       })
     const el = h(
       'div',
@@ -177,7 +178,7 @@
     const refresh = () => {
       const p = getPrompt()
       pre.textContent = p
-      meta.textContent = withBrain
+      meta.textContent = brainOn()
         ? `${p.length.toLocaleString('en-US')} characters. Copy adds your Brand Brain on top (${LN.brain.context().length.toLocaleString('en-US')} more).`
         : `${p.length.toLocaleString('en-US')} characters.`
     }
@@ -1698,12 +1699,30 @@
         return
       }
       if (route === 'forge' && data.params && a.id !== 'foley') {
+        const plate =
+          LN.forgeVideo && Array.isArray(LN.forgeVideo.PLATES)
+            ? LN.forgeVideo.PLATES.find(p => p.id === data.plate)
+            : null
+        const labelOf = k => {
+          if (k === 'variant' && plate && plate.variants)
+            return plate.variants.label || 'Style'
+          const d = plate && (plate.params || []).find(x => x.key === k)
+          return d ? d.label : k
+        }
+        const valueOf = (k, v) => {
+          if (typeof v === 'number') return pct(clamp(v, 0, 1))
+          const opt =
+            k === 'variant' && plate && plate.variants
+              ? (plate.variants.options || []).find(o => o.value === v)
+              : null
+          return opt ? opt.label : String(v)
+        }
         const rows = Object.entries(data.params).map(([k, v]) => [
-          k,
-          typeof v === 'number' ? `${pct(clamp(v, 0, 1))}  (${v})` : String(v),
+          labelOf(k),
+          valueOf(k, v),
         ])
         rows.push(
-          ['Size', String(data.size || '9x16')],
+          ['Size', String(data.size || '9x16').replace('x', ':')],
           ['Frame rate', `${data.fps || 24} fps`],
           ['Length', `${data.duration || 5} s`],
           ['Seed', String(data.seed || 1)],
@@ -2671,7 +2690,7 @@
     const s = {
       format: 'doc',
       script:
-        'Before the stars, there was a kitchen at the end of a dirt road. My grandmother cooked by feel. I am still learning to.',
+        'Service is over. The pass is clean. Tonight the plate gets one more try, and this time I write down every change.',
       voice: 'low, warm, unhurried narrator',
       len: 20,
       size: '1080x1920',
@@ -2704,8 +2723,6 @@
       'Before you generate anything: tell me which Higgsfield model you will use and what it will cost in credits, then wait for my yes.',
       'Ground rules: no Native or Pueblo symbols, regalia, patterns or people; no faces or hands unless I say so; no stars, Michelin marks or awards; no fake-shock expressions; nothing presented as a real dish of mine.',
     ]
-    const wrap = text =>
-      s.brain ? `${LN.brain.context()}\n\n---\n\n${text}` : text
 
     const voBrief = () =>
       [
@@ -2713,6 +2730,7 @@
         guard[0],
         '',
         `FORMAT: ${FMT[s.format].label}. ${s.format === 'night' ? 'Note: Lunar Night reels carry no voice; this is for another cut.' : ''}`.trim(),
+        '',
         'SCRIPT (read it word for word, do not rewrite it)',
         s.script.trim(),
         '',
@@ -2753,10 +2771,10 @@
       ].join('\n')
 
     const block = (title, getText, controls) => {
-      const box = promptBox(() => wrap(getText()), {
+      const box = promptBox(getText, {
         title: `${title} brief`,
         button: 'Copy brief',
-        brain: false,
+        brain: () => s.brain,
       })
       boxes.push(box)
       return card(title, h('div', { class: 'fs-form' }, controls), box.el)

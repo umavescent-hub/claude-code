@@ -1714,15 +1714,19 @@
         ui.stat(sec(imp, 3), 'Impact (output)'),
       )
       tcBox.replaceChildren(
-        ui.table(
-          ['fps', 'Impact timecode', 'Frame', 'Output frames'],
-          [24, 30, 60].map(f => [
-            String(f),
-            LN.fmt.tc(imp, f),
-            String(LN.fmt.frames(imp, f)),
-            String(LN.fmt.frames(total, f)),
-          ]),
-          { label: 'Impact frame timecodes' },
+        h(
+          'div',
+          { class: 'edit-nowrap' },
+          ui.table(
+            ['fps', 'Impact timecode', 'Frame', 'Output frames'],
+            [24, 30, 60].map(f => [
+              String(f),
+              LN.fmt.tc(imp, f),
+              String(LN.fmt.frames(imp, f)),
+              String(LN.fmt.frames(total, f)),
+            ]),
+            { label: 'Impact frame timecodes' },
+          ),
         ),
       )
       const minV = Math.min(...st.nodes.map(n => Math.min(n.v, leaveV(n))))
@@ -2341,9 +2345,13 @@
           { class: 'ln-small ln-muted' },
           `${plan.merged.length} ducked stretch${plan.merged.length === 1 ? '' : 'es'} · ${plan.keys.length} keyframes · ramps of ${st.ramp} frames = ${sec(st.ramp / st.fps, 3)} at ${st.fps} fps · ${up} is ${volDb(up)}, ${down} is ${volDb(down)}`,
         ),
-        ui.table(['#', 'Time', 'Timecode', 'Frame', 'Volume', 'What'], rows, {
-          label: 'Ducking keyframes',
-        }),
+        h(
+          'div',
+          { class: 'edit-nowrap' },
+          ui.table(['#', 'Time', 'Timecode', 'Frame', 'Volume', 'What'], rows, {
+            label: 'Ducking keyframes',
+          }),
+        ),
       )
       copy.setText(
         [
@@ -3052,7 +3060,7 @@
   }
 
   /* ------------------------------------------------------------ edit plan */
-  const PLAN_TARGET = { market: 35, reel: 7, doc: 60, lab: 30 }
+  const PLAN_TARGET = { market: 30, reel: 7, doc: 60, lab: 30 }
   const SAMPLE_CLIPS = [
     'plate-landing - 4.2 - the plate drops onto the truck hood, steam rising',
     'handoff - 6.0 - she hands the bag through the screen door',
@@ -3078,9 +3086,11 @@
         '',
       ],
       ['handoff', 1, 3.5, 'española, saturday', '', ''],
+      ['handoff', 3.5, 6, 'twelve bucks a dozen', '', ''],
       ['unwrap', 0.5, 3, 'red chile pork', '', ''],
       ['unwrap', 3, 5, '', '', '108% push-in'],
       ['inside-shot', 0, 2.5, 'look at that masa', '', ''],
+      ['plate-landing', 2.2, 4.2, '', 'sizzle 35', ''],
       ['first-bite', 0.3, 3.3, '', 'crunch 45', '112% on the bite'],
       ['verdict-talk', 0, 3, '', '', ''],
       ['verdict-talk', 3.5, 6.5, '', '', ''],

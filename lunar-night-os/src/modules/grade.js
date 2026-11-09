@@ -1460,7 +1460,7 @@
 
     function readme(size) {
       const lines = [
-        'LUNAR NIGHT OS · LUT PACK',
+        'LUNAR NIGHT · LUT PACK',
         `Made ${new Date().toISOString().slice(0, 10)} · ${size}-point 3D .cube files · Rec.709 in and out`,
         '',
         'WHAT IS INSIDE',
@@ -1491,10 +1491,10 @@
         '     CapCut mobile cannot import custom LUTs; CapCut desktop can',
         `     (${CAPCUT.lutDesktop.path.join(' > ')}). Check your build in 60 seconds:`,
         '     tap a clip > Adjust, swipe the whole row, look for a LUT or + tile.',
-        '  B. Bake. Lunar Night OS > Grade > Bake the look into a clip. Or bake at',
+        '  B. Bake. Grade page > Bake the look into a clip. Or bake at',
         `     capture: Blackmagic Camera > ${PIXEL.bmLut.join(' > ')}, then`,
         '     Record LUT to Clip ON (use LunarNight_v2_Soft for a lighter bake).',
-        '  C. Sliders. Lunar Night OS > Grade > Slider recipes: Adjust, HSL,',
+        '  C. Sliders. Grade page > Slider recipes: Adjust, HSL,',
         '     Curves and effects, number by number. Free, no import needed.',
         '',
         'LAYER ORDER',
