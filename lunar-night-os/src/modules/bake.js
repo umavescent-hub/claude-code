@@ -190,7 +190,6 @@ void main(){
   if (f.x >= 2 * uCw) { o = vec4(0.5); return; }
   bool isV = f.x >= uCw;
   int cx = (isV ? f.x - uCw : f.x) * 4;
-  vec4 r;
   vec2 c0 = chroma(cx, cy); vec2 c1 = chroma(cx + 1, cy);
   vec2 c2 = chroma(cx + 2, cy); vec2 c3 = chroma(cx + 3, cy);
   o = isV ? vec4(c0.y, c1.y, c2.y, c3.y) : vec4(c0.x, c1.x, c2.x, c3.x);
@@ -555,20 +554,32 @@ void main(){
 
     const root = h('div', { class: 'bake' })
     host.append(root)
+    // Inside Grade, the page already carries the section title, Routes A/B/C
+    // and the slider recipes, so the baker shows only its own tool.
+    const inGrade = !!LN.grade || !!host.closest('.m-grade')
+    const RECIPE = inGrade
+      ? 'use the slider recipe in 04 · Slider recipes above'
+      : 'use the CapCut slider recipe below'
 
     /* ---- head */
-    const head = h(
-      'header',
-      { class: 'bake-head' },
-      h('div', { class: 'ln-eyebrow' }, 'Route B · Bake on the phone'),
-      h('h2', { class: 'ln-h2' }, 'Bake the look into an MP4'),
-      h(
-        'p',
-        { class: 'bake-lede' },
-        'CapCut on the phone can’t load a .cube file. So burn the grade into the pixels here: pick a clip, set the look and strength, and the Pixel renders a new MP4 frame by frame. The audio is copied across untouched.',
-      ),
-      routesStrip(),
-    )
+    const head = inGrade
+      ? h(
+          'p',
+          { class: 'bake-lede' },
+          'CapCut on the phone can’t load a .cube file, so the Pixel renders a new MP4 here, frame by frame, with the look in the pixels. The audio is copied across untouched.',
+        )
+      : h(
+          'header',
+          { class: 'bake-head' },
+          h('div', { class: 'ln-eyebrow' }, 'Route B · Bake on the phone'),
+          h('h2', { class: 'ln-h2' }, 'Bake the look into an MP4'),
+          h(
+            'p',
+            { class: 'bake-lede' },
+            'CapCut on the phone can’t load a .cube file. So burn the grade into the pixels here: pick a clip, set the look and strength, and the Pixel renders a new MP4 frame by frame. The audio is copied across untouched.',
+          ),
+          routesStrip(),
+        )
 
     /* ---- viewer */
     const before = h('canvas', { class: 'bake-before', 'aria-hidden': 'true' })
@@ -852,7 +863,7 @@ void main(){
     const errBox = h('div', { class: 'bake-err' })
 
     /* ---- fallback recipe */
-    const recipe = recipeDetails()
+    const recipe = inGrade ? h('div', { hidden: true }) : recipeDetails()
 
     root.append(
       head,
@@ -874,7 +885,7 @@ void main(){
     } catch (e) {
       showError(
         'WebGL2 is off',
-        `${e.message} The bake needs the GPU to grade each frame. Use the CapCut slider recipe below.`,
+        `${e.message} The bake needs the GPU to grade each frame. Meanwhile, ${RECIPE}.`,
       )
     }
     let lutKey = ''
@@ -945,24 +956,21 @@ void main(){
 
     /* ---- grade sync */
     const offParams = LN.bus.on('grade:params', d => {
-      if (
-        d &&
-        typeof d === 'object' &&
-        (d.look || d.intensity != null) &&
-        d.params
-      ) {
-        st.gradeParams = d.look
-          ? { [normLook(d.look, looks)]: d.params }
-          : d.params
-        if (d.look && !st.busy) setLook(normLook(d.look, looks))
+      // Grade emits {look, params, intensity, v2?} and persists every look's params.
+      const stored = LN.store.get('grade.params', null)
+      st.gradeParams = stored && typeof stored === 'object' ? { ...stored } : {}
+      if (d && typeof d === 'object' && (d.look || d.intensity != null)) {
+        const id = d.look && d.look !== 'base' ? normLook(d.look, looks) : null
+        const look = id ? lookOf(id) : null
+        if (look && look.kind === 'engine' && d.params)
+          st.gradeParams[id] = d.params
+        if (id && !st.busy) setLook(id)
         if (d.intensity != null && !st.busy) {
           st.intensity = normIntensity(d.intensity)
           inten.set(st.intensity)
           intenHint()
         }
-      } else {
-        st.gradeParams = d || LN.store.get('grade.params', null)
-      }
+      } else if (d && typeof d === 'object') st.gradeParams = d
       updateLookNotes()
       schedulePreview()
     })
@@ -1004,7 +1012,7 @@ void main(){
       if (!LN.media.hasWebCodecs()) {
         showError(
           'This browser can’t encode video',
-          'There is no WebCodecs video encoder here, so the bake can’t run. Open Lunar Night OS in Chrome on the Pixel, or use the CapCut slider recipe below.',
+          `There is no WebCodecs video encoder here, so the bake can’t run. Open Lunar Night OS in Chrome on the Pixel, or ${RECIPE}.`,
         )
         return
       }
@@ -1015,25 +1023,46 @@ void main(){
         )
         return
       }
+    }
+    /** HEVC is offered only when this browser confirms it can encode the clip's size. */
+    async function checkHevc(MB, w, hh) {
       try {
-        const MB = await LN.lib.mediabunny()
-        st.hevcOk = await MB.canEncodeVideo('hevc', {
-          width: 1080,
-          height: 1920,
-        })
+        st.hevcOk = await MB.canEncodeVideo('hevc', { width: w, height: hh })
       } catch (_e) {
         st.hevcOk = false
       }
-      if (hevcBtn) hevcBtn.disabled = !st.hevcOk
+      if (hevcBtn) hevcBtn.disabled = !st.hevcOk || st.busy
+      if (!st.hevcOk && st.codec === 'hevc') {
+        st.codec = 'avc'
+        codecSeg.set('avc')
+      }
       codecNote.textContent = st.hevcOk
         ? 'H.264 is the safe pick for CapCut. HEVC makes a smaller file at the same quality.'
-        : 'H.264 is the safe pick for CapCut. This browser can’t encode HEVC, so it stays off.'
+        : 'H.264 is the safe pick for CapCut. This browser can’t encode HEVC at this size, so it stays off.'
     }
 
     /* ---------------------------------------------------- errors */
     function showError(title, msg) {
-      errBox.replaceChildren(ui.callout('warn', msg, title))
-      recipe.open = true
+      const box = ui.callout('warn', msg, title)
+      if (inGrade) {
+        const target = document.getElementById('gr-recipes')
+        if (target)
+          box.append(
+            h(
+              'div',
+              { class: 'ln-row' },
+              ui.btn(
+                'Open the slider recipes',
+                () =>
+                  target.scrollIntoView({
+                    behavior: LN.reducedMotion() ? 'auto' : 'smooth',
+                  }),
+                { kind: 'ghost', small: true },
+              ),
+            ),
+          )
+      } else recipe.open = true
+      errBox.replaceChildren(box)
     }
     const clearError = () => errBox.replaceChildren()
 
@@ -1142,7 +1171,7 @@ void main(){
         clipName.textContent = file.name
         showError(
           'The bake engine didn’t load',
-          'The video engine (Mediabunny) downloads the first time you bake, and this copy can’t reach it. Open Lunar Night OS from claude.ai with a connection, or use the CapCut slider recipe below.',
+          `The video engine (Mediabunny) downloads the first time you bake, and this copy can’t reach it. Open Lunar Night OS from claude.ai with a connection, or ${RECIPE}.`,
         )
         return
       }
@@ -1222,12 +1251,14 @@ void main(){
           showError(
             `This browser can’t decode ${codecName(vcodec)}`,
             vcodec === 'hevc'
-              ? 'The clip is HEVC (H.265). Chrome on most Pixels decodes it with the phone’s hardware, but this browser can’t. Record the clips you plan to bake in H.264, or use the CapCut slider recipe below.'
-              : `The clip uses ${codecName(vcodec)}, which this browser can’t decode. Record in H.264 for the bake, or use the CapCut slider recipe below.`,
+              ? `The clip is HEVC (H.265). Chrome on most Pixels decodes it with the phone’s hardware, but this browser can’t. Record the clips you plan to bake in H.264, or ${RECIPE}.`
+              : `The clip uses ${codecName(vcodec)}, which this browser can’t decode. Record in H.264 for the bake, or ${RECIPE}.`,
           )
           return
         }
         await firstFrame(MB, vt)
+        const o = outSize(p.w, p.h, st.size)
+        await checkHevc(MB, o.w, o.h)
         bakeBtn.disabled = false
         readyNote.textContent = `Ready: ${LN.fmt.num(duration, 1)} s, about ${p.frames} frames.`
       } catch (e) {
@@ -1237,7 +1268,7 @@ void main(){
           'That clip won’t open',
           e && e.user
             ? e.message
-            : 'The file isn’t a video this browser can read (MP4, MOV and WebM work). Try a clip straight from the camera roll, or use the CapCut slider recipe below.',
+            : `The file isn’t a video this browser can read (MP4, MOV and WebM work). Try a clip straight from the camera roll, or ${RECIPE}.`,
         )
       }
     }
@@ -1315,7 +1346,7 @@ void main(){
       } catch (_e) {
         showError(
           'The bake engine didn’t load',
-          'The video engine (Mediabunny) can’t be reached from this copy. Open Lunar Night OS from claude.ai with a connection, or use the CapCut slider recipe below.',
+          `The video engine (Mediabunny) can’t be reached from this copy. Open Lunar Night OS from claude.ai with a connection, or ${RECIPE}.`,
         )
         return
       }
@@ -1483,8 +1514,8 @@ void main(){
           showError(
             'The bake stopped',
             e && e.user
-              ? `${e.message} Use the CapCut slider recipe below for this clip.`
-              : `Something in the encoder failed (${e && e.message ? e.message : 'unknown error'}). Try 720p or the Lean preset, or use the CapCut slider recipe below.`,
+              ? `${e.message} For this clip, ${RECIPE}.`
+              : `Something in the encoder failed (${e && e.message ? e.message : 'unknown error'}). Try 720p or the Lean preset, or ${RECIPE}.`,
           )
         }
       } finally {
@@ -1706,7 +1737,7 @@ void main(){
         'span',
         null,
         `This clip is ${what}. The looks are built for SDR Rec.709, so this bake may clip or shift the highlights. For LUT work, record with 10-bit HDR off: `,
-        ui.path('Pixel Camera', 'Video', 'Settings', '10-bit HDR', 'Off'),
+        ui.path('Pixel Camera', 'Video settings', '10-bit HDR', 'Off'),
         '.',
       ),
       'HDR source',

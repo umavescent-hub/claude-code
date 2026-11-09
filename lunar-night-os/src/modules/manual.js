@@ -357,17 +357,17 @@
     const body = CHAPTERS.map(c => String(c.md || '').trim()).join(
       '\n\n---\n\n',
     )
-    return `# Lunar Night OS: Production manual\n\nChef Rainbird (@Popé) · exported ${today()} · ${CHAPTERS.length} chapters · about ${total} min of reading\n\n## Contents\n\n${toc}\n\n---\n\n${body}\n`
+    return `# Kubrick: Production manual\n\nChef Rainbird (@Popé) · exported ${today()} · ${CHAPTERS.length} chapters · about ${total} min of reading\n\n## Contents\n\n${toc}\n\n---\n\n${body}\n`
   }
   const saveAll = () =>
     LN.save({
-      filename: 'Lunar-Night-OS-Manual.md',
+      filename: 'Kubrick-Manual.md',
       data: manualMarkdown(),
       mime: 'text/markdown',
     })
   const saveChapter = ch =>
     LN.save({
-      filename: `Lunar-Night-OS-${ch.file || `${ch.id}.md`}`,
+      filename: `Kubrick-${ch.file || `${ch.id}.md`}`,
       data: `${String(ch.md || '').trim()}\n`,
       mime: 'text/markdown',
     })
@@ -727,7 +727,7 @@
     function runSearch() {
       const q = qInput.value.trim().toLowerCase()
       const terms = Array.from(
-        new Set(q.split(/\s+/).filter(t => t.length >= 2)),
+        new Set(q.split(/[\s\-–—/]+/).filter(t => t.length >= 2)),
       )
       if (!terms.length) {
         results.hidden = true

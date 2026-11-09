@@ -1,6 +1,6 @@
-# How to use this OS
+# How to use Kubrick
 
-Lunar Night OS is one page that runs on the Pixel. It carries a night from the walk-in to the upload: the camera settings, the shots, the CapCut cut, the look, the type, the assets and the hook. This chapter covers how the page is laid out, how files reach your phone, and how to study the material so it sticks.
+Kubrick is one page that runs on the Pixel. It carries a night from the walk-in to the upload: the camera settings, the shots, the CapCut cut, the look, the type, the assets and the hook. This chapter covers how the page is laid out, how files reach your phone, and how to study the material so it sticks.
 
 ## The pipeline: nine modules in order
 
@@ -40,7 +40,7 @@ If a save says it is unavailable, the page is open in a preview. Open it from cl
 
 ## The offline copy
 
-The footer has **Save offline copy (.html)**. It saves this whole OS as one HTML file. Open that file in Chrome and the OS runs without claude.ai, which helps on a dark lot with no signal.
+The footer has **Save offline copy (.html)**. It saves all of Kubrick as one HTML file. Open that file in Chrome and Kubrick runs without claude.ai, which helps on a dark lot with no signal.
 
 What changes offline:
 
@@ -62,7 +62,7 @@ Four tools carry the whole pipeline.
 |---|---|
 | **Pixel 10 Pro XL** | Camera and edit bay. Blackmagic Camera is the default camera app; Pixel Camera with Pro controls is the fallback. |
 | **CapCut Mobile (Android)** | The only editor. It can't load .cube files, so the look is recorded into the clip in Blackmagic Camera or rebuilt with the slider recipe. |
-| **Claude** | This OS. It runs inside claude.ai, or as the offline copy. |
+| **Claude** | Runs Kubrick inside claude.ai; the offline copy runs without it. |
 | **Fable 5.1** | A Claude model: text and images go in, text comes out. It writes the code, the numbers and the prompts, and the phone renders the files. It never hands you a video or audio file by itself. |
 
 > [!VERIFY] CapCut and .cube files
