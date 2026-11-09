@@ -3797,7 +3797,11 @@
         mime: st.result.blob.type,
       })
       if (r === 'saved')
-        saveNote.textContent = `${st.result.name} is on its way to the phone. In CapCut: Overlay › Add overlay.`
+        saveNote.replaceChildren(
+          `Saved ${st.result.name}. Next, in CapCut: `,
+          ui.path('Overlay', 'Add overlay'),
+          '.',
+        )
     }
 
     /* ---------------- first frame */
