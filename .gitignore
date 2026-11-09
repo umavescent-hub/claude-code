@@ -35,6 +35,8 @@ __pycache__/
 logs
 
 data
+# Lunar Night OS keeps its content data in src/data (not runtime data)
+!lunar-night-os/src/data/
 .omc
 .codex/*
 !.codex/agents/
