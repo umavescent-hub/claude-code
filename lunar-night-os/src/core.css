@@ -6,21 +6,21 @@
   color-scheme: dark;
   /* Surfaces: obsidian page, graphite panels, hairline rules */
   --obsidian: #0a0a0b;
-  --graphite: #161618;
-  --graphite-2: #1f1f22;
-  --graphite-3: #2a2a2e;
-  --line: #26262a;
+  --graphite: #141416;
+  --graphite-2: #1b1b1e;
+  --graphite-3: #252529;
+  --line: #29292e;
   --line-2: #3a3a40;
   /* Ink: lunar silver family */
-  --silver: #e4e4e7;
-  --silver-2: #a1a1aa;
-  --silver-3: #71717a;
-  --bone: #ffffff;
+  --silver: #e8e8ea;
+  --silver-2: #a3a3ab;
+  --silver-3: #7a7a83;
+  --bone: #f5f5f6;
   /* Accents: tungsten amber (action, active), sear crimson (REC, critical) */
-  --amber: #00d4e0;
-  --amber-ink: #001518;
-  --amber-soft: rgba(0, 212, 224, 0.12);
-  --amber-line: rgba(0, 212, 224, 0.45);
+  --amber: #00c8d7;
+  --amber-ink: #00191c;
+  --amber-soft: #0a3236;
+  --amber-line: rgba(0, 200, 215, 0.45);
   --crimson: #fe2c55;
   --crimson-text: #ff6b86;
   --crimson-soft: rgba(254, 44, 85, 0.14);
@@ -28,11 +28,23 @@
   --sage: #8db39a;
   --sage-soft: rgba(141, 179, 154, 0.14);
   /* Type */
-  --f-display:
-    "Inter", "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-body: "Inter", "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-mono: "Inter", "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --f-data: "Roboto Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --f-display: "TikTok Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "TikTok Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "TikTok Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-data:
+    "Google Sans Code", ui-monospace, "SFMono-Regular", Menlo, Consolas,
+    monospace;
+  /* CapCut timeline track colours, used as step and category markers */
+  --t1: #00c8d7;
+  --t2: #9d8cff;
+  --t3: #5b9dff;
+  --t4: #f5a742;
+  --t5: #ff6f9f;
+  --t6: #3fd894;
+  --on-accent-soft: #a8f3f8;
+  --gold: #f3b84a;
+  --gold-soft: #2a210e;
+  --r-pill: 7px;
   --t-xs: 0.6875rem;
   --t-sm: 0.8125rem;
   --t-base: 0.9375rem;
@@ -50,9 +62,9 @@
   --s6: 32px;
   --s7: 48px;
   --s8: 72px;
-  --r1: 8px;
-  --r2: 12px;
-  --r3: 18px;
+  --r1: 6px;
+  --r2: 10px;
+  --r3: 12px;
   --measure: 68ch;
   --wide: 1180px;
   --header-h: 104px;
@@ -804,10 +816,10 @@ button.ln-chip[aria-pressed="true"] {
 /* biome-ignore lint/style/noDescendingSpecificity: independent component, never nested in .ln-rail */
 .ln-path > span {
   padding: 1px 7px;
-  border: 1px solid var(--amber-line);
+  border: 1px solid transparent;
   background: var(--amber-soft);
   border-radius: var(--r1);
-  color: var(--bone);
+  color: var(--on-accent-soft);
   white-space: nowrap;
 }
 .ln-path > i {
@@ -1170,14 +1182,14 @@ button.ln-chip[aria-pressed="true"] {
   line-height: 1.6;
 }
 .ln-btn {
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   text-transform: none;
   letter-spacing: 0;
   font-weight: 600;
   font-size: var(--t-sm);
 }
 .ln-btn:hover {
-  background: #33e0ea;
+  background: #2bd6e3;
 }
 .ln-btn.ghost:hover {
   background: var(--amber-soft);
@@ -1203,12 +1215,12 @@ button.ln-chip[aria-pressed="true"] {
   font-weight: 600;
 }
 .ln-seg {
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   border-color: transparent;
   background: var(--graphite-2);
 }
 .ln-seg button {
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 .ln-card {
   border-color: transparent;
@@ -1223,4 +1235,19 @@ button.ln-chip[aria-pressed="true"] {
 .ln-code-inline,
 .ln-num {
   font-family: var(--f-data);
+}
+
+/* Jade Shoot Kit parity: gold "check" callouts, accent-soft value chips */
+.ln-callout.verify {
+  border: 0;
+  border-left: 3px solid var(--gold);
+  background: var(--gold-soft);
+}
+.ln-callout.verify > b {
+  color: var(--gold);
+}
+.ln-chip.amber {
+  color: var(--on-accent-soft);
+  background: var(--amber-soft);
+  border-color: transparent;
 }

@@ -1,4 +1,5 @@
 /* modules/manual.css: reader, search, contents, recall deck, block timer.
+   Kubrick look: CapCut blacks, white sans, one cyan accent, pill controls.
    Everything is scoped under .m-manual (the phone contents sheet carries the
    class on its own wrapper). */
 
@@ -24,10 +25,12 @@
   font-family: var(--f-body);
   font-size: 1.0625rem;
   padding-left: 40px;
-  background-image:
-    radial-gradient(circle at 17px 50%, transparent 5px, transparent 5px),
-    linear-gradient(transparent, transparent);
-  background-repeat: no-repeat;
+  border-radius: 999px;
+  background: var(--graphite-2);
+  border-color: transparent;
+}
+.m-manual .mn-q:focus {
+  border-color: var(--amber-line);
 }
 .m-manual .mn-search {
   position: relative;
@@ -63,19 +66,20 @@
 .m-manual .mn-tools .ln-btn {
   min-height: 40px;
 }
+.m-manual .mn-ic,
+.m-manual.mn-sheet-toc .mn-ic {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
 .m-manual .mn-resume {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-transform: none;
-  letter-spacing: 0.02em;
 }
 .m-manual .mn-status {
-  font-family: var(--f-mono);
-  font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--silver-3);
+  font-size: var(--t-sm);
+  color: var(--silver-2);
   margin-top: var(--s3);
 }
 .m-manual .mn-status:empty {
@@ -84,7 +88,6 @@
 .m-manual .mn-results {
   display: grid;
   margin-top: var(--s3);
-  border: 1px solid var(--line);
   border-radius: var(--r2);
   background: var(--graphite);
   max-height: min(56vh, 520px);
@@ -114,9 +117,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 2px 6px;
-  font-family: var(--f-mono);
-  font-size: var(--t-xs);
-  letter-spacing: 0.06em;
+  font-size: var(--t-sm);
+  font-weight: 600;
   color: var(--silver-2);
   min-width: 0;
 }
@@ -128,18 +130,16 @@
   color: var(--amber);
 }
 .m-manual .mn-hit-snip {
-  font-family: var(--f-body);
-  font-size: 0.975rem;
+  font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--silver-2);
   overflow-wrap: anywhere;
 }
 .m-manual mark {
   background: var(--amber-soft);
-  color: var(--bone);
-  border-bottom: 1px solid var(--amber-line);
-  border-radius: 2px;
-  padding: 0 1px;
+  color: var(--amber);
+  border-radius: 4px;
+  padding: 0 2px;
 }
 
 /* ---------- Two panes */
@@ -178,9 +178,7 @@
   }
 }
 .m-manual .mn-aside-total {
-  font-family: var(--f-mono);
-  font-size: var(--t-xs);
-  letter-spacing: 0.08em;
+  font-size: var(--t-sm);
   color: var(--silver-3);
 }
 
@@ -208,35 +206,33 @@
   color: var(--silver-2);
 }
 .m-manual .mn-toc-chbtn {
-  min-height: 40px;
-  padding: 8px 8px 8px 10px;
-  border-left: 2px solid transparent;
-  border-radius: 0 var(--r1) var(--r1) 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--r1);
 }
 .m-manual .mn-toc-chbtn:hover {
   background: var(--graphite);
   color: var(--bone);
 }
 .m-manual .mn-toc-ch.on > .mn-toc-chbtn {
-  border-left-color: var(--amber);
   color: var(--bone);
-  background: var(--graphite);
+  background: var(--graphite-2);
 }
 .m-manual .mn-toc-chbtn .n {
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   font-size: var(--t-xs);
   color: var(--amber);
   flex: 0 0 auto;
 }
 .m-manual .mn-toc-chbtn .t {
-  font-family: var(--f-display);
-  font-size: 1.125rem;
-  line-height: 1.2;
+  font-size: var(--t-base);
+  font-weight: 600;
+  line-height: 1.3;
   flex: 1 1 auto;
   min-width: 0;
 }
 .m-manual .mn-toc-chbtn .rt {
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   font-size: var(--t-xs);
   color: var(--silver-3);
   white-space: nowrap;
@@ -252,14 +248,12 @@
 .m-manual .mn-toc-sec {
   min-height: 36px;
   padding: 6px 8px 6px 12px;
-  font-family: var(--f-body);
-  font-size: 0.95rem;
+  font-size: var(--t-sm);
   line-height: 1.35;
   position: relative;
 }
 .m-manual .mn-toc-sec.l3 {
   padding-left: 26px;
-  font-size: 0.9rem;
   color: var(--silver-3);
 }
 .m-manual .mn-toc-sec:hover {
@@ -310,6 +304,9 @@
   min-width: 0;
   overflow-wrap: break-word;
 }
+.m-manual .mn-article.ln-prose > * + * {
+  margin-top: 1em;
+}
 @media (min-width: 720px) {
   .m-manual .mn-article {
     font-size: 1.125rem;
@@ -323,30 +320,33 @@
 .m-manual .mn-article h3,
 .m-manual .mn-article h4 {
   font-family: var(--f-display);
-  font-weight: 400;
+  font-weight: 600;
   color: var(--bone);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   scroll-margin-top: var(--s4);
   border-radius: var(--r1);
 }
 .m-manual .mn-article h1 {
-  font-size: clamp(2.125rem, 7vw, 3rem);
-  line-height: 1.04;
-  margin-bottom: 0.4em;
+  font-size: clamp(1.875rem, 6.4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  margin-bottom: 0.3em;
 }
 .m-manual .mn-article h2 {
-  font-size: clamp(1.625rem, 4.6vw, 2.125rem);
-  line-height: 1.12;
+  font-size: clamp(1.375rem, 4.2vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
   margin-top: 2.2em;
 }
 .m-manual .mn-article h3 {
-  font-size: 1.4rem;
-  line-height: 1.2;
+  font-size: 1.1875rem;
+  line-height: 1.3;
   margin-top: 1.8em;
 }
 .m-manual .mn-article h4 {
-  font-size: 1.15rem;
-  font-style: italic;
+  font-size: 1.0625rem;
+  color: var(--silver);
   margin-top: 1.5em;
 }
 .m-manual .mn-article h2 + *,
@@ -392,8 +392,7 @@
 }
 .m-manual .mn-article a[target="_blank"]::after {
   content: " ↗";
-  font-family: var(--f-mono);
-  font-size: 0.75em;
+  font-size: 0.8em;
 }
 .m-manual .mn-article ul,
 .m-manual .mn-article ol {
@@ -410,7 +409,7 @@
   color: var(--amber);
 }
 .m-manual .mn-article ol > li::marker {
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   font-size: 0.8em;
   color: var(--amber);
 }
@@ -421,12 +420,8 @@
   margin-block: 1.4em;
 }
 .m-manual .mn-article .ln-table {
-  font-family: var(--f-body);
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
   line-height: 1.5;
-}
-.m-manual .mn-article .ln-table th {
-  font-family: var(--f-mono);
 }
 .m-manual .mn-article .ln-table td {
   min-width: 9em;
@@ -447,8 +442,7 @@
 .m-manual .mn-article blockquote {
   margin: 1.4em 0;
   padding: 0.2em 0 0.2em 1.1em;
-  border-left: 2px solid var(--amber-line);
-  font-style: italic;
+  border-left: 3px solid var(--amber-line);
   color: var(--silver-2);
 }
 .m-manual .mn-article hr.ln-rule {
@@ -458,17 +452,14 @@
 /* Inline recall cards inside a chapter */
 .m-manual .mn-qa-group {
   margin-block: 1.6em;
-  border: 1px solid var(--line-2);
   border-radius: var(--r2);
   background: var(--graphite);
   overflow: hidden;
 }
 .m-manual .mn-qa-head {
-  padding: 10px var(--s4);
-  font-family: var(--f-mono);
-  font-size: var(--t-xs);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  padding: 12px var(--s4);
+  font-size: var(--t-sm);
+  font-weight: 600;
   color: var(--amber);
   border-bottom: 1px solid var(--line);
 }
@@ -495,7 +486,7 @@
 }
 .m-manual .mn-qa summary::before {
   content: "+";
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   color: var(--amber);
   flex: 0 0 auto;
   width: 1ch;
@@ -523,11 +514,9 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--s4);
-  border: 1px solid var(--amber-line);
   border-radius: var(--r2);
-  background: var(--amber-soft);
-  font-family: var(--f-body);
-  font-size: 1rem;
+  background: var(--graphite);
+  font-size: var(--t-base);
   line-height: 1.5;
 }
 .m-manual .mn-drill p {
@@ -550,32 +539,28 @@
   gap: 2px;
   min-height: 56px;
   min-width: 0;
-  padding: var(--s3);
-  border: 1px solid var(--line);
+  padding: var(--s3) var(--s4);
+  border: 0;
   border-radius: var(--r2);
-  background: transparent;
+  background: var(--graphite);
   text-align: left;
   cursor: pointer;
 }
 .m-manual .mn-pager button:hover {
-  border-color: var(--line-2);
-  background: var(--graphite);
+  background: var(--graphite-2);
 }
 .m-manual .mn-pager .next {
   grid-column: 2;
   text-align: right;
 }
 .m-manual .mn-pager small {
-  font-family: var(--f-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--silver-3);
 }
 .m-manual .mn-pager span {
-  font-family: var(--f-display);
-  font-size: 1.125rem;
-  line-height: 1.2;
+  font-size: var(--t-base);
+  font-weight: 600;
+  line-height: 1.3;
   color: var(--bone);
   overflow-wrap: anywhere;
 }
@@ -593,21 +578,17 @@
   padding: 0 16px;
   border: 1px solid var(--line-2);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--graphite-2) 92%, transparent);
+  background: color-mix(in srgb, var(--graphite-2) 94%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: var(--bone);
-  font-family: var(--f-mono);
-  font-size: var(--t-xs);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: var(--t-sm);
+  font-weight: 600;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   cursor: pointer;
 }
-.m-manual .mn-fab span {
+.m-manual .mn-fab .mn-ic {
   color: var(--amber);
-  font-size: 1rem;
-  letter-spacing: 0;
 }
 
 /* ---------- Recall */
@@ -629,8 +610,7 @@
   min-width: 0;
 }
 .m-manual .mn-recall-lede {
-  font-family: var(--f-body);
-  font-size: 1.0625rem;
+  font-size: var(--t-md);
   line-height: 1.6;
   color: var(--silver-2);
 }
@@ -651,22 +631,20 @@
 .m-manual .mn-due {
   display: grid;
   gap: 4px;
-  padding: var(--s4);
-  border: 1px solid var(--line);
-  border-left: 2px solid var(--amber);
-  border-radius: 0 var(--r2) var(--r2) 0;
+  padding: var(--s4) var(--s5);
+  border-radius: var(--r2);
   background: var(--graphite);
   min-width: 0;
 }
 .m-manual .mn-due-big {
-  font-family: var(--f-display);
-  font-size: 1.875rem;
-  line-height: 1.1;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   color: var(--bone);
 }
 .m-manual .mn-due-sub {
-  font-family: var(--f-body);
-  font-size: 0.975rem;
+  font-size: var(--t-base);
   color: var(--silver-2);
 }
 .m-manual .mn-tl {
@@ -681,7 +659,7 @@
   display: grid;
   gap: 2px;
   padding-top: 8px;
-  border-top: 2px solid var(--line-2);
+  border-top: 3px solid var(--line-2);
   min-width: 0;
 }
 .m-manual .mn-tl li.done {
@@ -691,14 +669,12 @@
   border-top-color: var(--amber);
 }
 .m-manual .mn-tl span {
-  font-family: var(--f-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-weight: 600;
   color: var(--silver-3);
 }
 .m-manual .mn-tl b {
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   font-size: var(--t-sm);
   font-weight: 500;
   color: var(--silver);
@@ -728,9 +704,7 @@
   min-width: 0;
 }
 .m-manual .mn-card-src {
-  font-family: var(--f-mono);
   font-size: var(--t-xs);
-  letter-spacing: 0.08em;
   color: var(--silver-3);
   min-width: 0;
 }
@@ -743,7 +717,7 @@
   flex: 1 1 0;
   min-width: 6px;
   max-width: 40px;
-  height: 3px;
+  height: 4px;
   border-radius: 2px;
   background: var(--line-2);
 }
@@ -758,11 +732,12 @@
 }
 .m-manual .mn-card-q {
   font-family: var(--f-display);
-  font-size: clamp(1.625rem, 5.4vw, 2.125rem);
-  line-height: 1.18;
+  font-size: clamp(1.375rem, 4.8vw, 1.875rem);
+  font-weight: 600;
+  line-height: 1.25;
   color: var(--bone);
-  letter-spacing: -0.005em;
-  max-width: 30ch;
+  letter-spacing: -0.015em;
+  max-width: 32ch;
   padding-block: var(--s3);
 }
 .m-manual .mn-card-a {
@@ -771,11 +746,10 @@
   padding: var(--s4);
   border-radius: var(--r2);
   background: var(--graphite-2);
-  border: 1px solid var(--line-2);
+  border-left: 3px solid var(--amber);
 }
 .m-manual .mn-card-a p {
-  font-family: var(--f-body);
-  font-size: 1.125rem;
+  font-size: var(--t-md);
   line-height: 1.55;
   color: var(--silver);
 }
@@ -790,10 +764,8 @@
   min-height: 48px;
 }
 .m-manual .mn-card-tally {
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--silver-3);
 }
 .m-manual .mn-score {
@@ -802,23 +774,21 @@
   gap: var(--s4);
 }
 .m-manual .mn-score b {
-  font-family: var(--f-display);
-  font-weight: 400;
-  font-size: clamp(3rem, 12vw, 4.5rem);
+  font-family: var(--f-data);
+  font-weight: 500;
+  font-size: clamp(2.75rem, 11vw, 4rem);
+  letter-spacing: -0.03em;
   line-height: 1;
   color: var(--bone);
 }
 .m-manual .mn-score span {
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   font-size: var(--t-lg);
   color: var(--amber);
 }
 .m-manual .mn-missed {
   display: grid;
   gap: var(--s2);
-}
-.m-manual .mn-missed .ln-kv dd {
-  font-family: var(--f-body);
 }
 
 /* Block timer */
@@ -871,23 +841,22 @@
   gap: 2px;
 }
 .m-manual .mn-ring-phase {
-  font-family: var(--f-mono);
-  font-size: var(--t-xs);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: var(--t-sm);
+  font-weight: 600;
   color: var(--amber);
 }
 .m-manual .mn-ring-left {
-  font-family: var(--f-display);
-  font-size: 3.25rem;
-  line-height: 1;
+  font-family: var(--f-data);
+  font-weight: 500;
+  font-size: 3rem;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   color: var(--bone);
 }
 .m-manual .mn-ring-tot {
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   font-size: var(--t-xs);
   color: var(--silver-3);
-  letter-spacing: 0.06em;
 }
 .m-manual .mn-timer.running .mn-ring-left {
   color: var(--bone);
@@ -897,30 +866,27 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 2fr 8fr 5fr;
+  grid-template-columns: minmax(4.5rem, 2fr) minmax(0, 8fr) minmax(0, 5fr);
   gap: 4px;
 }
 .m-manual .mn-legend li {
   display: grid;
   gap: 2px;
   padding-top: 6px;
-  border-top: 2px solid var(--line-2);
+  border-top: 3px solid var(--line-2);
   min-width: 0;
 }
 .m-manual .mn-legend li.on {
   border-top-color: var(--amber);
 }
 .m-manual .mn-legend b {
-  font-family: var(--f-mono);
+  font-family: var(--f-data);
   font-size: var(--t-xs);
   font-weight: 500;
   color: var(--silver);
 }
 .m-manual .mn-legend span {
-  font-family: var(--f-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: var(--t-xs);
   color: var(--silver-3);
   overflow-wrap: anywhere;
 }
@@ -928,8 +894,7 @@
   color: var(--bone);
 }
 .m-manual .mn-timer-tip {
-  font-family: var(--f-body);
-  font-size: 1rem;
+  font-size: var(--t-base);
   line-height: 1.5;
   color: var(--silver);
   min-height: 3em;
@@ -965,4 +930,27 @@
   .m-manual .mn-flash {
     animation: none;
   }
+}
+.m-manual .mn-misslist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s2);
+}
+.m-manual .mn-misslist li {
+  display: grid;
+  gap: 2px;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r1);
+  background: var(--graphite-2);
+  min-width: 0;
+}
+.m-manual .mn-misslist p:first-child {
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+}
+.m-manual .mn-misslist p:last-child {
+  color: var(--bone);
+  font-weight: 500;
 }

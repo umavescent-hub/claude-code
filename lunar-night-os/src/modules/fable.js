@@ -642,7 +642,9 @@
       fixed
         ? '- Seamless loop: every moving element completes whole cycles over the duration, so the last frame flows into the first.'
         : '- No loop: the plate follows the source clip frame for frame.',
-      '- Deterministic: a seeded PRNG (mulberry32) with the seed as a number input, so the preview and the render show the same frames.',
+      fixed
+        ? '- Deterministic: a seeded PRNG (mulberry32) with the seed as a number input, so the preview and the render show the same frames.'
+        : '- Deterministic: the same clip and settings give the same plate.',
       ...extra,
       '',
       'RENDER (try in this order, and print which path ran)',
@@ -650,7 +652,7 @@
       '2. Fallback when WebCodecs or the import fails: canvas.captureStream(fps) + MediaRecorder, choosing the first type MediaRecorder.isTypeSupported accepts from video/mp4;codecs=avc1, video/mp4, video/webm;codecs=vp9, video/webm. Draw in real time with requestAnimationFrame for exactly the duration, then stop. Say on screen that this path can drop frames and may give a .webm.',
       '',
       'UI (phone first, portrait, dark)',
-      '- A live preview scaled to fit the screen width, play/pause, the controls as range sliders with their values shown, a seed input, Render, a progress bar with frame count, and Cancel.',
+      '- A live preview scaled to fit the screen width, play/pause, the controls as range sliders with their values shown, Render, a progress bar with frame count, and Cancel.',
       `- When done: a Save button that downloads the file as ${fileName} (or .webm) through an <a download> on a Blob URL, plus a <video> of the result so a long-press can save it if the download is blocked.`,
       '- Buttons at least 44 px tall. Keep the page from scrolling sideways.',
       '',
@@ -2383,7 +2385,7 @@
       `- Lunar Night numbers: black floor ${NIGHT.black}; paper white ${NIGHT.white}; shadow tone ${NIGHT.tone}.`,
       s.format === 'night'
         ? `- Verdict so far: black floor ${j.black}, paper white ${j.white}, shadow tone ${j.tone}.`
-        : '',
+        : null,
       '- Lunar Night CapCut recipe for reference: Adjust Exposure −15, Contrast +25, Shadows −40, Highlights −10, Saturation +15, Temperature −30, Tint +15 (0 for the blue variant), Fade 0, Vignette +10; HSL Blue hue +15 sat +10, Green sat +10, Orange sat +10, Yellow sat −10; Glow 25, Grain 20. If it looks grey: Shadows −50 and Exposure −20.',
       '',
       'TOOLS YOU MAY PRESCRIBE (use these exact names in "tool")',
@@ -2403,7 +2405,7 @@
       '{"read":"two or three plain sentences on what the numbers and the picture say","fixes":[{"tool":"CapCut Adjust","setting":"Shadows","value":"−40","why":"one short sentence"}]}',
       '- 3 to 7 fixes, the most important first.',
     ]
-      .filter(x => x !== '')
+      .filter(x => x !== null)
       .join('\n')
   }
 
@@ -2903,15 +2905,15 @@
         { class: 'fs-head' },
         h(
           'div',
-          { class: 'fs-head-text' },
+          { class: 'fs-head-row' },
           h('div', { class: 'ln-eyebrow' }, 'Fable 5.1 Studio'),
-          h(
-            'p',
-            null,
-            'Fable 5.1 reads text and images and answers in text. Here it writes settings, scenes and small generator pages; your phone and the other Forge tabs turn them into files. Every call carries your Brand Brain.',
-          ),
+          badge,
         ),
-        badge,
+        h(
+          'p',
+          null,
+          'Fable 5.1 reads text and images and answers in text. Here it writes settings, scenes and small generator pages; your phone and the other Forge tabs turn them into files. Every call carries your Brand Brain.',
+        ),
       ),
       ui.tabs(
         [

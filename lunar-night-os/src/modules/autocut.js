@@ -388,13 +388,13 @@
       )
       if (hit.some(r => r.reason === 'take')) return 'bad take'
       if (hit.some(r => r.manual)) return 'manual'
-      if (c.start <= 1e-6) return 'silence (head)'
-      if (c.end >= dur - 1e-6) return 'silence (tail)'
+      if (c.start <= 1e-6) return 'head silence'
+      if (c.end >= dur - 1e-6) return 'tail silence'
       return 'silence'
     }
     const st = E.stats(regions, dur)
     const lines = [
-      'LUNAR NIGHT OS · AUTO-CUT LIST',
+      'KUBRICK · AUTO-CUT LIST',
       `Clip: ${o.name || 'clip'} · ${tc(dur)} at ${fps} fps · source timecode`,
       `Keep ${st.keeps} pieces, cut ${cuts.length}. New length ${tc(st.kept)} (${st.pct.toFixed(1)}% removed).`,
       '',
@@ -417,7 +417,7 @@
         line = `${id}  Split at ${tc(c.start)} → delete the piece after it`
       else
         line = `${id}  Split at ${tc(c.start)} · Split at ${tc(c.end)} → delete`
-      lines.push(`${line}   (${why}, ${len})`)
+      lines.push(`${line}   · ${why} · ${len}`)
     }
     if (!rows.length) lines.push('Nothing to cut. The take is tight already.')
     const csv = [
@@ -630,7 +630,7 @@
       }),
       s('text', { x: 12, y: 14, class: 'ac-hs-t' }, 'fluffed take'),
       s('text', { x: 140, y: 14, class: 'ac-hs-t amber' }, 'clap clap'),
-      s('text', { x: 238, y: 14, class: 'ac-hs-t' }, 'restart the sentence'),
+      s('text', { x: 238, y: 14, class: 'ac-hs-t' }, 'restart'),
       s('text', { x: 12, y: 60, class: 'ac-hs-t crimson' }, 'removed'),
       s('text', { x: 238, y: 60, class: 'ac-hs-t' }, 'kept'),
     )
@@ -672,7 +672,6 @@
       waveInner,
     )
     const zoomSeg = ui.seg({
-      label: 'Zoom',
       options: [
         { value: 1, label: 'Fit' },
         { value: 2, label: '2×' },
@@ -684,6 +683,7 @@
         draw(true)
       },
     })
+    zoomSeg.el.setAttribute('aria-label', 'Zoom the waveform')
     const legend = h(
       'div',
       { class: 'ac-legend' },
@@ -927,7 +927,7 @@
         },
         h(
           'div',
-          { class: 'ln-grid wide' },
+          { class: 'ln-grid wide ac-exports' },
           h(
             'div',
             { class: 'ln-card ac-exp' },
@@ -1132,6 +1132,40 @@
       peaks = { w, max, rms }
     }
 
+    const cssVar = (n, fb) => {
+      try {
+        const v = getComputedStyle(document.documentElement)
+          .getPropertyValue(n)
+          .trim()
+        return v || fb
+      } catch (_e) {
+        return fb
+      }
+    }
+    let themeCache = null
+    function theme() {
+      if (themeCache) return themeCache
+      const P = LN.palette || {}
+      const hex = (v, fb) => (/^#[0-9a-f]{6}$/i.test(v) ? v : fb)
+      const t = {
+        bg: hex(P.uiBg || cssVar('--obsidian', ''), '#0a0a0b'),
+        panel: hex(P.uiPanel || cssVar('--graphite', ''), '#161618'),
+        accent: hex(P.accent || cssVar('--amber', ''), '#00d4e0'),
+        red: hex(cssVar('--crimson', ''), '#fe2c55'),
+        keep: hex(cssVar('--silver', ''), '#e4e4e7'),
+        dim: hex(cssVar('--silver-3', ''), '#71717a'),
+        text: hex(cssVar('--silver-2', ''), '#a1a1aa'),
+        line: hex(cssVar('--line', ''), '#26262a'),
+        font: cssVar('--f-data', '') || 'ui-monospace, monospace',
+      }
+      t.rgba = (h, a) => {
+        const [r, g, b] = LN.color.hex2rgb(h)
+        return `rgba(${r},${g},${b},${a})`
+      }
+      themeCache = t
+      return t
+    }
+
     function draw(resized) {
       if (!st.src) return
       const box = waveBox.clientWidth || 360
@@ -1149,7 +1183,7 @@
       }
       if (!peaks || peaks.w !== W) computePeaks(W)
       const ctx = canvas.getContext('2d')
-      const P = LN.palette
+      const T = theme()
       const dur = st.src.duration
       const rulerH = 22 * dpr
       const lane = 10 * dpr
@@ -1157,20 +1191,20 @@
       const waveH = H - rulerH - top
       const mid = top + waveH / 2
       const xOf = t => (t / dur) * W
-      ctx.fillStyle = P.obsidian
+      ctx.fillStyle = T.bg
       ctx.fillRect(0, 0, W, H)
       // region backgrounds + lane
       for (const r of st.regions) {
         const x0 = xOf(r.start)
         const x1 = xOf(r.end)
         if (r.keep) {
-          ctx.fillStyle = 'rgba(212,220,232,0.05)'
+          ctx.fillStyle = T.rgba(T.keep, 0.05)
           ctx.fillRect(x0, top, x1 - x0, waveH)
-          ctx.fillStyle = P.silverMuted
+          ctx.fillStyle = T.rgba(T.keep, 0.7)
         } else {
-          ctx.fillStyle = 'rgba(168,36,36,0.16)'
+          ctx.fillStyle = T.rgba(T.red, 0.12)
           ctx.fillRect(x0, top, x1 - x0, waveH)
-          ctx.fillStyle = P.crimson
+          ctx.fillStyle = T.red
         }
         ctx.fillRect(x0, 0, Math.max(1, x1 - x0 - dpr), lane)
       }
@@ -1187,11 +1221,9 @@
       for (let c = 0; c < W; c++) {
         const hp = scaleY(peaks.max[c]) * (waveH / 2 - dpr)
         const hr = scaleY(peaks.rms[c]) * (waveH / 2 - dpr)
-        ctx.fillStyle = inKeep[c]
-          ? 'rgba(212,220,232,0.38)'
-          : 'rgba(107,116,134,0.32)'
+        ctx.fillStyle = inKeep[c] ? T.rgba(T.keep, 0.36) : T.rgba(T.dim, 0.3)
         ctx.fillRect(c, mid - hp, 1, hp * 2 || 1)
-        ctx.fillStyle = inKeep[c] ? P.silver : 'rgba(138,148,166,0.55)'
+        ctx.fillStyle = inKeep[c] ? T.keep : T.rgba(T.dim, 0.6)
         ctx.fillRect(c, mid - hr, 1, hr * 2 || 1)
       }
       // crimson hatch over cut regions
@@ -1201,7 +1233,7 @@
         if (!r.keep)
           ctx.rect(xOf(r.start), top, xOf(r.end) - xOf(r.start), waveH)
       ctx.clip()
-      ctx.strokeStyle = 'rgba(232,121,111,0.55)'
+      ctx.strokeStyle = T.rgba(T.red, 0.5)
       ctx.lineWidth = dpr
       const gap = 7 * dpr
       ctx.beginPath()
@@ -1213,7 +1245,7 @@
       ctx.restore()
       // threshold (RMS) lines
       const ty = scaleY(st.result.threshDb) * (waveH / 2 - dpr)
-      ctx.strokeStyle = 'rgba(221,161,62,0.7)'
+      ctx.strokeStyle = T.rgba(T.accent, 0.7)
       ctx.setLineDash([4 * dpr, 4 * dpr])
       ctx.lineWidth = dpr
       ctx.beginPath()
@@ -1224,8 +1256,8 @@
       ctx.stroke()
       ctx.setLineDash([])
       // claps
-      ctx.fillStyle = P.amber
-      ctx.strokeStyle = P.amber
+      ctx.fillStyle = T.accent
+      ctx.strokeStyle = T.accent
       for (const c of st.result.claps)
         for (const t of [c.c1, c.c2]) {
           const x = Math.round(xOf(t)) + 0.5
@@ -1242,16 +1274,16 @@
         }
       // ruler
       const ry = H - rulerH
-      ctx.fillStyle = P.graphite
+      ctx.fillStyle = T.panel
       ctx.fillRect(0, ry, W, rulerH)
-      ctx.fillStyle = P.line
+      ctx.fillStyle = T.line
       ctx.fillRect(0, ry, W, dpr)
       const pxPerSec = cssW / dur
       const steps = [0.5, 1, 2, 5, 10, 15, 30, 60, 120, 300]
       const major = steps.find(v => v * pxPerSec >= 64) || 600
       const minor = major / (major >= 10 ? 5 : 2)
-      ctx.fillStyle = P.silverMuted
-      ctx.font = `${10 * dpr}px ${LN.fonts.mono}, ui-monospace, monospace`
+      ctx.fillStyle = T.text
+      ctx.font = `${10 * dpr}px ${T.font}`
       ctx.textBaseline = 'top'
       for (let t = 0; t <= dur + 1e-6; t += minor) {
         const isMajor = Math.abs(t / major - Math.round(t / major)) < 1e-6
@@ -1797,7 +1829,7 @@
       onOutput(output)
       const vSource = new MB.VideoSampleSource({
         codec: 'avc',
-        quality: new MB.Quality('high'),
+        quality: new MB.Quality('very-high'),
         keyFrameInterval: 1,
         sizeChangeBehavior: 'contain',
         ...(needTransform
@@ -1806,7 +1838,9 @@
       })
       const aSource = new MB.AudioBufferSource({
         codec: aCodec,
-        quality: new MB.Quality(aCodec === 'aac' ? 192000 : 160000),
+        quality: new MB.Quality({
+          bitrate: aCodec === 'aac' ? 192000 : 160000,
+        }),
       })
       output.addVideoTrack(vSource, { frameRate: fps })
       output.addAudioTrack(aSource)
@@ -1941,6 +1975,13 @@
     }
 
     loadDemo()
+    // read-only handle for QA scripts
+    LN.autocut.debug = () => ({
+      src: st.src,
+      result: st.result,
+      regions: st.regions,
+      exported: st.exportBlob,
+    })
   }
 
   LN.autocut = { mount, engine: E }

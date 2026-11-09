@@ -10,6 +10,38 @@
   const readMin = ch => Math.max(1, Math.round((ch.words || 0) / WPM))
   const pad2 = n => String(n).padStart(2, '0')
   const smooth = () => (LN.reducedMotion() ? 'auto' : 'smooth')
+  // Small stroke icons for the CapCut-style toolbar (icon + label).
+  const ICONS = {
+    list: 'M4 6h16M4 12h16M4 18h10',
+    down: 'M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14',
+    play: 'M8 5.5v13l10.5-6.5z',
+    pause: 'M8 5v14M16 5v14',
+    skip: 'M6 6l8 6-8 6zM18 6v12',
+    reset: 'M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5',
+    cards:
+      'M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM9 9h6M9 13h4',
+  }
+  const icon = name =>
+    s(
+      'svg',
+      {
+        viewBox: '0 0 24 24',
+        class: 'mn-ic',
+        'aria-hidden': 'true',
+        fill: name === 'play' ? 'currentColor' : 'none',
+        stroke: 'currentColor',
+        'stroke-width': '1.8',
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+      },
+      s('path', { d: ICONS[name] }),
+    )
+  const label = (btn, name, text) => btn.replaceChildren(icon(name), text)
+  // replaceChildren() would print "null": drop empty slots first.
+  const fill = (el, ...kids) =>
+    el.replaceChildren(
+      ...kids.flat().filter(k => k != null && k !== false && k !== ''),
+    )
 
   /* ---------------------------------------------------------- recall cards */
   // The Creator Playbook recall deck, copied as written (Nov 4, 2026).
@@ -121,7 +153,11 @@
   const CH_CARDS = CHAPTERS.map(chapterCards)
 
   const DECKS = [
-    { key: 'playbook', label: 'Creator Playbook · all 15', cards: PLAYBOOK },
+    {
+      key: 'playbook',
+      label: 'Creator Playbook · all blocks',
+      cards: PLAYBOOK,
+    },
     ...Object.keys(BLOCKS).map(k => ({
       key: k,
       label: BLOCKS[k],
@@ -399,11 +435,11 @@
       class: 'ln-input mn-q',
       id: 'mn-q',
       type: 'search',
-      placeholder: 'Search every chapter: zebras, zip, recall…',
+      placeholder: 'Search all chapters',
       autocomplete: 'off',
       enterkeyhint: 'search',
     })
-    const tocBtn = ui.btn('Contents', () => openTocSheet(), {
+    const tocBtn = ui.btn([icon('list'), 'Contents'], () => openTocSheet(), {
       kind: 'quiet',
       small: true,
     })
@@ -425,7 +461,7 @@
         { class: 'mn-tools' },
         tocBtn,
         resumeBtn,
-        ui.btn('Download manual (.md)', saveAll, {
+        ui.btn([icon('down'), 'Download manual (.md)'], saveAll, {
           kind: 'ghost',
           small: true,
         }),
@@ -474,7 +510,7 @@
         hidden: true,
         onClick: () => openTocSheet(),
       },
-      h('span', { 'aria-hidden': 'true' }, '≡'),
+      icon('list'),
       'Contents',
     )
     panel.append(
@@ -535,7 +571,10 @@
       )
     }
     const renderAside = () =>
-      asideNav.replaceChildren(buildToc((i, sec) => jump(i, sec)))
+      fill(
+        asideNav,
+        buildToc((i, sec) => jump(i, sec)),
+      )
 
     function openTocSheet() {
       let sheet = null
@@ -562,23 +601,25 @@
     function showChapter(i) {
       cur = i
       const ch = CHAPTERS[i]
-      chMeta.replaceChildren(
+      fill(
+        chMeta,
         h(
           'div',
           { class: 'ln-eyebrow' },
           `Chapter ${pad2(ch.num)} · ${readMin(ch)} min read · ${ch.words.toLocaleString('en-US')} words`,
         ),
-        ui.btn('Chapter .md', () => saveChapter(ch), {
+        ui.btn([icon('down'), 'Chapter .md'], () => saveChapter(ch), {
           kind: 'quiet',
           small: true,
           aria: `Download chapter ${pad2(ch.num)} as Markdown`,
         }),
       )
-      artHost.replaceChildren(arts[i])
+      fill(artHost, arts[i])
       const cards = CH_CARDS[i]
       const prev = CHAPTERS[i - 1]
       const next = CHAPTERS[i + 1]
-      chEnd.replaceChildren(
+      fill(
+        chEnd,
         cards.length
           ? h(
               'div',
@@ -593,10 +634,14 @@
                 ),
                 ' in this chapter. Run them as a scored session, then the deck books your day-2 and day-7 dates.',
               ),
-              ui.btn('Drill these cards', () => drill(`ch:${ch.id}`), {
-                kind: 'ghost',
-                small: true,
-              }),
+              ui.btn(
+                [icon('cards'), 'Drill these cards'],
+                () => drill(`ch:${ch.id}`),
+                {
+                  kind: 'ghost',
+                  small: true,
+                },
+              ),
             )
           : null,
         h(
@@ -731,7 +776,7 @@
       )
       if (!terms.length) {
         results.hidden = true
-        results.replaceChildren()
+        fill(results)
         status.textContent = ''
         return
       }
@@ -751,7 +796,8 @@
         ? `${hits.length} section${hits.length === 1 ? '' : 's'} in ${chs} chapter${chs === 1 ? '' : 's'}`
         : `Nothing matches “${qInput.value.trim()}”. Try one word.`
       results.hidden = !hits.length
-      results.replaceChildren(
+      fill(
+        results,
         ...hits.slice(0, 24).map(({ e }) => {
           const ch = CHAPTERS[e.ci]
           return h(
@@ -914,14 +960,14 @@
         ),
       ),
     )
-    const startBtn = ui.btn('Start the block', () =>
+    const startBtn = ui.btn([icon('play'), 'Start the block'], () =>
       running ? pause() : start(),
     )
-    const skipBtn = ui.btn('Next phase', () => skip(), {
+    const skipBtn = ui.btn([icon('skip'), 'Next phase'], () => skip(), {
       kind: 'quiet',
       small: true,
     })
-    const resetBtn = ui.btn('Reset', () => reset(), {
+    const resetBtn = ui.btn([icon('reset'), 'Reset'], () => reset(), {
       kind: 'quiet',
       small: true,
     })
@@ -995,6 +1041,7 @@
       const t = Math.min(now(), BLOCK_MS)
       const ph = phaseAt(t)
       prog.setAttribute('stroke-dasharray', `${(t / BLOCK_MS) * C} ${C}`)
+      prog.style.opacity = t > 0 ? '1' : '0'
       const done = ph.i >= PHASES.length
       phaseEl.textContent = done ? 'Block done' : PHASES[ph.i].label
       leftEl.textContent = done ? '15:00' : mmss(ph.end - t)
@@ -1020,7 +1067,7 @@
         elapsed = BLOCK_MS
         running = false
         clearInterval(interval)
-        startBtn.textContent = 'Start a new block'
+        label(startBtn, 'play', 'Start a new block')
       }
     }
     function tickOn() {
@@ -1040,7 +1087,7 @@
       startedAt = Date.now()
       running = true
       lastPhase = phaseAt(now()).i
-      startBtn.textContent = 'Pause'
+      label(startBtn, 'pause', 'Pause')
       root.classList.add('running')
       scheduleChimes()
       tickOn()
@@ -1049,7 +1096,7 @@
     function pause() {
       elapsed = now()
       running = false
-      startBtn.textContent = 'Resume'
+      label(startBtn, 'play', 'Resume')
       root.classList.remove('running')
       scheduleChimes()
       tickOn()
@@ -1059,7 +1106,7 @@
       elapsed = 0
       running = false
       lastPhase = -1
-      startBtn.textContent = 'Start the block'
+      label(startBtn, 'play', 'Start the block')
       root.classList.remove('running')
       scheduleChimes()
       tickOn()
@@ -1155,7 +1202,7 @@
     function renderCard() {
       const { cards, i } = sess
       if (!cards.length) {
-        cardHost.replaceChildren(ui.empty('This deck has no cards yet.'))
+        fill(cardHost, ui.empty('This deck has no cards yet.'))
         return
       }
       if (i >= cards.length) return renderResult()
@@ -1200,7 +1247,8 @@
               if (b) b.focus()
             }),
           )
-      cardHost.replaceChildren(
+      fill(
+        cardHost,
         h(
           'div',
           { class: 'mn-card-top' },
@@ -1239,7 +1287,8 @@
       const fullDeck = sess.cards === sess.deck.cards
       const st = fullDeck ? logSession(deckKey, got, total) : null
       const nd = st ? nextDue(st) : null
-      cardHost.replaceChildren(
+      fill(
+        cardHost,
         h(
           'div',
           { class: 'ln-eyebrow' },
@@ -1269,7 +1318,13 @@
               'div',
               { class: 'mn-missed' },
               h('div', { class: 'ln-eyebrow' }, 'Read these lines again'),
-              ui.kv(sess.missed.map(c => [c.q, c.a])),
+              h(
+                'ol',
+                { class: 'mn-misslist' },
+                sess.missed.map(c =>
+                  h('li', null, h('p', null, c.q), h('p', null, c.a)),
+                ),
+              ),
             )
           : null,
         h(
@@ -1311,7 +1366,8 @@
             ['Day 2', addDays(d, 2), false],
             ['Day 7', addDays(d, 7), false],
           ]
-      dueEl.replaceChildren(
+      fill(
+        dueEl,
         h('div', { class: 'ln-eyebrow' }, 'Next recall due'),
         h(
           'p',
@@ -1363,7 +1419,8 @@
           nd ? `${niceDay(nd.date)} (${relDay(nd.date)})` : 'complete',
         ]
       })
-      schedHost.replaceChildren(
+      fill(
+        schedHost,
         rows.length
           ? ui.table(
               ['Deck', 'First', 'Day 2', 'Day 7', 'Last', 'Next due'],

@@ -33,11 +33,10 @@
   stroke-width: 2;
 }
 .m-edit .ac-hs-t {
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-family: var(--f-body);
+  font-size: 11px;
+  font-weight: 500;
   fill: var(--silver-2);
-  text-transform: uppercase;
 }
 .m-edit .ac-hs-t.amber {
   fill: var(--amber);
@@ -66,8 +65,8 @@
   overflow-wrap: anywhere;
 }
 .m-edit .ac-src-meta {
+  font-family: var(--f-data, var(--f-mono));
   font-size: var(--t-xs);
-  letter-spacing: 0.06em;
   color: var(--silver-2);
 }
 .m-edit .ac-status {
@@ -79,7 +78,7 @@
 .m-edit .ac-video {
   display: block;
   width: 100%;
-  max-height: 46vh;
+  max-height: 40vh;
   background: #000;
   border: 1px solid var(--line);
   border-radius: var(--r1);
@@ -90,7 +89,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s3);
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   min-width: 0;
 }
@@ -101,10 +100,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px 14px;
-  font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: var(--t-sm);
   color: var(--silver-2);
+  min-width: 0;
 }
 .m-edit .ac-legend .k {
   display: inline-flex;
@@ -141,7 +139,7 @@
   overflow-y: hidden;
   max-width: 100%;
   border: 1px solid var(--line);
-  border-radius: var(--r1);
+  border-radius: var(--r2);
   background: var(--obsidian);
   -webkit-overflow-scrolling: touch;
 }
@@ -201,7 +199,7 @@
   padding: 6px 10px;
   text-align: left;
   border: 1px solid var(--line);
-  border-left-width: 2px;
+  border-left-width: 3px;
   border-radius: var(--r1);
   background: var(--graphite-2);
   cursor: pointer;
@@ -227,6 +225,7 @@
 }
 .m-edit .ac-seg .tc {
   grid-area: tc;
+  font-family: var(--f-data, var(--f-mono));
   font-size: var(--t-sm);
   color: var(--bone);
   white-space: nowrap;
@@ -235,15 +234,15 @@
 }
 .m-edit .ac-seg .len {
   grid-area: len;
+  font-family: var(--f-data, var(--f-mono));
   font-size: var(--t-xs);
   color: var(--silver-2);
 }
 .m-edit .ac-seg .tag {
   grid-area: tag;
   font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 2px 8px;
+  font-weight: 600;
+  padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid var(--line-2);
   color: var(--silver-2);
@@ -265,12 +264,15 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px 14px;
+  font-family: var(--f-data, var(--f-mono));
   font-size: var(--t-xs);
-  letter-spacing: 0.06em;
   color: var(--silver-2);
 }
 
 /* Export */
+.m-edit .ac-exports {
+  align-items: start;
+}
 .m-edit .ac-exp .ln-seg {
   flex-wrap: wrap;
 }
@@ -304,8 +306,8 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--s3);
+  font-family: var(--f-data, var(--f-mono));
   font-size: var(--t-xs);
-  letter-spacing: 0.06em;
   color: var(--silver-2);
   min-width: 0;
 }

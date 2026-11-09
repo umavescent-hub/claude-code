@@ -688,9 +688,10 @@ Never: lifted grey blacks in the dark look, stock transitions, emoji captions, f
     crimson: '#A82424',
     bone: '#F4F1EA',
     // Kubrick UI accent (CapCut-style cyan) for canvas drawing of interface elements
-    accent: '#00D4E0',
+    accent: '#00C8D7',
     uiBg: '#0A0A0B',
-    uiPanel: '#161618',
+    uiPanel: '#141416',
+    tracks: ['#00C8D7', '#9D8CFF', '#5B9DFF', '#F5A742', '#FF6F9F', '#3FD894'],
     // Grade targets from the Lunar Night look
     gradeBlack: '#08080A',
     gradeSilver: '#C8D0DC',
@@ -702,10 +703,10 @@ Never: lifted grey blacks in the dark look, stock transitions, emoji captions, f
     blueShadow: '#13254A',
   }
   LN.fonts = {
-    display: 'Inter',
-    body: 'Inter',
-    mono: 'Roboto Mono',
-    ui: 'Inter',
+    display: 'TikTok Sans',
+    body: 'TikTok Sans',
+    mono: 'Google Sans Code',
+    ui: 'TikTok Sans',
     titleFaces: ['Cormorant Garamond', 'Instrument Serif', 'Playfair Display'],
     metaFaces: ['JetBrains Mono', 'Space Mono', 'Courier Prime'],
     // Runbook reel captions: condensed sans, lowercase, lime #D6DB05

@@ -1,0 +1,528 @@
+/* modules/bake.css — the clip baker, mounted inside Grade (.m-grade .bake).
+   A grading-suite monitor with a before/after wipe, a camera-slate spec sheet
+   and a quiet control column. Tokens only; every selector under .m-grade. */
+.m-grade .bake {
+  display: grid;
+  gap: var(--s5);
+  min-width: 0;
+}
+.m-grade .bake-head {
+  display: grid;
+  gap: var(--s3);
+  max-width: var(--measure);
+}
+.m-grade .bake-lede {
+  font-family: var(--f-body);
+  font-size: var(--t-md);
+  line-height: 1.6;
+  color: var(--silver-2);
+  max-width: var(--measure);
+}
+
+/* ---------- Routes strip (standalone only) */
+.m-grade .bake-routes {
+  display: grid;
+  gap: var(--s3);
+}
+.m-grade .bake-routes ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  overflow: hidden;
+}
+.m-grade .bake-routes li {
+  display: flex;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  background: var(--graphite);
+  min-width: 0;
+}
+.m-grade .bake-routes li > b {
+  font-family: var(--f-display);
+  font-size: var(--t-xl);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--amber);
+}
+.m-grade .bake-routes li strong {
+  display: block;
+  font-size: var(--t-sm);
+  color: var(--bone);
+  font-weight: 500;
+}
+.m-grade .bake-routes li span {
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+}
+
+/* ---------- Layout */
+.m-grade .bake-grid {
+  display: grid;
+  gap: var(--s5);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .m-grade .bake-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    gap: var(--s6);
+  }
+  .m-grade .bake-viewer {
+    position: sticky;
+    top: calc(var(--header-h) + 16px);
+  }
+}
+.m-grade .bake-side {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+
+/* ---------- Monitor */
+.m-grade .bake-viewer {
+  display: grid;
+  gap: var(--s3);
+  min-width: 0;
+}
+.m-grade .bake-stagewrap {
+  display: grid;
+  justify-items: center;
+  padding: var(--s4);
+  background:
+    radial-gradient(
+      120% 80% at 50% 0%,
+      rgba(200, 208, 220, 0.05),
+      transparent 60%
+    ),
+    var(--obsidian);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  min-width: 0;
+}
+.m-grade .bake-stage {
+  --maxh: min(64vh, 720px);
+  position: relative;
+  width: min(100%, calc(var(--maxh) * var(--ar)));
+  aspect-ratio: var(--ar);
+  background: #000;
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+.m-grade .bake-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.m-grade .bake-before {
+  clip-path: inset(0 calc(100% - var(--wipe)) 0 0);
+}
+.m-grade .bake-split {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--wipe);
+  width: 1px;
+  margin-left: -0.5px;
+  background: rgba(212, 220, 232, 0.85);
+  pointer-events: none;
+}
+.m-grade .bake-split::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 220, 232, 0.85);
+  background: rgba(7, 7, 9, 0.55);
+}
+.m-grade .bake-tag {
+  position: absolute;
+  top: 10px;
+  max-width: calc(50% - 16px);
+  padding: 3px 7px;
+  font-family: var(--f-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver);
+  background: rgba(7, 7, 9, 0.62);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.m-grade .bake-tag.l {
+  left: 10px;
+}
+.m-grade .bake-tag.r {
+  right: 10px;
+  color: var(--amber);
+}
+.m-grade .bake-mark {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 0 solid rgba(200, 208, 220, 0.45);
+  pointer-events: none;
+}
+.m-grade .bake-mark.tl {
+  left: 6px;
+  top: 34px;
+  border-left-width: 1px;
+  border-top-width: 1px;
+}
+.m-grade .bake-mark.tr {
+  right: 6px;
+  top: 34px;
+  border-right-width: 1px;
+  border-top-width: 1px;
+}
+.m-grade .bake-mark.bl {
+  left: 6px;
+  bottom: 6px;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+}
+.m-grade .bake-mark.br {
+  right: 6px;
+  bottom: 6px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+.m-grade .bake-slate {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px var(--s4);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+}
+.m-grade .bake-slate span + span::before {
+  content: "·";
+  margin-right: var(--s4);
+  color: var(--line-2);
+}
+.m-grade .bake-wipe {
+  max-width: 420px;
+  width: 100%;
+  justify-self: center;
+}
+
+/* ---------- Cards */
+.m-grade .bake-card {
+  gap: var(--s4);
+}
+.m-grade .bake-step {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--silver-2);
+}
+.m-grade .bake-step b {
+  font-weight: 500;
+  color: var(--amber);
+}
+.m-grade .bake-pickrow {
+  gap: var(--s3);
+}
+.m-grade .bake-clipname {
+  flex: 1 1 180px;
+  min-width: 0;
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  overflow-wrap: anywhere;
+}
+.m-grade .bake-note {
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  line-height: 1.55;
+  color: var(--silver-2);
+}
+.m-grade .bake-fine {
+  font-size: var(--t-xs);
+  line-height: 1.55;
+  color: var(--silver-3);
+}
+
+/* ---------- Spec sheet (camera slate) */
+.m-grade .bake-specs {
+  display: grid;
+  grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.m-grade .bake-specs dt,
+.m-grade .bake-specs dd {
+  margin: 0;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+.m-grade .bake-specs dt {
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+  padding-top: 9px;
+}
+.m-grade .bake-specs dd {
+  font-size: var(--t-sm);
+  color: var(--silver);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.m-grade .bake-specs dd.hot {
+  color: var(--amber);
+}
+.m-grade .bake-warn:empty,
+.m-grade .bake-err:empty {
+  display: none;
+}
+
+/* ---------- Look chips + intensity */
+.m-grade .bake-looks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.m-grade .bake-looks .ln-chip {
+  min-height: 40px;
+  padding: 0 12px;
+  letter-spacing: 0.06em;
+}
+.m-grade .bake-looks .ln-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.m-grade .bake-scale {
+  position: relative;
+  height: 2px;
+  margin: -2px 9px 0;
+}
+.m-grade .bake-sweet {
+  position: absolute;
+  left: 38%;
+  width: 24%;
+  top: 0;
+  height: 2px;
+  background: var(--amber-line);
+}
+.m-grade .bake-scale::before,
+.m-grade .bake-scale::after {
+  position: absolute;
+  top: 6px;
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  color: var(--silver-3);
+}
+.m-grade .bake-scale::before {
+  content: "38";
+  left: 38%;
+  transform: translateX(-50%);
+}
+.m-grade .bake-scale::after {
+  content: "62";
+  left: 62%;
+  transform: translateX(-50%);
+}
+.m-grade .bake-card .ln-field + .bake-fine {
+  margin-top: var(--s2);
+}
+.m-grade .bake-card .ln-seg button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- Progress */
+.m-grade .bake-prog {
+  display: grid;
+  gap: var(--s3);
+}
+.m-grade .bake-proghead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s3);
+}
+.m-grade .bake-rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--crimson-text);
+}
+.m-grade .bake-rec::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--crimson);
+  animation: bake-rec 1.2s ease-in-out infinite;
+}
+@keyframes bake-rec {
+  50% {
+    opacity: 0.25;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-grade .bake-rec::before {
+    animation: none;
+  }
+}
+.m-grade .bake-bar {
+  height: 2px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.m-grade .bake-bar > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--amber);
+  transition: width 0.2s linear;
+}
+.m-grade .bake-progtext {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px var(--s3);
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  color: var(--silver-3);
+  font-variant-numeric: tabular-nums;
+}
+.m-grade .bake-progtext b {
+  font-weight: 500;
+  color: var(--bone);
+}
+
+/* ---------- Result */
+.m-grade .bake-result {
+  display: grid;
+  gap: var(--s4);
+  padding: var(--s5) var(--s4);
+  border: 1px solid var(--amber-line);
+  border-radius: var(--r2);
+  background:
+    linear-gradient(180deg, var(--amber-soft), transparent 140px),
+    var(--graphite);
+  min-width: 0;
+}
+.m-grade .bake-result[hidden] {
+  display: none;
+}
+.m-grade .bake-resulthead {
+  display: grid;
+  gap: var(--s1);
+  min-width: 0;
+}
+.m-grade .bake-filename {
+  font-family: var(--f-display);
+  font-size: var(--t-lg);
+  font-weight: 400;
+  color: var(--bone);
+  overflow-wrap: anywhere;
+}
+.m-grade .bake-resultgrid {
+  display: grid;
+  gap: var(--s5);
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+@media (min-width: 760px) {
+  .m-grade .bake-resultgrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+.m-grade .bake-figs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s3);
+  align-items: start;
+}
+.m-grade .bake-fig {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.m-grade .bake-fig canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line-2);
+  background: #000;
+}
+.m-grade .bake-fig figcaption {
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+}
+.m-grade .bake-nofig {
+  aspect-ratio: 9 / 16;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-2);
+  color: var(--silver-3);
+  font-size: var(--t-xs);
+}
+.m-grade .bake-next {
+  display: grid;
+  gap: var(--s2);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- Slider recipe (standalone only) */
+.m-grade .bake-recipe {
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+}
+.m-grade .bake-recipe > summary {
+  display: grid;
+  gap: 2px;
+  padding: var(--s3) var(--s4);
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+}
+.m-grade .bake-recipe > summary::-webkit-details-marker {
+  display: none;
+}
+.m-grade .bake-sumtitle {
+  font-family: var(--f-display);
+  font-size: var(--t-lg);
+  color: var(--bone);
+}
+.m-grade .bake-recipebody {
+  display: grid;
+  gap: var(--s3);
+  padding: 0 var(--s4) var(--s4);
+}

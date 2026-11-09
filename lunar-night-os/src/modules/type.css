@@ -30,7 +30,7 @@
   letter-spacing: 0.04em;
   cursor: pointer;
 }
-.m-type .ty-index button span {
+.m-type .ty-index .n {
   font-size: var(--t-xs);
   color: var(--amber);
 }

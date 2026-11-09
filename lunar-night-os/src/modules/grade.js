@@ -45,7 +45,7 @@
       path: ['Adjust', 'Split tone'],
       status: 'unverified',
     },
-    tintLabel: 'Tint (some builds label it Hue)',
+    tintLabel: 'Tint / Hue',
   }
   const PIXEL = {
     extract: ['Files by Google', 'Downloads', 'Tap the zip', 'Extract'],
@@ -288,6 +288,7 @@
     const L = lutApi()
     return L && L.LOOKS[id] ? L.LOOKS[id].name : id
   }
+  const shortName = id => (isV2(id) ? `v2 ${v2Key(id)}` : lookName(id))
   const cubeName = (id, size) => {
     if (isV2(id)) return v2Data().looks[v2Key(id)].file
     const f = lutApi().LOOKS[id].file
@@ -451,6 +452,50 @@
     ctx.arcTo(x, y, x + w, y, r)
     ctx.closePath()
   }
+  /** Back of a hand and three fingers, foreground and out of focus. */
+  function drawHand(ctx, x, y) {
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate(-0.32)
+    ctx.filter = 'blur(2.6px)'
+    ctx.shadowColor = 'rgba(0,0,0,0.55)'
+    ctx.shadowBlur = 30
+    ctx.shadowOffsetY = 16
+    const skin = (y0, y1) => {
+      const g = ctx.createLinearGradient(0, y0, 0, y1)
+      g.addColorStop(0, '#c99470')
+      g.addColorStop(0.4, '#a9714f')
+      g.addColorStop(1, '#6a4231')
+      return g
+    }
+    // Fingers first, so the back of the hand overlaps their roots
+    const fingers = [
+      [-118, -34, 104, 25],
+      [-126, -6, 112, 26],
+      [-114, 22, 100, 25],
+      [-92, 48, 80, 23],
+    ]
+    for (const [fx, fy, fw, fh] of fingers) {
+      ctx.fillStyle = skin(fy, fy + fh)
+      roundRect(ctx, fx, fy, fw + 60, fh, fh / 2)
+      ctx.fill()
+    }
+    ctx.fillStyle = skin(-52, 80)
+    ellipse(ctx, 60, 10, 110, 66)
+    ctx.fill()
+    ctx.fillRect(60, -56, 200, 132)
+    ctx.shadowColor = 'transparent'
+    // Knuckle sheen from the candle
+    ctx.fillStyle = 'rgba(255,214,170,0.22)'
+    ellipse(ctx, 10, -34, 70, 10, -0.05)
+    ctx.fill()
+    ctx.fillStyle = 'rgba(60,30,20,0.25)'
+    for (const [fx, fy, , fh] of fingers) {
+      ctx.fillRect(fx + 52, fy + fh - 2, 30, 2)
+    }
+    ctx.filter = 'none'
+    ctx.restore()
+  }
   /** Procedural food test plate at 960×540: every hue a grade has to get
    *  right (crust, sauce, herbs, yolk, flame, skin, steel, greys). */
   function drawScene(ctx, W, H) {
@@ -511,7 +556,8 @@
         rnd() < 0.5 ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.12)'
       ctx.fillRect(rnd() * W, y, 20 + rnd() * 140, 0.6)
     }
-    // Candle at the back right
+    // Candle at the back right, a touch soft (behind the focus plane)
+    ctx.filter = 'blur(1.2px)'
     const cx = W * 0.865
     const cBase = railY + 4
     g = ctx.createLinearGradient(cx - 22, 0, cx + 22, 0)
@@ -519,17 +565,18 @@
     g.addColorStop(0.45, '#efe8da')
     g.addColorStop(1, '#8a8173')
     ctx.fillStyle = g
-    roundRect(ctx, cx - 22, cBase - 62, 44, 66, 5)
+    roundRect(ctx, cx - 20, cBase - 46, 40, 50, 5)
     ctx.fill()
     ctx.strokeStyle = '#1a1410'
     ctx.lineWidth = 1.6
     ctx.beginPath()
-    ctx.moveTo(cx, cBase - 62)
-    ctx.lineTo(cx + 1, cBase - 70)
+    ctx.moveTo(cx, cBase - 46)
+    ctx.lineTo(cx + 1, cBase - 53)
     ctx.stroke()
+    ctx.filter = 'none'
     // Warm glow (additive)
     ctx.globalCompositeOperation = 'lighter'
-    g = ctx.createRadialGradient(cx, cBase - 84, 2, cx, cBase - 84, 260)
+    g = ctx.createRadialGradient(cx, cBase - 66, 2, cx, cBase - 66, 260)
     g.addColorStop(0, 'rgba(255,170,70,0.55)')
     g.addColorStop(0.18, 'rgba(230,130,45,0.22)')
     g.addColorStop(0.5, 'rgba(160,80,25,0.07)')
@@ -537,16 +584,16 @@
     ctx.fillStyle = g
     ctx.fillRect(0, 0, W, sceneH)
     // Flame
-    g = ctx.createRadialGradient(cx, cBase - 80, 1, cx, cBase - 84, 16)
+    g = ctx.createRadialGradient(cx, cBase - 60, 1, cx, cBase - 64, 14)
     g.addColorStop(0, 'rgba(255,252,235,1)')
     g.addColorStop(0.35, 'rgba(255,214,120,0.95)')
     g.addColorStop(0.75, 'rgba(240,130,40,0.6)')
     g.addColorStop(1, 'rgba(200,80,20,0)')
     ctx.fillStyle = g
     ctx.beginPath()
-    ctx.moveTo(cx, cBase - 108)
-    ctx.bezierCurveTo(cx + 12, cBase - 88, cx + 9, cBase - 70, cx, cBase - 70)
-    ctx.bezierCurveTo(cx - 9, cBase - 70, cx - 12, cBase - 88, cx, cBase - 108)
+    ctx.moveTo(cx, cBase - 88)
+    ctx.bezierCurveTo(cx + 11, cBase - 70, cx + 8, cBase - 53, cx, cBase - 53)
+    ctx.bezierCurveTo(cx - 8, cBase - 53, cx - 11, cBase - 70, cx, cBase - 88)
     ctx.fill()
     ctx.globalCompositeOperation = 'source-over'
     // Plate shadow
@@ -642,12 +689,12 @@
     ctx.save()
     ctx.clip()
     // Maillard mottling
-    for (let i = 0; i < 420; i++) {
+    for (let i = 0; i < 240; i++) {
       const x = -105 + rnd() * 210
       const y = -50 + rnd() * 70
-      const r = 1 + rnd() * 4
+      const r = 0.8 + rnd() * 2.6
       ctx.fillStyle =
-        rnd() < 0.55 ? 'rgba(25,10,4,0.35)' : 'rgba(176,96,40,0.30)'
+        rnd() < 0.5 ? 'rgba(28,11,4,0.26)' : 'rgba(190,110,48,0.20)'
       ellipse(ctx, x, y, r * 1.6, r)
       ctx.fill()
     }
@@ -719,29 +766,25 @@
       ellipse(ctx, x - r * 0.3, y - r * 0.35, r * 0.35, r * 0.2)
       ctx.fill()
     }
-    // Chef's hand entering from the right (skin patch)
-    ctx.save()
-    ctx.translate(W * 0.94, sceneH * 0.74)
-    ctx.rotate(-0.38)
-    ctx.shadowColor = 'rgba(0,0,0,0.6)'
-    ctx.shadowBlur = 26
-    ctx.shadowOffsetY = 14
-    g = ctx.createLinearGradient(0, -60, 0, 70)
-    g.addColorStop(0, '#c8916a')
-    g.addColorStop(0.45, '#a8704e')
-    g.addColorStop(1, '#6e4330')
+    // Low-key light: one warm source top right, falling off to the edges
+    ctx.globalCompositeOperation = 'multiply'
+    g = ctx.createRadialGradient(
+      W * 0.58,
+      sceneH * 0.32,
+      W * 0.08,
+      W * 0.5,
+      sceneH * 0.5,
+      W * 0.72,
+    )
+    g.addColorStop(0, '#ffffff')
+    g.addColorStop(0.45, '#e2ded8')
+    g.addColorStop(0.8, '#8c8a90')
+    g.addColorStop(1, '#55555c')
     ctx.fillStyle = g
-    roundRect(ctx, -40, -46, 200, 104, 48)
-    ctx.fill()
-    ctx.shadowColor = 'transparent'
-    for (let f = 0; f < 3; f++) {
-      roundRect(ctx, -112 + f * 6, -40 + f * 30, 96, 26, 13)
-      ctx.fill()
-    }
-    ctx.fillStyle = 'rgba(255,225,200,0.18)'
-    roundRect(ctx, -30, -40, 150, 24, 12)
-    ctx.fill()
-    ctx.restore()
+    ctx.fillRect(0, 0, W, sceneH)
+    ctx.globalCompositeOperation = 'source-over'
+    // Chef's hand entering from the right (skin patch), out of focus
+    drawHand(ctx, W * 0.9, sceneH * 0.73)
     // Calibration strip: grey ramp and colour patches
     const sy = sceneH
     ctx.fillStyle = '#060607'
@@ -985,7 +1028,7 @@
       }
       const graded = !before && look !== 'base'
       afterTag.textContent = graded
-        ? `${lookName(look)} · ${Math.round(intensity)}%`
+        ? `${shortName(look)} · ${Math.round(intensity)}%`
         : before
           ? 'Before'
           : 'Base · ungraded'
@@ -1494,7 +1537,7 @@
           mime: 'application/zip',
         })
         if (r === 'saved')
-          packNote.textContent = `${name} · ${LN.fmt.bytes(blob.size)} · unzip: Files by Google › Downloads › tap the zip › Extract.`
+          packNote.textContent = `Last saved: ${name} · ${LN.fmt.bytes(blob.size)}`
       } catch (e) {
         LN.toast(`The pack could not be built: ${e.message}`, { kind: 'err' })
       } finally {
@@ -1861,7 +1904,7 @@
         [0, 128, 255].map(v =>
           s('text', { x: v, y: 268, class: 'g-axis' }, String(v)),
         ),
-        [0, 128, 255].map(v =>
+        [128, 255].map(v =>
           s('text', { x: -4, y: 258 - v, class: 'g-axis end' }, String(v)),
         ),
       )
@@ -1881,7 +1924,7 @@
             'span',
             null,
             rec.curve
-              ? 'Amber: the recipe points. Dashed silver: the .cube grey axis at your current settings.'
+              ? 'Solid: the recipe points. Dashed: the .cube grey axis at your current settings.'
               : 'No curve in the recipe. These points trace the .cube grey axis (dashed): add them in Curves if you skip the LUT.',
           ),
         ),
@@ -1906,7 +1949,7 @@
       }
       const marker = (t, cls, label) => {
         const a = ((t.hue - 90) * Math.PI) / 180
-        const r = Math.min(1, t.amount / 50) * (R - 18)
+        const r = t.amount < 2 ? 0 : Math.min(1, t.amount / 50) * (R - 18)
         const x = r * Math.cos(a)
         const y = r * Math.sin(a)
         return s(
@@ -1955,7 +1998,9 @@
             'b',
             { class: 'ln-num' },
             measured
-              ? `hue ${Math.round(t.hue)}° · ${t.amount}`
+              ? t.amount < 2
+                ? 'neutral · 0'
+                : `hue ${Math.round(t.hue)}° · ${t.amount}`
               : `${t.name} · ${t.amount}`,
           ),
         )
@@ -2164,6 +2209,7 @@
       h(
         'div',
         { class: 'gr-layers-wrap' },
+        h('span', { class: 'gr-layer-axis' }, 'Top · seen last'),
         h(
           'ol',
           { class: 'gr-layers', 'aria-label': 'Layer stack, top to bottom' },
@@ -2176,13 +2222,7 @@
             ),
           ),
         ),
-        h(
-          'div',
-          { class: 'gr-layer-axis', 'aria-hidden': 'true' },
-          h('span', null, 'Top · seen last'),
-          h('i'),
-          h('span', null, 'Bottom · applied first'),
-        ),
+        h('span', { class: 'gr-layer-axis' }, 'Bottom · applied first'),
       ),
       ui.callout(
         'rule',

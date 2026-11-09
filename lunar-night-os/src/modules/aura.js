@@ -1648,20 +1648,18 @@ Return JSON only, exactly this shape:
       fmtNote.replaceChildren(h('b', null, `${f.label} cover · `), f.cover)
       const wc = wordCount(st.title)
       const r = honesty(st.title, { fmt: st.fmt, maxWords: 4 })
-      const lunarCaps =
-        st.fmt !== 'lunar' && r.items.some(i => i.label === 'Capitals')
-      const res = lunarCaps
-        ? {
-            items: r.items.filter(i => i.label !== 'Capitals'),
-            level: r.items
-              .filter(i => i.label !== 'Capitals')
-              .reduce(
-                (lv, i) =>
-                  LEVEL_ORDER[i.level] > LEVEL_ORDER[lv] ? i.level : lv,
-                'clean',
-              ),
-          }
-        : r
+      // Lunar covers are lowercase lime; Estrella Early titles may use capitals.
+      const items =
+        st.fmt === 'lunar'
+          ? r.items
+          : r.items.filter(i => i.label !== 'Capitals')
+      const res = {
+        items,
+        level: items.reduce(
+          (lv, i) => (LEVEL_ORDER[i.level] > LEVEL_ORDER[lv] ? i.level : lv),
+          'clean',
+        ),
+      }
       titleCheck.replaceChildren(
         h(
           'div',
@@ -2008,7 +2006,16 @@ Return JSON only, exactly this shape:
     if (o.line60 && L > 60) {
       kids.push(
         svg('line', { x1: x(60), y1: 12, x2: x(60), y2: 48, class: 'l60' }),
-        svg('text', { x: x(60) + 3, y: 12, class: 'lbl l60t' }, '60 s line'),
+        svg(
+          'text',
+          {
+            x: 60 / L > 0.8 ? x(60) - 3 : x(60) + 3,
+            y: 12,
+            class: 'lbl l60t',
+            'text-anchor': 60 / L > 0.8 ? 'end' : 'start',
+          },
+          '60 s line',
+        ),
       )
     }
     for (const m of plan.marks)
@@ -3156,10 +3163,10 @@ Return JSON only, exactly this shape:
           svg('path', { d: 'M0 0 L10 5 L0 10 Z', class: 'au-ah' }),
         ),
       ),
-      arrow('M180 66 L180 64 Q300 70 286 118', 300, 74, 'becomes', 'start'),
-      arrow('M286 182 Q300 236 182 236', 304, 228, 'funnels', 'start'),
-      arrow('M110 236 Q60 236 74 182', 56, 228, 'sells', 'end'),
-      arrow('M74 118 Q60 70 108 50', 56, 74, 'frames', 'end'),
+      arrow('M252 40 Q300 42 300 120', 306, 78, 'becomes', 'start'),
+      arrow('M300 180 Q300 258 254 260', 306, 232, 'funnels', 'start'),
+      arrow('M106 260 Q60 258 60 180', 54, 232, 'sells', 'end'),
+      arrow('M60 120 Q60 42 108 40', 54, 78, 'frames', 'end'),
       node(180, 40, 'Signature look', 'LunarNight · Dreamcore'),
       node(286, 150, 'Template', 'CapCut skeleton'),
       node(180, 260, 'Account', 'the series'),

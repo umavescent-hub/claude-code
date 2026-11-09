@@ -1,5 +1,12 @@
 # Kubrick: module contract
 
+> **Update 2, 9 Nov: the design reference is the user's own artifact, "Jade Shoot Kit".** Its full HTML is at `$SCRATCH/research/jade-shoot-kit.html` (1,802 lines; read it as data). Kubrick must look and feel like it:
+> - **Look:** the CapCut editor. Near-black panels (`--obsidian` #0a0a0b, `--graphite` #141416, `--graphite-2` #1b1b1e, `--graphite-3` #252529), white type, one cyan accent (`--amber` is now #00c8d7), and the timeline's track colours as step and category markers (`--t1` cyan, `--t2` violet, `--t3` blue, `--t4` amber, `--t5` pink, `--t6` green). Gold (`--gold`, `--gold-soft`) marks "Check" items.
+> - **Type:** TikTok Sans for everything, Google Sans Code (`var(--f-data)`) for values, paths and numbers. Headings 700–850 weight with tight tracking.
+> - **Shape:** radii 6 / 8 / 10 / 12 px; buttons and segmented controls use `var(--r-pill)` (7 px).
+> - **Patterns to reuse from it:** the settings "sheet" (group header rows, then rows of setting · value · why + tap path, with a gold "Check" badge where sources disagree); the CapCut-style keyframe timeline (lanes, diamonds, white playhead); the selected-clip white frame with grab handles; big step numbers in the track colour; a "30-second version" quick list.
+> - **Content to reuse from it:** its Pixel Camera and Blackmagic Camera setting sheets (values, reasons and tap paths), its Correct / Match / Look / Move / Export steps, its export table, and its three.js Pixel 10 Pro XL model with the Pixel Camera and Blackmagic screens (the `<script type="module">` near the end). Where it disagrees with the older runbook, show both as presets (the kit's values are for the fish-and-chips kitchen; the runbook's for night exteriors).
+
 > **Update, 9 Nov (the user's direction; it overrides older wording below).**
 > - The product is named **Kubrick**. Never show "Lunar Night OS" in the UI. "Lunar Night" stays only as the name of the look and its LUTs. The folder is still `lunar-night-os/` for now.
 > - The interface must look like **CapCut Mobile and CapCut Desktop**: near-black panels, white sans type, one cyan accent, pill buttons, rounded panels, compact toolbars with icon + label, timeline-style strips. No serif headings, no all-caps mono labels, no editorial flourishes.

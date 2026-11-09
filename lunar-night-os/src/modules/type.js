@@ -2244,7 +2244,7 @@
           h(
             'button',
             { type: 'button', onClick: () => jump.go(id) },
-            h('span', null, LN.fmt.pad(i + 1)),
+            h('span', { class: 'n' }, LN.fmt.pad(i + 1)),
             label,
           ),
         ),

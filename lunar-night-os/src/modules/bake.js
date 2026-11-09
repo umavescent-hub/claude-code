@@ -160,12 +160,14 @@ precision highp float;
 ${LUT_FN}
 in vec2 vUv; out vec4 o;
 void main(){ o = vec4(grade(texture(uFrame, vUv).rgb), 1.0); }`
-  // Packs graded pixels as I420, four bytes per RGBA texel: rows 0..H-1 hold Y,
-  // rows H..H+H/2-1 hold the U row (texels 0..CW-1) then the V row (CW..2CW-1).
+  // Packs graded pixels as contiguous I420, four bytes per RGBA texel. Rows
+  // 0..H-1 hold Y (row stride = 4 × texels per row). The rows after that hold
+  // the U plane then the V plane back to back, each W/2 bytes per chroma row,
+  // so no plane overlaps another (VideoFrame rejects overlapping layouts).
   const FRAG_YUV = `#version 300 es
 precision highp float; precision highp int;
 ${LUT_FN}
-uniform ivec2 uSize; uniform int uCw;
+uniform ivec2 uSize; uniform int uRowBytes;
 out vec4 o;
 const vec3 KY = vec3(0.2126, 0.7152, 0.0722);
 vec3 px(int x, int y){
@@ -173,11 +175,18 @@ vec3 px(int x, int y){
   return grade(texelFetch(uFrame, p, 0).rgb);
 }
 float luma(vec3 c){ return (16.0 + 219.0 * dot(c, KY)) / 255.0; }
-vec2 chroma(int cx, int cy){
-  int x = cx * 2; int y = cy * 2;
+float cbyte(int i){
+  int cw = uSize.x / 2;
+  int plane = cw * (uSize.y / 2);
+  if (i >= 2 * plane) return 0.5;
+  bool isV = i >= plane;
+  int k = isV ? i - plane : i;
+  int x = (k % cw) * 2; int y = (k / cw) * 2;
   vec3 c = 0.25 * (px(x, y) + px(x + 1, y) + px(x, y + 1) + px(x + 1, y + 1));
   float yl = dot(c, KY);
-  return vec2(128.0 + 224.0 * (c.b - yl) / 1.8556, 128.0 + 224.0 * (c.r - yl) / 1.5748) / 255.0;
+  return isV
+    ? (128.0 + 224.0 * (c.r - yl) / 1.5748) / 255.0
+    : (128.0 + 224.0 * (c.b - yl) / 1.8556) / 255.0;
 }
 void main(){
   ivec2 f = ivec2(gl_FragCoord.xy);
@@ -186,13 +195,8 @@ void main(){
     o = vec4(luma(px(x, f.y)), luma(px(x + 1, f.y)), luma(px(x + 2, f.y)), luma(px(x + 3, f.y)));
     return;
   }
-  int cy = f.y - uSize.y;
-  if (f.x >= 2 * uCw) { o = vec4(0.5); return; }
-  bool isV = f.x >= uCw;
-  int cx = (isV ? f.x - uCw : f.x) * 4;
-  vec2 c0 = chroma(cx, cy); vec2 c1 = chroma(cx + 1, cy);
-  vec2 c2 = chroma(cx + 2, cy); vec2 c3 = chroma(cx + 3, cy);
-  o = isV ? vec4(c0.y, c1.y, c2.y, c3.y) : vec4(c0.x, c1.x, c2.x, c3.x);
+  int i = (f.y - uSize.y) * uRowBytes + f.x * 4;
+  o = vec4(cbyte(i), cbyte(i + 1), cbyte(i + 2), cbyte(i + 3));
 }`
 
   function createRenderer(canvas) {
@@ -230,7 +234,7 @@ void main(){
         n: u('uN'),
         k: u('uK'),
         size: u('uSize'),
-        cw: u('uCw'),
+        rowBytes: u('uRowBytes'),
       }
     }
     const rgb = program(FRAG_RGB)
@@ -330,9 +334,10 @@ void main(){
       /** Graded frame as BT.709 limited I420 bytes + plane layout. */
       drawI420(source, w, h) {
         if (!yuv) yuv = program(FRAG_YUV)
-        const cw = Math.ceil(w / 8)
-        const tw = Math.max(Math.ceil(w / 4), 2 * cw)
-        const th = h + h / 2
+        const tw = Math.ceil(w / 4)
+        const rowBytes = tw * 4
+        const plane = (w / 2) * (h / 2)
+        const th = h + Math.ceil((2 * plane) / rowBytes)
         const key = `${tw}x${th}`
         if (key !== fboKey) {
           if (fbo) gl.deleteFramebuffer(fbo)
@@ -363,18 +368,18 @@ void main(){
         gl.viewport(0, 0, tw, th)
         bindCommon(yuv)
         gl.uniform2i(yuv.size, w, h)
-        gl.uniform1i(yuv.cw, cw)
+        gl.uniform1i(yuv.rowBytes, rowBytes)
         gl.drawArrays(gl.TRIANGLES, 0, 3)
         gl.pixelStorei(gl.PACK_ALIGNMENT, 4)
         gl.readPixels(0, 0, tw, th, gl.RGBA, gl.UNSIGNED_BYTE, buf)
         gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-        const stride = tw * 4
+        const c0 = h * rowBytes
         return {
           data: buf,
           layout: [
-            { offset: 0, stride },
-            { offset: h * stride, stride },
-            { offset: h * stride + cw * 4, stride },
+            { offset: 0, stride: rowBytes },
+            { offset: c0, stride: w / 2 },
+            { offset: c0 + plane, stride: w / 2 },
           ],
         }
       },
@@ -1202,15 +1207,15 @@ void main(){
           ])
         let fps = null
         try {
-          const stats = await vt.computePacketStats(240)
-          fps = stats.averagePacketRate || null
-          if (fps) {
-            const common = [23.976, 24, 25, 29.97, 30, 48, 50, 59.94, 60, 120]
-            const near = common.find(c => Math.abs(c - fps) < 0.15)
-            if (near) fps = near
-          }
+          // Deduced from frame timestamps (snaps to 24/30/60 when it is sure).
+          const m = await vt.computeFrameRateMetrics({ targetPacketCount: 240 })
+          fps = m.underlyingFrameRate || m.bestGuessFrameRate || null
         } catch (_e) {
-          fps = null
+          try {
+            fps = (await vt.computePacketStats(240)).averagePacketRate || null
+          } catch (_e2) {
+            fps = null
+          }
         }
         let hdrFlag = false
         try {
