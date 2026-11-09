@@ -11,17 +11,13 @@ Skills teach Claude a method once, so every chat can use it on your phone or you
 1. **Zip the folder, not its contents.** The zip must hold `multilayer-music-edit/SKILL.md`.
    - On a Mac: right-click the `multilayer-music-edit` folder › Compress.
    - On Windows: right-click the folder › Send to › Compressed (zipped) folder.
-   - From a terminal, in this `skills` folder:
-
-     ```
-     zip -r multilayer-music-edit.zip multilayer-music-edit
-     ```
+   - From a terminal, in this `skills` folder: `zip -r multilayer-music-edit.zip multilayer-music-edit`
 
 2. In claude.ai, open `Settings › Capabilities › Skills › Upload`.
 3. Pick `multilayer-music-edit.zip`.
-   You should see: **multilayer-music-edit** in the skills list, switched on.
+   - You should see: **multilayer-music-edit** in the skills list, switched on.
 4. Start a new chat and type: `plan a 30 s edit to a 92 bpm song, VHS into 4K on the drop`.
-   You should see: Claude asks at most three questions (the song, your clips with style tags, the format and length) and then gives a beat-marker list.
+   - You should see: Claude asks at most three questions (the song, your clips with style tags, the format and length) and then gives a beat-marker list.
 
 > [!VERIFY] The upload path
 > `Settings › Capabilities › Skills › Upload` is where the upload lived when this was written, but claude.ai moves its settings. Check these:

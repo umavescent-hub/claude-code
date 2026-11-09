@@ -538,13 +538,13 @@ Copy the blocks you need into the plan with his times filled in. Keep one tap pe
 1. Open CapCut.
 2. Tap New project.
 3. Tap the V1 clips in cut-sheet order.
-   You should see: numbers 1, 2, 3 on the thumbnails.
+   - You should see: numbers 1, 2, 3 on the thumbnails.
 4. Tap Add.
-   You should see: the clips in one row on the timeline.
+   - You should see: the clips in one row on the timeline.
 5. Tap an empty spot on the timeline, so nothing is selected.
 6. Tap Ratio. (Some builds: Aspect ratio or Format.)
 7. Tap 9:16.
-   You should see: the preview turns tall.
+   - You should see: the preview turns tall.
 8. Tap the check mark.
 
 **M2. Music on the downbeat**
@@ -553,23 +553,23 @@ Copy the blocks you need into the plan with his times filled in. Keep one tap pe
 2. Tap Sounds.
 3. Find his song (**Verify**: the device tab may say Device, From device or Your sounds).
 4. Tap the song, then tap + (or Use).
-   You should see: a music bar under the clips.
+   - You should see: a music bar under the clips.
 5. Pinch the timeline open. Drag until the playhead sits on the first downbeat he wants.
 6. Tap the music bar.
 7. Tap Split.
 8. Tap the left piece.
 9. Tap Delete.
 10. Press and hold the music bar, then drag it to the start.
-   You should see: the music starts at 00:00.
+   - You should see: the music starts at 00:00.
 
 **M3. Beats (Verify every label)**
 
 1. Tap the music bar.
 2. Tap Beats. (Older builds: Match cut.)
 3. Turn on Auto generate. If it shows a Pro badge, skip it and use the beat-marker list.
-   You should see: yellow dots under the music.
+   - You should see: yellow dots under the music.
 4. Check three dots against the marker list: bar 1, the drop and the last bar.
-   You should see: each dot within a frame or two of the list time.
+   - You should see: each dot within a frame or two of the list time.
 5. Tap the check mark.
 
 **M4. Cut V1 on a beat**
@@ -577,7 +577,7 @@ Copy the blocks you need into the plan with his times filled in. Keep one tap pe
 1. Drag the timeline until the playhead sits on the cut time (on a beat dot).
 2. Tap the clip.
 3. Tap Split.
-   You should see: a cut line at the playhead.
+   - You should see: a cut line at the playhead.
 4. Tap the piece you don't want.
 5. Tap Delete.
 
@@ -590,7 +590,7 @@ Repeat for each V1 row.
 3. Tap Add overlay.
 4. Tap the clip.
 5. Tap Add.
-   You should see: the clip as a box over the picture, with its own bar under the main track.
+   - You should see: the clip as a box over the picture, with its own bar under the main track.
 6. Make the 4:3 window (§4a), or for halation: Blend › Screen, Opacity 35, then a blur effect.
 7. Drag the bar so its left end sits on the in beat. Drag its right end to the out beat.
 
@@ -605,7 +605,7 @@ Repeat for each V1 row.
 7. Tap Blend.
 8. Tap Screen (VHS, leak) or Overlay (grain).
 9. Drag Opacity to the cut-sheet number.
-   You should see: the plate's black (or grey) vanishes and only the texture stays.
+   - You should see: the plate's black (or grey) vanishes and only the texture stays.
 10. Tap the check mark.
 11. Drag the bar's ends to the section's beats.
 
@@ -619,7 +619,7 @@ Repeat for each V1 row.
 6. Tap the 2-frame piece.
 7. Tap Adjust.
 8. Drag Brightness (or Exposure) to the top.
-   You should see: a white pop on that frame.
+   - You should see: a white pop on that frame.
 9. Tap the check mark.
 
 **M8. Zoom punch**
@@ -627,7 +627,7 @@ Repeat for each V1 row.
 1. Split on the beat (M4 steps 1–3).
 2. Tap the second piece.
 3. Pinch out on the preview to about 110% (**Verify**: whether a scale number shows while you pinch).
-   You should see: the picture jumps in on the beat.
+   - You should see: the picture jumps in on the beat.
 
 **M9. Impact Drop**
 
@@ -636,12 +636,12 @@ Repeat for each V1 row.
 3. Tap Curve.
 4. Tap Custom.
 5. Tap Edit.
-   You should see: a graph with points on a line at 1x.
+   - You should see: a graph with points on a line at 1x.
 6. Drag the middle point down to 0.4x (in a 24 fps edit) or 0.5x (in a 30 fps edit).
 7. Leave the first and last points at 1x.
 8. Tap the check mark.
 9. Drag the clip's right end back to the next beat dot.
-   You should see: the clip ends on the dot.
+   - You should see: the clip ends on the dot.
 
 Smooth slow-mo may show a Pro badge; leave it off.
 
@@ -651,7 +651,7 @@ Smooth slow-mo may show a Pro badge; leave it off.
 2. Look in Camera or Slide, or search "whip" or "swipe". Skip anything with Pro.
 3. Drag the duration to 0.2 s.
 4. Tap the check mark.
-   You should see: the move straddles the snare.
+   - You should see: the move straddles the snare.
 
 **M11. Text**
 
@@ -673,7 +673,7 @@ Smooth slow-mo may show a Pro badge; leave it off.
 5. Tap the resolution chip at the top right (for example, 1080P).
 6. Set 1080p, the frame rate of the footage, and the highest bitrate (labelled Bit rate or Code rate).
 7. Tap Export.
-   You should see: a progress ring, then the share screen.
+   - You should see: a progress ring, then the share screen.
 
 Turn the default ending off once: home-screen gear › Add default ending › off.
 
@@ -686,7 +686,7 @@ Turn the default ending off once: home-screen gear › Add default ending › of
 3. Click Import. Pick the clips, the song and the Forge plates.
 4. Drag the V1 clips onto the main track in cut-sheet order.
 5. Under the player, click Ratio. Pick 9:16.
-   You should see: a tall player.
+   - You should see: a tall player.
 
 **D2. Music and beats**
 
@@ -695,7 +695,7 @@ Turn the default ending off once: home-screen gear › Add default ending › of
 3. Press Ctrl+B (Cmd+B on Mac) to split.
 4. Delete the left piece. Drag the music to 00:00.
 5. With the music selected, click the beat-marking button on the timeline toolbar (Auto beat or similar).
-   You should see: beat markers on the music.
+   - You should see: beat markers on the music.
 
 **D3. Cuts, overlays and plates**
 
@@ -709,7 +709,7 @@ Turn the default ending off once: home-screen gear › Add default ending › of
 1. In the top-left panel, click Adjustment.
 2. Click LUT.
 3. Click Import. Pick the .cube file.
-   You should see: a LUT tile.
+   - You should see: a LUT tile.
 4. Select the clip. In the inspector, open Adjustment and pick the LUT.
 5. Set Intensity to 50–70.
 

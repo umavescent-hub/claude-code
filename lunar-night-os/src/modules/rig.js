@@ -1093,7 +1093,11 @@
         h('i', { class: 'rig-grille' }),
       ),
     ]
-    phone.append(...faces)
+    // Stacked slices give the rounded corners real thickness from any angle.
+    const slices = [0, 1, 2, 3, 4, 5].map(k =>
+      h('i', { class: 'rig-slice', style: { '--k': String(k) } }),
+    )
+    phone.append(...slices, ...faces)
 
     const sideLabel = h('span', { class: 'rig-side ln-small' })
     const stage = h(
