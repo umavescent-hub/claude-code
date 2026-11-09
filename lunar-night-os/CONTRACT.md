@@ -146,6 +146,33 @@ Playbook laws:
 
 On LUT import, CapCut mobile is **contradicted**. Every module that mentions it shows Route A (LUT import, if the phone has it, with a verify callout), Route B (bake: Blackmagic Record LUT to Clip, or the OS Bake) and Route C (sliders).
 
+## Canon: the CapCut God Mode Guide (the user's own 8-step Marketplace Review loop)
+
+Source: `$SCRATCH/research/godmode-data.jsx`. It is the user's animated guide for the Marketplace Review format. Where a module shows that format's workflow or shot list, match it.
+
+The 8 steps:
+1. **Plan with Claude:** 3 hooks of 8 words max, an 8-shot list with seconds; film only what is on the list.
+2. **Set up the camera** (Blackmagic Camera): 4K, 30 fps, shutter 180°, the lowest ISO that still looks bright, white balance locked, focus peaking on. Wipe the lens before every shoot.
+3. **Shoot the shot list:** hold every shot 3 seconds; cut later.
+4. **Cut it tight:** New project → add clips → Ratio 9:16; tap clip → Split → delete every pause; a new shot every 1–3 seconds.
+5. **Hook + captions:** Text → Add text → hook card, top, 2 s; Captions → Auto captions → Generate; 3–4 words a line, no bouncing.
+6. **Zoom + sound FX:** keyframe → pinch to 110%; 2–3 zooms (bite, money shot, verdict); Audio → Sound effects, one per moment.
+7. **Color + levels:** Filters → strength 20–40 → Apply to all; voice 100, music 10–20, SFX 30–60; skip anything with a Pro badge.
+8. **Export clean:** gear → Add default ending → Off; Export → 1080p, 30 fps, high bitrate; keep text out of the bottom quarter. End on the verdict, no goodbye.
+
+The 8 shots:
+
+| Shot | How | Lens | Hold | Move |
+|---|---|---|---|---|
+| The pickup | walk up to the meetup, phone at chest | 1x | 2 s | handheld walk |
+| Top-down reveal | straight overhead, lift the lid in frame | 1x | 2 s | locked |
+| 45° hero | plate at 45°, slowly push in | 1x | 3 s | slow push-in |
+| Table level | phone flat on the table, looking across | 1x | 2 s | locked |
+| Macro texture | 3 inches close; the Pixel flips to macro | 0.5x | 2 s | drift |
+| 5x squeeze | step back 6 feet, zoom to 5x | 5x | 2 s | locked |
+| Slow-mo pull | cheese pull, pour or crack at 60 fps | 1x | 2 s | locked |
+| Bite + verdict | front camera, arm out, take the bite | Front | 3 s | selfie |
+
 ## Files
 
 ```

@@ -1897,25 +1897,33 @@
     [r3(Math.max(inDur, len - out)), peak],
     [r3(len), 0, 'inCubic'],
   ]
-  const sceneOf = (name, duration, background, layers) => ({
+  /* Each template is drawn for 9:16 (land false) or 16:9 (land true). Groups are placed by
+     an anchor fraction plus design-px offsets, so spacing between stacked lines holds in
+     both frames instead of squeezing. */
+  const frameFor = land => (land ? { W: 1920, H: 1080 } : { W: 1080, H: 1920 })
+  const atY = (F, frac, px = 0) => r3(frac + px / F.H)
+  const atX = (F, frac, px = 0) => r3(frac + px / F.W)
+  const sceneOf = (F, name, duration, background, layers) => ({
     version: 1,
     name,
-    width: 1080,
-    height: 1920,
+    width: F.W,
+    height: F.H,
     fps: 30,
     duration,
     background,
     layers,
   })
 
-  function tChapter() {
+  function tChapter(land) {
+    const F = frameFor(land)
     const D = 6
-    return sceneOf('Chapter card · The Reduction', D, 'obsidian', [
+    const cy = land ? 0.5 : 0.47
+    return sceneOf(F, 'Chapter card · The Reduction', D, 'obsidian', [
       {
         type: 'glow',
         props: {
           x: 0.5,
-          y: 0.468,
+          y: atY(F, cy),
           w: 1150,
           h: 520,
           color: LUNAR.silver,
@@ -1934,7 +1942,7 @@
           tracking: 0.62,
           color: LUNAR.silver,
           x: 0.5,
-          y: 0.416,
+          y: atY(F, cy, -104),
         },
         reveal: 'blur-in',
         revealDur: 1.2,
@@ -1951,7 +1959,7 @@
           tracking: 0.01,
           color: LUNAR.moon,
           x: 0.5,
-          y: 0.47,
+          y: atY(F, cy),
           glow: 0.42,
         },
         reveal: 'tracking-in',
@@ -1963,7 +1971,7 @@
         start: 1.6,
         props: {
           x: 0.5,
-          y: 0.522,
+          y: atY(F, cy, 100),
           w: 0,
           h: 0,
           lineWidth: 2,
@@ -1972,7 +1980,7 @@
         keys: {
           w: [
             [0, 0],
-            [1.2, 0.13, 'inOutCubic'],
+            [1.2, land ? 0.075 : 0.13, 'inOutCubic'],
           ],
           opacity: fadeOut(D - 1.6, 0.4),
         },
@@ -1988,7 +1996,7 @@
           tracking: 0.36,
           color: LUNAR.silver,
           x: 0.5,
-          y: 0.552,
+          y: atY(F, cy, 158),
         },
         reveal: 'typewriter',
         revealDur: 1.1,
@@ -1998,12 +2006,14 @@
     ])
   }
 
-  function tLab() {
+  function tLab(land) {
+    const F = frameFor(land)
     const D = 5
-    const L = 0.074
-    const R = 0.926
-    const T = 0.09
-    const B = 0.735
+    // viewfinder frame, inset from the edges (and clear of app UI in 9:16)
+    const L = land ? 0.06 : 0.074
+    const R = 1 - L
+    const T = land ? 0.1 : 0.09
+    const B = land ? 0.9 : 0.735
     const len = 56
     const brackets = []
     const corner = (x, y, ah, av) => {
@@ -2047,12 +2057,19 @@
     for (let k = 1; k * 0.5 < life - 0.6; k++)
       blink.push([r3(k * 0.5), k % 2 ? 0.12 : 1, 'steps(1)'])
     blink.push([r3(life - 0.05), 0, 'inCubic'])
-    return sceneOf('Lab stamp · Batch 042', D, 'black', [
+    const left = atX(F, L, 47)
+    return sceneOf(F, 'Lab stamp · Batch 042', D, 'black', [
       ...brackets,
       {
         type: 'circle',
         start: 0.2,
-        props: { x: 0.118, y: 0.122, radius: 11, color: '#C23B32', glow: 0.55 },
+        props: {
+          x: left,
+          y: atY(F, T, 61),
+          radius: 11,
+          color: '#C23B32',
+          glow: 0.55,
+        },
         keys: { opacity: blink },
       },
       {
@@ -2065,8 +2082,8 @@
           weight: 500,
           tracking: 0.3,
           color: LUNAR.silver,
-          x: 0.142,
-          y: 0.122,
+          x: atX(F, L, 73),
+          y: atY(F, T, 61),
           anchor: 'left',
         },
         keys: { opacity: fadeOut(D - 0.2, 0.8, 0.6) },
@@ -2084,8 +2101,8 @@
           weight: 500,
           tracking: 0.08,
           color: LUNAR.moon,
-          x: 0.118,
-          y: 0.6,
+          x: left,
+          y: atY(F, B, -259),
           anchor: 'left',
           glow: 0.18,
         },
@@ -2103,8 +2120,8 @@
           weight: 500,
           tracking: 0.14,
           color: LUNAR.amber,
-          x: 0.118,
-          y: 0.642,
+          x: left,
+          y: atY(F, B, -178),
           anchor: 'left',
           glow: 0.3,
         },
@@ -2116,8 +2133,8 @@
         type: 'line',
         start: 2.1,
         props: {
-          x: 0.118,
-          y: 0.672,
+          x: left,
+          y: atY(F, B, -121),
           w: 0,
           h: 0,
           anchor: 'left',
@@ -2127,7 +2144,7 @@
         keys: {
           w: [
             [0, 0],
-            [0.9, 0.5, 'outExpo'],
+            [0.9, land ? 0.28 : 0.5, 'outExpo'],
           ],
           opacity: fadeOut(D - 2.1, 0.5, 0.6),
         },
@@ -2136,60 +2153,55 @@
     ])
   }
 
-  function tStars() {
+  function tStars(land) {
+    const F = frameFor(land)
     const D = 6
-    const xs = [0.37, 0.5, 0.63]
+    const cy = land ? 0.52 : 0.505
+    const xs = [-140, 0, 140].map(dx => atX(F, 0.5, dx))
+    const star = (x, extra) => ({
+      type: 'text',
+      ...extra,
+      props: {
+        text: '☆',
+        font: 'display',
+        size: 120,
+        x,
+        y: atY(F, cy),
+        ...extra.props,
+      },
+    })
     const base = xs.map((x, i) => {
       const s0 = r3(0.7 + i * 0.15)
-      return {
-        type: 'text',
+      return star(x, {
         start: s0,
-        props: {
-          text: '☆',
-          font: 'display',
-          size: 120,
-          color: LUNAR.silver,
-          x,
-          y: 0.505,
-          lineWidth: 2.5,
-        },
+        props: { color: LUNAR.silver, lineWidth: 2.5 },
         reveal: 'blur-in',
         revealDur: 0.9,
         keys: { opacity: fadeOut(r3(D - s0), 0.3) },
-      }
+      })
     })
     const lit = xs.map((x, i) => {
       const s0 = r3(1.7 + i * 0.4)
-      const len = r3(D - s0)
-      return {
-        type: 'text',
+      return star(x, {
         start: s0,
-        props: {
-          text: '☆',
-          font: 'display',
-          size: 120,
-          color: LUNAR.amber,
-          x,
-          y: 0.505,
-          lineWidth: 3,
-        },
+        props: { color: LUNAR.amber, lineWidth: 3 },
         keys: {
-          opacity: fadeInOut(len, 1, 0.35, 0.8),
+          opacity: fadeInOut(r3(D - s0), 1, 0.35, 0.8),
           glow: [
             [0, 0],
             [0.45, 0.95, 'outCubic'],
             [1.6, 0.55, 'inOutCubic'],
           ],
         },
-      }
+      })
     })
-    return sceneOf('Road to three stars', D, 'black', [
+    return sceneOf(F, 'Road to three stars', D, 'black', [
       {
         type: 'glow',
         start: 1.5,
         props: {
           x: 0.5,
-          y: 0.505,
+          y: atY(F, cy),
           w: 1000,
           h: 420,
           color: LUNAR.amber,
@@ -2207,7 +2219,7 @@
           tracking: 0.42,
           color: LUNAR.silver,
           x: 0.5,
-          y: 0.43,
+          y: atY(F, cy, -144),
         },
         reveal: 'tracking-in',
         revealDur: 2,
@@ -2220,7 +2232,7 @@
         start: 3,
         props: {
           x: 0.5,
-          y: 0.578,
+          y: atY(F, cy, 140),
           w: 0,
           h: 0,
           lineWidth: 2,
@@ -2229,7 +2241,7 @@
         keys: {
           w: [
             [0, 0],
-            [1, 0.2, 'inOutCubic'],
+            [1, land ? 0.11 : 0.2, 'inOutCubic'],
           ],
           opacity: fadeOut(D - 3, 0.35),
         },
@@ -2244,7 +2256,7 @@
           tracking: 0.42,
           color: LUNAR.silver,
           x: 0.5,
-          y: 0.606,
+          y: atY(F, cy, 194),
         },
         reveal: 'typewriter',
         revealDur: 1,
@@ -2253,9 +2265,11 @@
     ])
   }
 
-  function tQuote() {
+  function tQuote(land) {
+    const F = frameFor(land)
     const D = 7
-    return sceneOf('Kinetic quote', D, 'obsidian', [
+    const cy = land ? 0.46 : 0.455
+    return sceneOf(F, 'Kinetic quote', D, 'obsidian', [
       {
         type: 'leak',
         props: {
@@ -2288,8 +2302,8 @@
           lineHeight: 1.12,
           color: LUNAR.moon,
           x: 0.5,
-          y: 0.455,
-          maxWidth: 0.86,
+          y: atY(F, cy),
+          maxWidth: land ? 0.6 : 0.86,
           glow: 0.18,
         },
         reveal: 'word-by-word',
@@ -2306,7 +2320,7 @@
           tracking: 0.4,
           color: LUNAR.amber,
           x: 0.5,
-          y: 0.565,
+          y: atY(F, cy, 211),
         },
         reveal: 'blur-in',
         revealDur: 1,
@@ -2316,19 +2330,25 @@
     ])
   }
 
-  function tData() {
+  function tData(land) {
+    const F = frameFor(land)
     const D = 7
     const rows = [
       { label: '01 · TEMPERATURE', to: 62.5, decimals: 1, suffix: ' °C' },
       { label: '02 · TIME', to: 48, decimals: 0, suffix: ' h' },
       { label: '03 · SALINITY', to: 1.2, decimals: 1, suffix: ' %' },
     ]
+    // 9:16 stacks the readings; 16:9 sets them in three columns.
+    const size = land ? 150 : 170
+    const ruleW = land ? 0.22 : 0.76
     return sceneOf(
+      F,
       'Recipe data card',
       D,
       'black',
       rows.flatMap((r, i) => {
-        const y = r3(0.31 + i * 0.145)
+        const x = land ? r3(0.1 + i * 0.29) : 0.12
+        const y = land ? atY(F, 0.5) : atY(F, 0.31, i * 279)
         const s0 = r3(0.3 + i * 0.5)
         return [
           {
@@ -2341,8 +2361,8 @@
               weight: 500,
               tracking: 0.34,
               color: LUNAR.amber,
-              x: 0.12,
-              y: r3(y - 0.05),
+              x,
+              y: atY(F, y, -96),
               anchor: 'left',
             },
             reveal: 'typewriter',
@@ -2358,10 +2378,10 @@
               decimals: r.decimals,
               suffix: r.suffix,
               font: 'display',
-              size: 170,
+              size,
               color: LUNAR.moon,
-              x: 0.12,
-              y: r3(y + 0.008),
+              x,
+              y: atY(F, y, 15),
               anchor: 'left',
               glow: 0.14,
             },
@@ -2373,8 +2393,8 @@
             type: 'line',
             start: r3(s0 + 0.3),
             props: {
-              x: 0.12,
-              y: r3(y + 0.058),
+              x,
+              y: atY(F, y, 111),
               w: 0,
               h: 0,
               anchor: 'left',
@@ -2384,7 +2404,7 @@
             keys: {
               w: [
                 [0, 0],
-                [1.2, 0.76, 'inOutCubic'],
+                [1.2, ruleW, 'inOutCubic'],
               ],
               opacity: fadeOut(r3(D - s0 - 0.3), 0.22),
             },
@@ -2394,7 +2414,8 @@
     )
   }
 
-  function tLocation() {
+  function tLocation(land) {
+    const F = frameFor(land)
     const D = 5
     const pulse = [
       [0, 0],
@@ -2405,11 +2426,20 @@
       [3.9, 1, 'inOutQuad'],
       [D - 0.2, 0, 'inCubic'],
     ]
-    return sceneOf('Location stamp · Santa Fe', D, 'black', [
+    const x0 = land ? 0.06 : 0.11
+    const y0 = land ? 0.78 : 0.652
+    const tx = atX(F, x0, 32)
+    return sceneOf(F, 'Location stamp · Santa Fe', D, 'black', [
       {
         type: 'circle',
         start: 0.2,
-        props: { x: 0.11, y: 0.652, radius: 7, color: LUNAR.amber, glow: 0.7 },
+        props: {
+          x: x0,
+          y: atY(F, y0),
+          radius: 7,
+          color: LUNAR.amber,
+          glow: 0.7,
+        },
         keys: { opacity: pulse },
       },
       {
@@ -2422,8 +2452,8 @@
           weight: 500,
           tracking: 0.34,
           color: LUNAR.moon,
-          x: 0.14,
-          y: 0.652,
+          x: tx,
+          y: atY(F, y0),
           anchor: 'left',
         },
         reveal: 'typewriter',
@@ -2440,8 +2470,8 @@
           weight: 400,
           tracking: 0.14,
           color: LUNAR.silver,
-          x: 0.14,
-          y: 0.686,
+          x: tx,
+          y: atY(F, y0, 65),
           anchor: 'left',
         },
         reveal: 'typewriter',
@@ -2452,8 +2482,8 @@
         type: 'line',
         start: 1.9,
         props: {
-          x: 0.14,
-          y: 0.712,
+          x: tx,
+          y: atY(F, y0, 115),
           w: 0,
           h: 0,
           anchor: 'left',
@@ -2463,7 +2493,7 @@
         keys: {
           w: [
             [0, 0],
-            [1.1, 0.34, 'inOutCubic'],
+            [1.1, land ? 0.19 : 0.34, 'inOutCubic'],
           ],
           opacity: fadeOut(D - 1.9, 0.32, 0.6),
         },
@@ -3306,9 +3336,19 @@
         LN.toast('Your unapplied edits were replaced by the template.', {
           kind: 'warn',
         })
-      applyScene(T.scene(), { tplId: T.id, play: true })
+      const preset = st.outId !== 'scene'
+      applyScene(T.scene(preset && landOut()), {
+        tplId: T.id,
+        play: true,
+        keepOut: preset,
+      })
       showMonitor()
     }
+    const landOut = () => {
+      const [w, hh] = outDims()
+      return w > hh
+    }
+    const sceneLand = sc => (sc.width || 1080) > (sc.height || 1920)
     /** On a phone the cards and forms sit below the monitor: bring the preview to the chef. */
     function showMonitor() {
       screen.scrollIntoView({
@@ -3366,10 +3406,11 @@
     function applyEditor() {
       const r = readEditor()
       if (!r) return
+      const T = TEMPLATES.find(x => x.id === st.tplId)
       const same =
-        st.tplId &&
-        stringify(r.obj) ===
-          stringify(TEMPLATES.find(x => x.id === st.tplId).scene())
+        T &&
+        stringify({ ...r.obj, background: null }) ===
+          stringify({ ...T.scene(sceneLand(r.obj)), background: null })
       applyScene(r.obj, { tplId: same ? st.tplId : null })
       LN.toast('Scene applied')
     }
@@ -3625,6 +3666,13 @@
         value: st.outId,
         onChange: v => {
           st.outId = v
+          const T = TEMPLATES.find(x => x.id === st.tplId)
+          if (T && v !== 'scene' && landOut() !== sceneLand(st.scene)) {
+            const sc = T.scene(landOut())
+            sc.background = st.scene.background
+            applyScene(sc, { tplId: T.id, keepOut: true })
+            return
+          }
           sizePreview()
           drawPreview(true)
           renderSummary()
@@ -3809,11 +3857,12 @@
 
     /* ---------------- first frame */
     let first = null
+    const savedPreset = PRESETS.find(p => p.id === saved.outId)
     if (saved.scene && validateScene(saved.scene).ok)
       first = { scene: saved.scene, tplId: null }
     else {
       const T = TEMPLATES.find(x => x.id === saved.tplId) || TEMPLATES[0]
-      const sc = T.scene()
+      const sc = T.scene(!!savedPreset && savedPreset.w > savedPreset.h)
       if (saved.bg && (Object.hasOwn(BG, saved.bg) || HEX_RE.test(saved.bg)))
         sc.background = saved.bg
       first = { scene: sc, tplId: T.id }
