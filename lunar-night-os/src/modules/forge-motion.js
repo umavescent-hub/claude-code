@@ -3253,21 +3253,23 @@
         st.playing = true
         setPlayUi()
       }
+      const prevFrame = st.scene
+        ? `${st.scene.width || 1080}x${st.scene.height || 1920}`
+        : null
       st.scene = clone(scene)
       st.tplId = o.tplId || null
       st.errors = []
       fixRow.hidden = true
       setEditor(stringify(st.scene), false)
       editorNote(okLine(st.scene, validateScene(st.scene)), 'ok')
-      // Output frame: a custom scene size renders as declared; a preset-sized scene keeps
-      // the chosen preset (say 4K) unless the orientation flips.
-      const [w, hh] = outDims()
+      // Output frame: follow the scene when its declared frame changes (a Fable 16:9
+      // scene, a size typed into the JSON) or is not a preset; otherwise keep the
+      // chef's pick, so 16:9 or 4K sticks while trying templates.
       const own = presetFor(st.scene)
+      const frameKey = `${st.scene.width || 1080}x${st.scene.height || 1920}`
       if (
-        own === 'scene' ||
-        st.outId === 'scene' ||
-        portrait(w, hh) !==
-          portrait(st.scene.width || 1080, st.scene.height || 1920)
+        !o.keepOut &&
+        (own === 'scene' || st.outId === 'scene' || frameKey !== prevFrame)
       )
         st.outId = own
       if (!st.fpsTouched) st.fps = st.scene.fps || 30
@@ -3283,6 +3285,7 @@
             ]),
       )
       monName.textContent = T ? T.name : st.scene.name || 'Custom scene'
+      canvas.setAttribute('aria-label', `Scene preview: ${monName.textContent}`)
       bgSeg.set(
         Object.hasOwn(BG, st.scene.background || 'black')
           ? st.scene.background || 'black'
@@ -3825,7 +3828,12 @@
     )
       st.outId = saved.outId
     setPlayUi()
-    applyScene(first.scene, { tplId: first.tplId })
+    const ownFirst = presetFor(first.scene)
+    applyScene(first.scene, {
+      tplId: first.tplId,
+      // keep a remembered preset only when it still fits this scene's frame
+      keepOut: st.outId !== 'scene' && ownFirst !== 'scene' && !!saved.outId,
+    })
     drawPosters()
     const allFonts = new Set()
     for (const T of TEMPLATES)
