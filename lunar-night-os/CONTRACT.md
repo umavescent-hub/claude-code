@@ -1,4 +1,18 @@
-# Lunar Night OS: module contract
+# Kubrick: module contract
+
+> **Update, 9 Nov (the user's direction; it overrides older wording below).**
+> - The product is named **Kubrick**. Never show "Lunar Night OS" in the UI. "Lunar Night" stays only as the name of the look and its LUTs. The folder is still `lunar-night-os/` for now.
+> - The interface must look like **CapCut Mobile and CapCut Desktop**: near-black panels, white sans type, one cyan accent, pill buttons, rounded panels, compact toolbars with icon + label, timeline-style strips. No serif headings, no all-caps mono labels, no editorial flourishes.
+> - The tokens in `src/core.css` were re-mapped, so the old names still work:
+>   - `--amber*` is now the **cyan accent** (`#00d4e0`);
+>   - `--obsidian` / `--graphite*` are the CapCut blacks;
+>   - `--bone` is white;
+>   - `--crimson` is the record/delete red.
+> - `--f-display`, `--f-body` and `--f-mono` are all **Inter/Roboto sans**. Use `var(--f-data)` (Roboto Mono) only for timecodes, numbers in tables and code.
+> - Keep your own CSS consistent with this: weights 500–700 for headings, 8–18 px radii, and no letter-spaced uppercase except tiny labels.
+> - Colours of the *looks* (obsidian/violet/amber/crimson food palette, lime captions) are content, not interface. Use them only inside previews, swatches and exported assets. For interface drawing on a canvas, use `LN.palette.accent`, `LN.palette.uiBg` and `LN.palette.uiPanel`.
+> - **Camera:** the Rig uses an exact 3D Pixel 10 Pro XL (`LN.rigPhone`, built separately in `modules/rig-phone.js`) whose screen shows the **Blackmagic Camera** app and the **Pixel Camera** app. Other modules that show the phone should reuse `LN.rigPhone` when it exists.
+
 
 The OS is one HTML page, built from plain files by `node lunar-night-os/build.mjs`. It ships two ways:
 

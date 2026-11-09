@@ -6,8 +6,7 @@
     } catch (e) {
       console.error('[LN] boot failed', e)
       const app = document.getElementById('ln-app')
-      if (app)
-        app.textContent = `Lunar Night OS failed to start: ${e && e.message}`
+      if (app) app.textContent = `Kubrick failed to start: ${e && e.message}`
     }
   }
   if (document.readyState === 'loading')

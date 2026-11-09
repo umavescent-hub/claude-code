@@ -1,4 +1,4 @@
-/* Lunar Night OS — core runtime. No dependencies. Exposes window.LN.
+/* Kubrick — core runtime. No dependencies. Exposes window.LN.
    Every module registers itself with LN.register({...}); LN.boot() renders the
    shell, the home view and the router. See ../CONTRACT.md for the full API. */
 ;(() => {
@@ -687,6 +687,10 @@ Never: lifted grey blacks in the dark look, stock transitions, emoji captions, f
     amber: '#DDA13E',
     crimson: '#A82424',
     bone: '#F4F1EA',
+    // Kubrick UI accent (CapCut-style cyan) for canvas drawing of interface elements
+    accent: '#00D4E0',
+    uiBg: '#0A0A0B',
+    uiPanel: '#161618',
     // Grade targets from the Lunar Night look
     gradeBlack: '#08080A',
     gradeSilver: '#C8D0DC',
@@ -698,9 +702,10 @@ Never: lifted grey blacks in the dark look, stock transitions, emoji captions, f
     blueShadow: '#13254A',
   }
   LN.fonts = {
-    display: 'Instrument Serif',
-    body: 'Newsreader',
-    mono: 'JetBrains Mono',
+    display: 'Inter',
+    body: 'Inter',
+    mono: 'Roboto Mono',
+    ui: 'Inter',
     titleFaces: ['Cormorant Garamond', 'Instrument Serif', 'Playfair Display'],
     metaFaces: ['JetBrains Mono', 'Space Mono', 'Courier Prime'],
     // Runbook reel captions: condensed sans, lowercase, lime #D6DB05
@@ -1208,18 +1213,11 @@ Never: lifted grey blacks in the dark look, stock transitions, emoji captions, f
         'section',
         { class: 'ln-hero' },
         LN.h('div', { class: 'ln-rec' }, 'Road to three stars · production OS'),
-        LN.h(
-          'h1',
-          null,
-          'Lunar ',
-          LN.h('em', null, 'Night'),
-          LN.h('br'),
-          'Production OS',
-        ),
+        LN.h('h1', null, 'Kubrick'),
         LN.h(
           'p',
           null,
-          'Everything between the walk-in and the upload, run from one phone: the Pixel 10 Pro XL rig, a shot bible, the CapCut Mobile edit, three real .cube looks, titles, Fable 5.1 assets, and the psychology of the first three seconds.',
+          'Your production OS for the road to three stars. Everything between the walk-in and the upload, run from one phone: the Pixel 10 Pro XL rig, a shot bible, the CapCut edit, real .cube looks, titles, Fable 5.1 assets and the psychology of the first three seconds.',
         ),
         LN.h(
           'div',
@@ -1296,9 +1294,9 @@ Never: lifted grey blacks in the dark look, stock transitions, emoji captions, f
     const style = document.getElementById('ln-style')
     const script = document.getElementById('ln-script')
     const fonts = document.getElementById('ln-fonts')
-    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Lunar Night OS</title>${fonts ? fonts.outerHTML : ''}<style id="ln-style">${style ? style.textContent : ''}</style></head><body><div id="ln-app"></div><script id="ln-script">${script ? script.textContent : ''}</script></body></html>`
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Kubrick</title>${fonts ? fonts.outerHTML : ''}<style id="ln-style">${style ? style.textContent : ''}</style></head><body><div id="ln-app"></div><script id="ln-script">${script ? script.textContent : ''}</script></body></html>`
     return LN.save({
-      filename: 'Lunar-Night-OS.html',
+      filename: 'Kubrick.html',
       data: html,
       mime: 'text/html',
     })
@@ -1367,10 +1365,9 @@ Never: lifted grey blacks in the dark look, stock transitions, emoji captions, f
             {
               class: 'ln-brand',
               href: '#home',
-              'aria-label': 'Lunar Night OS home',
+              'aria-label': 'Kubrick home',
             },
-            LN.h('b', null, 'Lunar'),
-            LN.h('i', null, 'Night'),
+            LN.h('b', null, 'Kubrick'),
           ),
           LN.h('span', { class: 'ln-rec' }, 'OS'),
           LN.h(
@@ -1440,7 +1437,7 @@ Never: lifted grey blacks in the dark look, stock transitions, emoji captions, f
         LN.h(
           'div',
           null,
-          `Lunar Night OS v${LN.version} · built for the road to three stars`,
+          `Kubrick v${LN.version} · built for the road to three stars`,
         ),
         LN.h(
           'div',

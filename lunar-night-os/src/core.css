@@ -1,37 +1,38 @@
-/* Lunar Night OS — core design system.
+/* Kubrick — core design system (CapCut-style: near-black panels, white type, cyan accent, sans throughout).
    Layout: a camera-HUD field manual. Sticky REC header + module rail on top;
    prose sits in one ~68ch reading column; tool panels use a grid that collapses
    to one column at phone width. One committed dark world (no light theme). */
 :root {
   color-scheme: dark;
   /* Surfaces: obsidian page, graphite panels, hairline rules */
-  --obsidian: #070709;
-  --graphite: #121318;
-  --graphite-2: #181a21;
-  --graphite-3: #20232c;
-  --line: #1e202b;
-  --line-2: #2b2e3d;
+  --obsidian: #0a0a0b;
+  --graphite: #161618;
+  --graphite-2: #1f1f22;
+  --graphite-3: #2a2a2e;
+  --line: #26262a;
+  --line-2: #3a3a40;
   /* Ink: lunar silver family */
-  --silver: #d4dce8;
-  --silver-2: #9aa3b4;
-  --silver-3: #6b7486;
-  --bone: #f4f1ea;
+  --silver: #e4e4e7;
+  --silver-2: #a1a1aa;
+  --silver-3: #71717a;
+  --bone: #ffffff;
   /* Accents: tungsten amber (action, active), sear crimson (REC, critical) */
-  --amber: #dda13e;
-  --amber-ink: #1a1206;
-  --amber-soft: rgba(221, 161, 62, 0.13);
-  --amber-line: rgba(221, 161, 62, 0.42);
-  --crimson: #a82424;
-  --crimson-text: #e8796f;
-  --crimson-soft: rgba(168, 36, 36, 0.16);
+  --amber: #00d4e0;
+  --amber-ink: #001518;
+  --amber-soft: rgba(0, 212, 224, 0.12);
+  --amber-line: rgba(0, 212, 224, 0.45);
+  --crimson: #fe2c55;
+  --crimson-text: #ff6b86;
+  --crimson-soft: rgba(254, 44, 85, 0.14);
   --cobalt: #4c6a8f;
   --sage: #8db39a;
   --sage-soft: rgba(141, 179, 154, 0.14);
   /* Type */
-  --f-display: "Instrument Serif", "Cormorant Garamond", Georgia, serif;
-  --f-body: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
-  --f-mono:
-    "JetBrains Mono", "Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  --f-display:
+    "Inter", "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Inter", "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Inter", "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-data: "Roboto Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
   --t-xs: 0.6875rem;
   --t-sm: 0.8125rem;
   --t-base: 0.9375rem;
@@ -49,9 +50,9 @@
   --s6: 32px;
   --s7: 48px;
   --s8: 72px;
-  --r1: 3px;
-  --r2: 6px;
-  --r3: 12px;
+  --r1: 8px;
+  --r2: 12px;
+  --r3: 18px;
   --measure: 68ch;
   --wide: 1180px;
   --header-h: 104px;
@@ -1138,4 +1139,88 @@ button.ln-chip[aria-pressed="true"] {
     /* biome-ignore lint/complexity/noImportantStyles: reduced motion must override component animation */
     scroll-behavior: auto !important;
   }
+}
+
+/* ---------- Kubrick / CapCut-style overrides */
+.ln-view-head h1,
+.ln-hero h1,
+.ln-h2,
+.ln-brand b,
+.ln-pipeline a b,
+.ln-stat b {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.ln-hero h1 {
+  font-size: clamp(2.5rem, 10vw, 4.5rem);
+  line-height: 1;
+}
+.ln-hero h1 em,
+.ln-brand i {
+  font-style: normal;
+}
+.ln-prose,
+.ln-view-head .ln-lede,
+.ln-section-head p,
+.ln-hero p,
+.ln-pipeline a small,
+.ln-steps > li,
+.ln-callout {
+  font-size: var(--t-base);
+  line-height: 1.6;
+}
+.ln-btn {
+  border-radius: 999px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+  font-size: var(--t-sm);
+}
+.ln-btn:hover {
+  background: #33e0ea;
+}
+.ln-btn.ghost:hover {
+  background: var(--amber-soft);
+}
+.ln-btn.quiet:hover,
+.ln-btn.danger:hover {
+  background: var(--graphite-2);
+}
+.ln-btn.quiet {
+  background: var(--graphite-2);
+  border-color: transparent;
+  color: var(--bone);
+}
+.ln-eyebrow,
+.ln-label,
+.ln-chip,
+.ln-seg button,
+.ln-rec,
+.ln-kv dt,
+.ln-table th,
+.ln-callout > b {
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.ln-seg {
+  border-radius: 999px;
+  border-color: transparent;
+  background: var(--graphite-2);
+}
+.ln-seg button {
+  border-radius: 999px;
+}
+.ln-card {
+  border-color: transparent;
+  background: var(--graphite);
+}
+.ln-tabs button[aria-selected="true"],
+.ln-rail a[aria-current="page"] {
+  font-weight: 600;
+}
+.ln-copyblock pre,
+.ln-prose code,
+.ln-code-inline,
+.ln-num {
+  font-family: var(--f-data);
 }
