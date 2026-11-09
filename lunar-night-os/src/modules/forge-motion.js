@@ -2339,7 +2339,7 @@
       { label: '03 · SALINITY', to: 1.2, decimals: 1, suffix: ' %' },
     ]
     // 9:16 stacks the readings; 16:9 sets them in three columns.
-    const size = land ? 150 : 170
+    const size = land ? 128 : 170
     const ruleW = land ? 0.22 : 0.76
     return sceneOf(
       F,
@@ -2347,7 +2347,7 @@
       D,
       'black',
       rows.flatMap((r, i) => {
-        const x = land ? r3(0.1 + i * 0.29) : 0.12
+        const x = land ? r3(0.11 + i * 0.28) : 0.12
         const y = land ? atY(F, 0.5) : atY(F, 0.31, i * 279)
         const s0 = r3(0.3 + i * 0.5)
         return [
