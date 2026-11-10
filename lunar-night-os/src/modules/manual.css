@@ -283,6 +283,12 @@
   gap: var(--s5);
   align-content: start;
 }
+.m-manual .mn-reader > *,
+.m-manual .mn-panes > *,
+.m-manual .mn-recall-grid > *,
+.m-manual .mn-recall-top > * {
+  min-width: 0;
+}
 .m-manual .mn-chmeta {
   display: flex;
   flex-wrap: wrap;

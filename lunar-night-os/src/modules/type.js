@@ -1698,7 +1698,7 @@
       paint: (c, k) => paintHud(c, s, k),
       readout: () => {
         const cv = canvasOf(s.canvas)
-        return `${cv.W} × ${cv.H} PX · PNG · ALPHA · ${s.fps} FPS · ${angleOf(s)}° SHUTTER`
+        return `${cv.W} × ${cv.H} PX · PNG · ALPHA · ${s.fps} FPS · ${angleOf(s)}°`
       },
     })
     const set = (k, v) => {

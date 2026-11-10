@@ -257,18 +257,16 @@
 }
 .m-type .ty-mattes {
   display: grid;
-  gap: 1px;
+  gap: var(--s3);
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
-  background: var(--line);
-  border: 1px solid var(--line);
-  border-radius: var(--r2);
-  overflow: hidden;
 }
 .m-type .ty-matte {
   display: grid;
   grid-template-columns: 116px minmax(0, 1fr);
   gap: var(--s4);
   padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
   background: var(--obsidian);
   min-width: 0;
 }
@@ -427,6 +425,7 @@
 }
 .m-type .ty-meta-sample p {
   overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 .m-type .ty-meta-sample p:first-child {
   color: var(--ty-film-amber, var(--amber));
