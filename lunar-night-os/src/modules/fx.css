@@ -1,0 +1,219 @@
+/* Transitions — baseline layout (demo scenes get a polish pass later) */
+.m-fx .fx-cards {
+  display: grid;
+  gap: 14px;
+}
+.m-fx .fx-card {
+  background: var(--graphite);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+.m-fx .fx-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.m-fx .fx-card-title {
+  font-weight: 700;
+  font-size: 17px;
+}
+.m-fx .fx-card-grid {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 900px) {
+  .m-fx .fx-card-grid {
+    grid-template-columns: 240px 1fr;
+  }
+}
+.m-fx .fx-demo-col {
+  display: grid;
+  gap: 8px;
+}
+.m-fx .fx-frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  max-width: 220px;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--obsidian);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.m-fx .fx-stage {
+  position: absolute;
+  inset: 0;
+}
+.m-fx .fx-stage > * {
+  position: absolute;
+}
+.m-fx .fx-hud {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-data);
+  font-size: 10px;
+  color: var(--silver-2);
+}
+.m-fx .fx-knobs,
+.m-fx .fx-ctl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.m-fx .fx-block {
+  display: grid;
+  gap: 6px;
+}
+.m-fx .fx-head,
+.m-fx .fx-rule-name {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--silver-2);
+}
+.m-fx .fx-tap {
+  display: grid;
+  gap: 4px;
+  padding-left: 0;
+  list-style: none;
+}
+.m-fx .fx-tap li {
+  padding: 6px 8px;
+  background: var(--graphite-2);
+  border-radius: var(--r-pill);
+  font-size: 14px;
+}
+.m-fx .fx-see {
+  color: var(--on-accent-soft);
+  font-size: 12px;
+}
+.m-fx .fx-calc {
+  display: grid;
+  gap: 6px;
+}
+.m-fx .fx-calc-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.m-fx .fx-calc-cell {
+  background: var(--graphite-2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: var(--f-data);
+}
+.m-fx .fx-calc-tc {
+  color: var(--amber);
+}
+.m-fx .fx-lanes {
+  display: grid;
+  gap: 4px;
+}
+.m-fx .fx-lane-row {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 6px;
+  align-items: center;
+}
+.m-fx .fx-lane {
+  position: relative;
+  height: 18px;
+  background: var(--graphite-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.m-fx .fx-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 4px;
+}
+.m-fx .fx-bar-a {
+  background: var(--t3);
+}
+.m-fx .fx-bar-b {
+  background: var(--t4);
+}
+.m-fx .fx-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--amber);
+}
+.m-fx .fx-tl {
+  position: relative;
+  height: 24px;
+}
+.m-fx .fx-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-data);
+  font-size: 10px;
+  color: var(--silver-2);
+}
+.m-fx .fx-rules {
+  display: grid;
+  gap: 8px;
+}
+.m-fx .fx-rule-line {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px;
+}
+.m-fx .fx-allow {
+  color: var(--t6);
+}
+.m-fx .fx-diag svg {
+  width: 100%;
+  height: auto;
+}
+.m-fx .fx-monitor {
+  background: var(--graphite-2);
+  border-radius: 8px;
+  padding: 8px;
+  font-family: var(--f-data);
+  font-size: 12px;
+}
+.m-fx .fx-matte {
+  background: #000;
+}
+.m-fx .fx-vhs-lines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.06) 0 1px,
+    transparent 1px 3px
+  );
+  inset: 0;
+}
+.m-fx .fx-vhs-band {
+  left: 0;
+  right: 0;
+  height: 6%;
+  background: rgba(255, 255, 255, 0.12);
+}
+.m-fx .fx-ca-r {
+  mix-blend-mode: screen;
+  filter: drop-shadow(2px 0 0 rgba(255, 0, 0, 0.6));
+}
+.m-fx .fx-ca-b {
+  mix-blend-mode: screen;
+  filter: drop-shadow(-2px 0 0 rgba(0, 80, 255, 0.6));
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-fx .fx-stage * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

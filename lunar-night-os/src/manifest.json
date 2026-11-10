@@ -1,9 +1,7 @@
 {
   "css": [
     "core.css",
-    "modules/rig-phone.css",
     "modules/rig.css",
-    "modules/shots.css",
     "modules/edit.css",
     "modules/fx.css",
     "modules/grade.css",
@@ -14,6 +12,7 @@
     "modules/fable.css",
     "modules/autocut.css",
     "modules/forge-motion.css",
+    "modules/beat.css",
     "modules/aura.css",
     "modules/manual.css"
   ],
@@ -23,9 +22,7 @@
     "data/shots.js",
     "data/luts-v2.js",
     "engines/lut-engine.js",
-    "modules/rig-phone.js",
     "modules/rig.js",
-    "modules/shots.js",
     "modules/edit.js",
     "modules/fx.js",
     "modules/grade.js",
@@ -36,6 +33,7 @@
     "modules/forge-audio.js",
     "modules/autocut.js",
     "modules/forge-motion.js",
+    "modules/beat.js",
     "modules/fable.js",
     "modules/aura.js",
     "modules/manual.js",

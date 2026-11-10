@@ -1,14 +1,16 @@
 # Lunar Night OS skills
 
-Skills teach Claude a method once, so every chat can use it on your phone or your computer. A skill is a folder holding a `SKILL.md`, which Claude reads when your request matches its description, plus any reference files.
+Skills teach Claude a method once, so every chat can use it on your phone or your computer. A skill is a folder holding a `SKILL.md`, which Claude reads when your request matches its description, plus any reference files and scripts.
 
 | Skill | What it does |
 |---|---|
 | `multilayer-music-edit/` | Plans and runs music-cut, multi-layer edits that mix VHS / Hi8, 4K Lunar Night and Dreamcore in CapCut Mobile or Desktop. It gives you a beat-marker list, a cut sheet, and tap-by-tap steps for Mobile and Desktop. |
 
+Inside it: `SKILL.md` (the method), `reference.md` (beat tables, three worked 30 s reels, blend modes, the VHS recipe, the tap library) and `scripts/beats.py` (prints the beat grid for any song: `python3 scripts/beats.py 92 24 30`).
+
 ## Install in claude.ai (web, then it works in the apps too)
 
-1. **Zip the folder, not its contents.** The zip must hold `multilayer-music-edit/SKILL.md`.
+1. **Zip the folder, not its contents.** The zip must hold `multilayer-music-edit/SKILL.md`, with `reference.md` and `scripts/` beside it.
    - On a Mac: right-click the `multilayer-music-edit` folder › Compress.
    - On Windows: right-click the folder › Send to › Compressed (zipped) folder.
    - From a terminal, in this `skills` folder: `zip -r multilayer-music-edit.zip multilayer-music-edit`
@@ -38,4 +40,4 @@ Paste the whole of `SKILL.md` into the chat, or into a Project's instructions, t
 
 Edit the files, zip the folder again and upload it again. In claude.ai, remove the old copy first if the upload complains about the name.
 
-The beat tables are generated and checked by a script, not typed. If you change a BPM table or a template, recompute the numbers. Don't edit them by hand.
+The beat tables are generated and checked by a script, not typed. If you change a BPM table or a template, recompute the numbers with `scripts/beats.py` and paste its rows in. Don't edit them by hand.

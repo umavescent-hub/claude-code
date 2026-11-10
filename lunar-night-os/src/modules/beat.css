@@ -1,0 +1,12 @@
+/* Beat Forge — Music Edit tab inside The Cut */
+.m-beat .beat-status {
+  font-family: var(--f-data);
+  font-size: 13px;
+  color: var(--silver-2);
+}
+.m-beat .ln-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}

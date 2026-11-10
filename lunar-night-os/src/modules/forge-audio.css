@@ -1,0 +1,296 @@
+/* modules/forge-audio.css — Sound Forge (a tab inside Forge).
+   Scoped under .m-forge .sf. Eight sound cards laid out like CapCut audio
+   clips: a big step number in the track colour, the waveform as a clip strip
+   (white frame with grab handles while it plays), sliders below, pill buttons. */
+.m-forge .sf {
+  display: grid;
+  gap: var(--s6);
+  min-width: 0;
+}
+.m-forge .sf .ln-section {
+  margin-block: 0;
+}
+.m-forge .sf .ln-section + .ln-section,
+.m-forge .sf .sf-grid + .ln-section {
+  padding-top: var(--s5);
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- Spec strip + pack button */
+.m-forge .sf-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3) var(--s4);
+  min-width: 0;
+}
+.m-forge .sf-spec {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+.m-forge .sf-spec > span {
+  padding: 4px 9px;
+  border-radius: var(--r-pill);
+  background: var(--graphite-2);
+  font-family: var(--f-data);
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+  white-space: nowrap;
+}
+.m-forge .sf-pack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+  min-width: 0;
+}
+.m-forge .sf-status {
+  font-family: var(--f-body);
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Card grid */
+.m-forge .sf-grid {
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  min-width: 0;
+}
+.m-forge .sf-card {
+  --sf-c: var(--t1);
+  display: grid;
+  gap: var(--s3);
+  align-content: start;
+  min-width: 0;
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  background: var(--graphite);
+  transition: border-color 0.15s;
+}
+.m-forge .sf-card:hover {
+  border-color: var(--line-2);
+}
+
+/* Head: step number in the track colour, name, tag, length */
+.m-forge .sf-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s3);
+  min-width: 0;
+}
+.m-forge .sf-num {
+  flex: 0 0 auto;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 2rem;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  color: var(--sf-c);
+  font-variant-numeric: tabular-nums;
+}
+.m-forge .sf-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.m-forge .sf-title h3 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: var(--t-md);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--bone);
+  overflow-wrap: anywhere;
+}
+.m-forge .sf-tag {
+  padding: 2px 7px;
+  border-radius: var(--r1);
+  background: color-mix(in srgb, var(--sf-c) 14%, transparent);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--sf-c);
+  white-space: nowrap;
+}
+.m-forge .sf-len {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding-top: 3px;
+  font-family: var(--f-data);
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.m-forge .sf-use {
+  font-family: var(--f-body);
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  color: var(--silver-2);
+}
+
+/* Clip strip: the waveform drawn by the canvas, CapCut-audio-clip style */
+.m-forge .sf-clip {
+  position: relative;
+  min-width: 0;
+  border-radius: var(--r2);
+  border: 1px solid var(--line);
+  background: var(--obsidian);
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.m-forge .sf-wave {
+  display: block;
+  width: 100%;
+  height: 84px;
+}
+/* Playing: the selected-clip white frame with grab handles */
+.m-forge .sf-card:has(.sf-acts [aria-pressed="true"]) .sf-clip {
+  border-color: var(--bone);
+  box-shadow: 0 0 0 1px var(--bone);
+}
+.m-forge .sf-card:has(.sf-acts [aria-pressed="true"]) .sf-clip::before,
+.m-forge .sf-card:has(.sf-acts [aria-pressed="true"]) .sf-clip::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 9px;
+  background:
+    linear-gradient(var(--graphite-3), var(--graphite-3)) 50% 50% / 1px 14px
+    no-repeat,
+    var(--bone);
+  pointer-events: none;
+}
+.m-forge .sf-card:has(.sf-acts [aria-pressed="true"]) .sf-clip::before {
+  left: 0;
+}
+.m-forge .sf-card:has(.sf-acts [aria-pressed="true"]) .sf-clip::after {
+  right: 0;
+}
+
+/* Meter line: peak · RMS · file size */
+.m-forge .sf-meter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-family: var(--f-data);
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+}
+.m-forge .sf-meter > span:empty {
+  display: none;
+}
+.m-forge .sf-meter > span + span::before {
+  content: "·";
+  margin-right: 10px;
+  color: var(--silver-3);
+}
+.m-forge .sf-peak {
+  color: var(--bone);
+}
+
+/* Params: two columns of sliders; a segmented control takes the full row */
+.m-forge .sf-params {
+  display: grid;
+  gap: var(--s3) var(--s4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  padding-top: var(--s2);
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+.m-forge .sf-params > .ln-field:has(.ln-seg) {
+  grid-column: 1 / -1;
+}
+.m-forge .sf-params .ln-label > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.m-forge .sf-params .ln-label output {
+  color: var(--sf-c);
+  font-family: var(--f-data);
+  white-space: nowrap;
+}
+.m-forge .sf-params .ln-range::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    90deg,
+    var(--sf-c) var(--fill, 50%),
+    var(--line-2) var(--fill, 50%)
+  );
+}
+.m-forge .sf-params .ln-range::-moz-range-progress {
+  background: var(--sf-c);
+}
+.m-forge .sf-params .ln-range::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px var(--sf-c);
+}
+.m-forge .sf-params .ln-range::-moz-range-thumb {
+  box-shadow: 0 0 0 1px var(--sf-c);
+}
+
+/* Seed row and actions */
+.m-forge .sf-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s2);
+  min-width: 0;
+}
+.m-forge .sf-seed {
+  flex: 1 1 110px;
+  max-width: 150px;
+  min-width: 0;
+}
+.m-forge .sf-seed .ln-input {
+  font-family: var(--f-data);
+}
+.m-forge .sf-foot .ln-btn.small {
+  min-height: 40px;
+  padding-inline: 12px;
+}
+.m-forge .sf-acts {
+  display: grid;
+  gap: var(--s2);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.m-forge .sf-acts .ln-btn {
+  width: 100%;
+  min-width: 0;
+}
+.m-forge .sf-acts .ln-btn[aria-pressed="true"] {
+  background: var(--bone);
+  border-color: var(--bone);
+  color: var(--obsidian);
+}
+
+/* Rules table: the format column stays on one line, the others wrap */
+.m-forge .sf .ln-table td {
+  min-width: 11em;
+}
+.m-forge .sf .ln-table td:first-child {
+  white-space: nowrap;
+}
+.m-forge .sf .ln-steps {
+  max-width: 72ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-forge .sf-card,
+  .m-forge .sf-clip {
+    transition: none;
+  }
+}

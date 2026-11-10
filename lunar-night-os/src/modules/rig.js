@@ -1,4 +1,4 @@
-/* Lunar Night OS: modules/rig.js, Rig (01). Pre-flight for the Pixel 10 Pro XL.
+/* Kubrick: modules/rig.js, Rig (01). Pre-flight for the Pixel 10 Pro XL.
    Sections: 3D camera map, capture presets by format, pre-flight checklist,
    shutter and flicker calculator, white balance guide, holding the phone,
    "settle it on your phone" device facts, native audio.
@@ -58,10 +58,37 @@
   const CONF_KIND = {
     confirmed: 'sage',
     likely: 'amber',
-    unverified: 'crimson',
+    unverified: 'gold',
     contradicted: 'crimson',
   }
   const confChip = c => ui.chip(c, CONF_KIND[c] || '')
+
+  /* The exact 3D phone from modules/rig-phone.js (LN.rigPhone), when it is
+     loaded. Its API is owned by another file, so every call is feature-
+     detected and guarded; the CSS phone below is the fallback. */
+  let phoneApi = null
+  const RIG_PART = {
+    uw: 'ultrawide',
+    main: 'wide',
+    tele: 'tele',
+    ldaf: 'ldaf',
+    flicker: 'flicker',
+    flash: 'flash',
+    mics: 'micRear',
+  }
+  function callPhone(names, ...args) {
+    if (!phoneApi) return false
+    for (const name of [].concat(names)) {
+      if (typeof phoneApi[name] !== 'function') continue
+      try {
+        phoneApi[name](...args)
+      } catch (_e) {
+        /* optional hook on another agent's module */
+      }
+      return true
+    }
+    return false
+  }
 
   const scrollToEl = el =>
     el.scrollIntoView({
@@ -309,59 +336,110 @@
   ]
 
   /* ================================================================ 2. formats */
+  // Night Reel: the runbook. Marketplace: the God Mode guide (step 2) and the
+  // playbook. Kitchen: the Jade Shoot Kit (KITCHEN 30 / POUR 60) beside the
+  // brief's 4K24 narrative; where they disagree both are shown as modes.
+  // Documentary: starting points, labelled as such.
   const FORMATS = [
     {
       id: 'night',
       label: 'Night Reel',
-      src: 'Runbook (canon)',
       modes: [
         {
           id: 'violet',
           label: 'Violet · 3200K',
-          res: '4K (3840×2160), vertical',
+          src: 'LunarNight v2 runbook (canon)',
           fps: 24,
+          fpsLabel: '24 fps',
           angle: 360,
-          shutterNote: 'Streaks the tail lights. Flicker-safe on 60 Hz mains.',
-          iso: 'ISO 400 to start; raise only until zebras sit inside the brightest bulb. Stay under 1600',
-          kelvin: '3200K, tint 0',
-          ev: '−1.5 to −2 stops: expose for the lights, set with ISO only',
-          lens: '1x main, or 2x for a tighter sign. Never 0.5x',
-          stab: 'Blackmagic OFF; Pixel Standard or Locked. Braced dead-still either way',
-          hdr: 'OFF · Rec.709, not HLG',
-          codec: 'HEVC · Max',
-          look: 'LunarNight_v2_Violet.cube',
-          why: 'About 70% of the look is made here: cold WB turns the sky violet, underexposure drops the walls to black, 360° streaks the cars.',
-          hud: ['24 fps', '360°', 'ISO 400', '3200K', 'MF', '1x'],
+          why: 'About 70% of the look is made here: cold WB turns the sky violet, underexposure drops the walls to black, and 360° streaks the cars.',
+          quick: [
+            ['Shoot', '4K · 24 fps · HEVC Max · Rec.709, HDR off'],
+            [
+              'Light',
+              '360° (1/24 s) · ISO 400, never past 1600 · −1.5 to −2 stops',
+            ],
+            ['Colour', '3200K, tint 0 · LunarNight_v2_Violet on the monitor'],
+            [
+              'Hold',
+              'Braced dead-still: car roof, post, wall or the Osmo as a stand',
+            ],
+          ],
+          hud: ['24', '360°', '400', '3200K', 'MF', '1x'],
+          g: {
+            iso: '400 (under 1600)',
+            wb: '3200K · tint 0',
+            ev: '−1.5 to −2, by ISO',
+            lens: '1x (2x crop)',
+            stab: 'BM off · Pixel Standard',
+            hdr: 'OFF · Rec.709',
+            codec: 'HEVC · Max',
+          },
           bm: {
-            stab: 'OFF',
+            stab: [
+              'OFF',
+              'You are braced; stabilization only crops and wobbles.',
+            ],
             res: '4K (3840 × 2160)',
-            iso: '400',
-            wb: 'Manual 3200K, tint 0',
-            lens: '1x',
-            shutter: '360° (or 1/24 if it shows speed)',
-            rec: 'ON when you edit in CapCut (LunarNight_v2_Soft.cube for a lighter bake)',
+            iso: [
+              '400 to start; raise only until zebras sit inside the brightest bulb. Under 1600',
+              'Expose for the lights with ISO alone (runbook step 3).',
+            ],
+            wb: ['Manual 3200K, tint 0', 'Cold WB turns the dusk sky violet.'],
+            lens: [
+              '1x (2x crop for a tighter sign). Never 0.5x',
+              'The ultrawide bends the building.',
+            ],
+            shutter: '360°, or 1/24 if it shows speed',
+            lut: [
+              'LunarNight_v2_Violet.cube, Display LUT ON',
+              'The LUT preview is the review.',
+            ],
+            rec: [
+              'ON when you edit in CapCut (LunarNight_v2_Soft.cube for a lighter bake)',
+              'CapCut mobile likely cannot load a .cube, so the look rides in the clip.',
+            ],
           },
           px: {
             res: '4K',
-            stab: 'Standard (or Locked)',
-            off: ['Video Boost', 'Night Sight video'],
+            stab: ['Standard (or Locked)', 'You are braced anyway.'],
+            off: 'Video Boost OFF · Night Sight video OFF',
+            offWhy:
+              'Both brighten the night and turn your blacks grey (runbook).',
             wb: '3200K (drag toward blue)',
-            shutter: 'the slowest offered: 1/24 or 1/30',
+            shutter: 'The slowest offered: 1/24 or 1/30',
             iso: '400 to start',
-            focus: 'Manual; drag until peaking outlines the building',
-            shadows: 'all the way down',
             ev: '−1.5 to −2, if your build has no shutter or ISO',
+            shadows: 'All the way down',
+            focus: 'Manual; drag until peaking outlines the building',
           },
         },
         {
           id: 'blue',
           label: 'Blue · 2800K',
           base: 'violet',
-          kelvin: '2800K, tint 0',
-          look: 'LunarNight_v2_Blue.cube',
           why: 'The small-town variant: the same capture 400K colder, so the sky lands deep blue instead of violet.',
-          hud: ['24 fps', '360°', 'ISO 400', '2800K', 'MF', '1x'],
-          bm: { wb: 'Manual 2800K, tint 0' },
+          quick: [
+            ['Shoot', '4K · 24 fps · HEVC Max · Rec.709, HDR off'],
+            [
+              'Light',
+              '360° (1/24 s) · ISO 400, never past 1600 · −1.5 to −2 stops',
+            ],
+            ['Colour', '2800K, tint 0 · LunarNight_v2_Blue on the monitor'],
+            [
+              'Hold',
+              'Braced dead-still: car roof, post, wall or the Osmo as a stand',
+            ],
+          ],
+          hud: ['24', '360°', '400', '2800K', 'MF', '1x'],
+          g: { wb: '2800K · tint 0' },
+          bm: {
+            wb: ['Manual 2800K, tint 0', 'Colder WB: deep-blue sky.'],
+            lut: [
+              'LunarNight_v2_Blue.cube, Display LUT ON',
+              'The LUT preview is the review.',
+            ],
+          },
           px: { wb: '2800K (drag toward blue)' },
         },
       ],
@@ -369,59 +447,88 @@
     {
       id: 'market',
       label: 'Marketplace Review',
-      src: 'Playbook: 1080p/4K at 30, or 60 for slow-mo, handheld. ISO, Kelvin and EV are starting points, not canon',
       modes: [
         {
           id: 'm30',
           label: '30 fps',
-          res: '1080p, or 4K if you want room to punch in',
+          src: 'God Mode guide step 2 and the playbook. Kelvin and EV are starting points',
           fps: 30,
+          fpsLabel: '30 fps',
           angle: 180,
-          shutterNote: 'Flicker-safe on 60 Hz mains.',
-          iso: 'The lowest that holds 1/60: ISO 50–400',
-          kelvin:
-            'Locked to the light: 5400–5600K by a window, 3800–4200K under LED',
-          ev: '−0.3, so the glaze and the rice keep detail',
-          lens: '1x; 2x for the plate; 0.5x Macro for the crumb shot',
-          stab: 'Pixel Standard (handheld). Not Active: it records 1080p30 only',
-          hdr: 'OFF: SDR for CapCut filters and Adjust',
-          codec: 'HEVC. Hold off on AV1 until CapCut plays one back clean',
-          look: 'None at capture. In CapCut: filter 20–40 + Adjust, or bake Dreamcore (happy) / LunarNight (dark)',
-          why: 'Reviews live on the bite and the verdict. 30 fps matches the 1080p30 export; the hands stay loose and quick.',
-          hud: ['30 fps', '180°', 'ISO 100', '5600K', 'AF', '1x'],
+          why: 'Reviews live on the bite and the verdict. 30 fps matches the 1080p30 export, and Blackmagic holds the shutter and white balance steady between cuts.',
+          quick: [
+            ['Shoot', 'Blackmagic · 4K · 30 fps · HEVC · Rec.709, HDR off'],
+            ['Light', '180° (1/60 s) · the lowest ISO that still looks bright'],
+            ['Colour', 'WB locked to the light · peaking on'],
+            [
+              'Hold',
+              'Handheld, loose and quick. Wipe the lens before every shoot',
+            ],
+          ],
+          hud: ['30', '180°', '100', '5600K', 'MF', '1x'],
+          g: {
+            iso: 'Lowest that looks bright',
+            wb: '5600K window · 4000K LED',
+            ev: '−0.3',
+            lens: '1x · 0.5x macro · 5x',
+            stab: 'BM on · Pixel Standard',
+            hdr: 'OFF · Rec.709',
+            codec: 'HEVC',
+          },
           bm: {
-            stab: 'ON (handheld)',
-            res: '1080p (or 4K)',
-            iso: 'lowest that holds the shutter',
-            wb: '5600K window / 4000K LED',
-            lens: '1x',
-            shutter: '180° (1/60)',
-            rec: 'OFF; colour it in CapCut',
+            stab: [
+              'ON (handheld)',
+              'Takes the edge off a walking pickup shot.',
+            ],
+            res: '4K (3840 × 2160); 1080p for a quick same-day clip',
+            iso: [
+              'The lowest that still looks bright',
+              'Clean shadows on a dark plate (God Mode step 2).',
+            ],
+            wb: [
+              'Locked: 5600K by a window, 4000K under LED',
+              'Batter and glaze stay one colour across every cut.',
+            ],
+            lens: [
+              '1x; 0.5x for the macro shot; 5x from 6 ft',
+              'Per the 8-shot list.',
+            ],
+            shutter: '180° (1/60 s)',
+            lut: ['Off', 'Colour happens in CapCut: filter 20–40 + Adjust.'],
+            rec: ['OFF', 'Keep the file neutral for the CapCut filter.'],
           },
           px: {
-            res: '1080p',
-            stab: 'Standard',
-            off: ['Video Boost'],
-            wb: 'match the light: 5600K window, 4000K LED',
+            res: '4K',
+            stab: ['Standard', 'Handheld default.'],
+            off: 'Video Boost OFF',
+            offWhy: 'Cloud processing can take hours.',
+            wb: 'Match the light: 5600K window, 4000K LED',
             shutter: '1/60 if your build offers it',
-            iso: 'lowest that holds it',
+            iso: 'The lowest that holds it',
+            ev: '−0.3, so the glaze keeps its detail',
+            shadows: 'Leave at 0',
             focus: 'Tap the plate',
-            shadows: 'leave at 0',
-            ev: '−0.3',
           },
         },
         {
           id: 'm60',
-          label: '60 fps slow-mo',
+          label: '60 fps slow-mo pull',
           base: 'm30',
           fps: 60,
-          shutterNote:
-            'Flicker-safe on 60 Hz mains. Slow it to 0.5x at most in CapCut (playbook), and export 60.',
-          iso: 'The lowest that holds 1/120: ISO 50–400',
-          hdr: 'OFF (10-bit HDR is 4K30 natively anyway)',
-          why: 'Only when you plan to slow the bite or the pour. Speed never goes below 0.5x without a 60 fps source.',
-          hud: ['60 fps', '180°', 'ISO 200', '5600K', 'AF', '1x'],
-          bm: { shutter: '180° (1/120)' },
+          fpsLabel: '60 fps',
+          why: 'Only for the slow-mo pull: a cheese pull, a pour or a crack. Speed never goes below 0.5x without a 60 fps source (playbook).',
+          quick: [
+            ['Shoot', 'Blackmagic · 4K · 60 fps · HEVC · Rec.709, HDR off'],
+            [
+              'Light',
+              '180° (1/120 s) · the lowest ISO that still looks bright',
+            ],
+            ['Colour', 'WB locked to the light · peaking on'],
+            ['Hold', 'Locked on the pull; 2 s'],
+          ],
+          hud: ['60', '180°', '200', '5600K', 'MF', '1x'],
+          g: { iso: 'About 200; raise for 1/120' },
+          bm: { shutter: '180° (1/120 s)' },
           px: { shutter: '1/120 if your build offers it' },
         },
       ],
@@ -429,103 +536,228 @@
     {
       id: 'kitchen',
       label: 'Kitchen & R&D',
-      src: 'The brief',
       modes: [
         {
-          id: 'k24',
-          label: '4K24 narrative',
-          res: '4K',
-          fps: 24,
+          id: 'k30',
+          label: 'KITCHEN 30 · kit',
+          src: 'Jade Shoot Kit, Blackmagic preset KITCHEN 30 (fish-and-chips kitchen)',
+          fps: 30,
+          fpsLabel: '30 fps (not 29.97)',
           angle: 180,
-          shutterNote:
-            'Under 60 Hz LEDs use 1/60 (144°) instead: 1/48 can roll bands.',
-          iso: 'ISO 50–400',
-          kelvin: '3800–4200K under LED · 3200K under tungsten',
-          ev: '−0.3 to −0.7',
-          lens: '1x for plating · 0.5x Macro for texture · 5x for compression across the pass',
-          stab: 'Handheld: Pixel Standard / Blackmagic ON. Braced: Locked / OFF',
-          hdr: 'OFF when you grade with LUTs',
-          codec: 'HEVC · Max',
-          look: 'LunarNight_v2_Kitchen.cube (Display LUT on)',
-          why: '24 reads as cinema for the story of a dish; 180° (or 1/60) keeps knife work crisp without strobing.',
-          hud: ['24 fps', '1/60', 'ISO 200', '4000K', 'MF', '1x'],
+          why: 'Smooth basket shakes, a 30 fps export with no conforming, and 1/60 covers exactly two 120 Hz LED pulses, so steel and tile never band.',
+          quick: [
+            [
+              'Shoot',
+              'SDR / Rec.709 (HDR off) · 4K · H.265 Max · WB locked on the white plate',
+            ],
+            [
+              'Light',
+              '1/60 shutter, flicker-free at 60 Hz · ISO 100, ceiling 400 (800 in a dim room)',
+            ],
+            [
+              'Colour',
+              '4000K LED · 5600K window · 3200K tungsten. Display LUT off',
+            ],
+            [
+              'Hold',
+              'Handheld: Claw & Sternum Lock, Ninja Walk, Counter Brace',
+            ],
+          ],
+          hud: ['30', '1/60', '100', '4000K', 'MF', '1x'],
+          g: {
+            iso: '100 (ceiling 400; 800 dim)',
+            wb: '4000K LED · 5600K window',
+            ev: '−0.3 · −0.7 backlit',
+            lens: '1x · 5x hero',
+            stab: 'BM Standard · Pixel Standard',
+            hdr: 'OFF · Rec.709',
+            codec: 'H.265 · Max',
+          },
           bm: {
-            stab: 'ON handheld, OFF braced',
-            res: '4K (3840 × 2160)',
-            iso: '50–400 (the lowest your build allows)',
-            wb: '4000K under LED, 3200K under tungsten',
-            lens: '1x (0.5x / 5x as the shot needs)',
-            shutter: '180°, or 1/60 under LEDs',
-            rec: 'ON when you edit in CapCut; OFF to grade from clean',
+            stab: [
+              'Standard on 0.5x / 1x · Optical (or OFF) on 5x or a mount',
+              'Avoids the 5x EIS stutter and the extra crop on a mount.',
+            ],
+            res: '4K UHD (3840 × 2160)',
+            iso: [
+              '100 on a lit line · 400–800 in a dim room',
+              'Past 800, noise shows first in dark fryer oil. Move to the window instead.',
+            ],
+            wb: [
+              'AWB on the white plate, then lock · or 4000K LED / 5600K window / 3200K tungsten',
+              'One locked value keeps the batter the same gold. Tint about +10 if the plate looks green.',
+            ],
+            lens: [
+              '1x main; 5x only for hero plates across the pass',
+              'The biggest, cleanest sensor.',
+            ],
+            shutter: '1/60 (180°). Shutter Measurement = Shutter Speed',
+            lut: [
+              'Display LUT OFF (or a soft look for preview only)',
+              'A baked look cannot be undone. Keep the file neutral and grade in CapCut.',
+            ],
+            rec: ['OFF', 'The kit grades from a clean file.'],
           },
           px: {
             res: '4K',
-            stab: 'Standard',
-            off: ['Video Boost'],
-            wb: '4000K under LED, 3200K under tungsten',
-            shutter: '1/60 if your build offers it',
-            iso: '50–400',
-            focus: 'Tap the plate, then Lock',
-            shadows: 'leave at 0',
-            ev: '−0.3 to −0.7',
+            stab: [
+              'Standard',
+              'Best for handheld plating and walking the line.',
+            ],
+            off: 'Video Boost OFF · Optimize FPS OFF',
+            offWhy:
+              'Boost is a cloud wait; auto 30/60 switching stutters ramps and cuts.',
+            wb: '4000K LED · 5600K window · 3200K tungsten',
+            shutter: 'Assume photo-only unless the Pro panel shows it in Video',
+            iso: '—',
+            ev: '−0.3 (one notch down) · −0.7 backlit by the window',
+            shadows: 'Leave at 0',
+            focus: 'Touch and hold the plate',
           },
         },
         {
           id: 'k60',
           label: '4K60 pours & sears',
-          base: 'k24',
+          base: 'k30',
           fps: 60,
-          shutterNote: '1/120 is flicker-safe on 60 Hz mains, LEDs included.',
-          why: 'Pours and sears happen fast; 60 fps lets you slow them to 0.5x in CapCut with no stutter.',
-          hdr: 'OFF. HDR, Speech enhancement and Active stabilization drop out at higher frame rates anyway',
-          hud: ['60 fps', '180°', 'ISO 400', '4000K', 'MF', '1x'],
-          bm: { shutter: '180° (1/120)' },
+          fpsLabel: '60 fps (brief) · or the kit’s 30 project + Off Speed 60',
+          src: 'The brief’s 4K60 for pours and sears; the Jade Shoot Kit’s Blackmagic preset POUR 60 is the same shot as Off Speed 60 on a 30 fps project',
+          why: '60 fps gives CapCut a clean half-speed pour without Smooth slow-mo. The kit’s Off Speed 60 plays back slow on a 30 fps timeline with no conforming, but off-speed clips may record no audio, so grab the sizzle at normal speed too.',
+          quick: [
+            [
+              'Shoot',
+              '4K · 60 fps · HEVC Max · HDR off (kit: KITCHEN 30 + Off Speed 60; 120 at 1080p for pours)',
+            ],
+            [
+              'Light',
+              '1/120 (180° at 60), flicker-free at 60 Hz · ISO up a stop',
+            ],
+            ['Colour', 'Same locked WB as the rest of the scene'],
+            ['Hold', 'Counter Brace or Towel Slider on steel'],
+          ],
+          hud: ['60', '1/120', '200', '4000K', 'MF', '1x'],
+          g: { iso: 'About 200; 1/120 costs a stop' },
+          bm: {
+            shutter: '1/120 (180° at 60)',
+          },
           px: { shutter: '1/120 if your build offers it' },
+        },
+        {
+          id: 'k24',
+          label: '4K24 narrative · brief',
+          base: 'k30',
+          fps: 24,
+          exp: 1 / 60,
+          fpsLabel: '24 fps',
+          src: 'The brief. The kit says skip 24 for fast basket motion; use this for slow story beats',
+          why: '24 reads as cinema for the story of a dish. 180° is 1/48, but under 60 Hz LEDs take 1/60 (144°): 1/48 can roll bands.',
+          quick: [
+            [
+              'Shoot',
+              '4K · 24 fps · HEVC Max · 10-bit HDR off when grading with LUTs',
+            ],
+            [
+              'Light',
+              '1/60 under LEDs (1/48 elsewhere) · ISO 50–400 · EV −0.3 to −0.7',
+            ],
+            ['Colour', '3800–4200K under LED · 3200K under tungsten'],
+            ['Hold', 'Slow moves only: Towel Slider, Counter Brace'],
+          ],
+          hud: ['24', '1/60', '200', '4000K', 'MF', '1x'],
+          g: {
+            iso: '50–400',
+            wb: '3800–4200K LED · 3200K tungsten',
+            ev: '−0.3 to −0.7',
+            hdr: 'OFF when grading with LUTs',
+          },
+          bm: {
+            iso: [
+              '50–400 (the lowest your build allows)',
+              'The brief’s range.',
+            ],
+            wb: [
+              '3800–4200K under LED · 3200K under tungsten',
+              'The brief’s ranges.',
+            ],
+            shutter: '1/60 under LEDs (144°); 180° (1/48) elsewhere',
+            lut: [
+              'LunarNight_v2_Kitchen.cube, Display LUT ON',
+              'Food under LED: violet shadows, green-cyan pulled, warm food kept.',
+            ],
+            rec: [
+              'ON for CapCut; OFF to grade from clean',
+              'Your call per project.',
+            ],
+          },
+          px: { ev: '−0.3 to −0.7' },
         },
       ],
     },
     {
       id: 'doc',
       label: 'Documentary monologue',
-      src: 'Starting points built from the brief’s kitchen numbers. The playbook sets the edit (voice-first), not capture',
       modes: [
         {
           id: 'mono',
           label: 'Monologue',
-          res: '4K',
+          src: 'Starting points built from the brief and the kit; no canon capture preset exists for this format',
           fps: 24,
+          exp: 1 / 60,
+          fpsLabel: '24 fps (30 is fine)',
           angle: 180,
-          shutterNote: 'Under 60 Hz LEDs at home or on the line use 1/60.',
-          iso: 'ISO 50–400',
-          kelvin:
-            'Locked to the room: 3200K by a tungsten lamp, 5400–5600K by a window',
-          ev: '−0.3, so skin highlights hold',
-          lens: '1x at chest-to-eye height. Never 0.5x on a face',
-          stab: 'Braced: Pixel Locked / Blackmagic OFF',
-          hdr: 'OFF',
-          codec: 'HEVC',
-          look: 'None at capture. Dreamcore for memory and VHS 4:3 for confessions happen in the grade',
-          why: 'Voice-first. A still frame and honest skin let the words carry; Speech enhancement on (see Native audio).',
-          hud: ['24 fps', '1/60', 'ISO 200', '3200K', 'MF', '1x'],
-          bm: {
-            stab: 'OFF (braced)',
-            res: '4K (3840 × 2160)',
+          why: 'Voice-first. A still frame and honest skin let the words carry. Speech enhancement on, or your DJI mic.',
+          quick: [
+            ['Shoot', '4K · 24 fps · HEVC · Rec.709, HDR off'],
+            [
+              'Light',
+              '1/60 under LEDs (1/48 elsewhere) · ISO 50–400 · EV −0.3',
+            ],
+            ['Colour', 'Locked to the room: 3200K lamp, 5600K window'],
+            ['Hold', 'On a mount or braced at chest-to-eye height, 1x'],
+          ],
+          hud: ['24', '1/60', '200', '3200K', 'MF', '1x'],
+          g: {
             iso: '50–400',
-            wb: 'match the room: 3200K lamp / 5600K window',
-            lens: '1x',
-            shutter: '180°, or 1/60 under LEDs',
-            rec: 'OFF; grade later',
+            wb: '3200K lamp · 5600K window',
+            ev: '−0.3',
+            lens: '1x, never 0.5x',
+            stab: 'BM Optical/off · Pixel Standard',
+            hdr: 'OFF · Rec.709',
+            codec: 'HEVC',
+          },
+          bm: {
+            stab: [
+              'Optical or OFF (on a mount)',
+              'No extra crop on a still frame.',
+            ],
+            res: '4K (3840 × 2160)',
+            iso: ['50–400', 'Clean skin in the shadows.'],
+            wb: [
+              'Match the room: 3200K lamp / 5600K window',
+              'Skin stays honest across takes.',
+            ],
+            lens: ['1x. Never 0.5x on a face', 'The ultrawide bends faces.'],
+            shutter: '1/60 under LEDs; 180° (1/48) elsewhere',
+            lut: [
+              'Off',
+              'Dreamcore for memory and VHS 4:3 for confessions come in the grade.',
+            ],
+            rec: ['OFF', 'Grade later.'],
           },
           px: {
             res: '4K',
-            stab: 'Locked',
-            off: ['Video Boost'],
-            wb: 'match the room',
+            stab: [
+              'Standard (on a mount)',
+              'Locked is a crop meant for distant zoomed subjects (kit).',
+            ],
+            off: 'Video Boost OFF',
+            offWhy: 'No cloud wait on a talking take.',
+            wb: 'Match the room',
             shutter: '1/60 if your build offers it',
             iso: '50–400',
-            focus: 'Tap your face, then Lock',
-            shadows: 'leave at 0',
-            ev: '−0.3',
+            ev: '−0.3, so skin highlights hold',
+            shadows: 'Leave at 0',
+            focus: 'Tap your face, then lock',
           },
         },
       ],
@@ -537,12 +769,12 @@
       if (!m.base) continue
       const b = f.modes.find(x => x.id === m.base)
       for (const k of Object.keys(b)) {
-        if (k === 'bm' || k === 'px') m[k] = { ...b[k], ...(m[k] || {}) }
+        if (k === 'bm' || k === 'px' || k === 'g')
+          m[k] = { ...b[k], ...(m[k] || {}) }
         else if (m[k] === undefined) m[k] = b[k]
       }
     }
   }
-
   /* ================================================================ flicker maths */
   /** Flicker check for a shutter. Light pulses at 2 × mains Hz. */
   function flicker(fps, mains, angle) {
@@ -981,6 +1213,19 @@
       no: 'Older wording: "Store videos efficiently" on = HEVC.',
     },
     {
+      key: 'bmc_flicker_base',
+      app: 'Blackmagic',
+      status: 'unverified',
+      q: 'Does Blackmagic Camera have a Flicker Free Shutter Based On setting?',
+      check: [
+        ['Blackmagic Camera', 'Settings (gear)', 'Camera'],
+        'Look for Flicker Free Shutter Based On (50Hz / 60Hz). Version 3.5 has a settings search box: type "flicker".',
+        'Set 60Hz and note whether the shutter picker then offers 1/60 and 1/120 first.',
+      ],
+      yes: 'Set 60Hz once; the shutter picker then favours flicker-safe values.',
+      no: 'Pick 1/60 (30 fps) or 1/120 (60 fps) by hand from the calculator.',
+    },
+    {
       key: 'bmc_full_manual',
       app: 'Blackmagic',
       status: 'unverified',
@@ -1319,7 +1564,401 @@
   }
 
   /* ================================================================ section 2: presets */
-  function hudRow(mode) {
+  const modeExp = m => m.exp || m.angle / (360 * m.fps)
+  function flickerNote(m) {
+    const exp = modeExp(m)
+    const c = exp * 120
+    const safe = Math.abs(c - Math.round(c)) < 0.01 && Math.round(c) >= 1
+    const frac = `1/${Math.round(1 / exp)}`
+    return {
+      safe,
+      text: safe
+        ? `${frac} s spans ${Math.round(c)} light pulse${Math.round(c) > 1 ? 's' : ''} at 60 Hz mains: no banding.`
+        : `${frac} s spans ${c.toFixed(1)} pulses at 60 Hz mains: LEDs can roll bands. Use 1/60 or 1/120.`,
+    }
+  }
+
+  /** A settings sheet: group header rows, then rows of setting · value · why + path. */
+  function sheet(groups) {
+    const el = h('div', { class: 'rig-sheet' })
+    for (const g of groups) {
+      el.append(h('div', { class: 'rig-grp' }, g.title))
+      for (const r of g.rows) {
+        el.append(
+          h(
+            'div',
+            { class: 'rig-row' },
+            h(
+              'div',
+              { class: 'rig-k' },
+              r.k,
+              r.check ? h('span', { class: 'rig-badge' }, 'Check') : null,
+            ),
+            h('div', { class: 'rig-v' }, h('em', null, r.v)),
+            h(
+              'div',
+              { class: 'rig-w' },
+              r.w ? h('span', null, r.w) : null,
+              r.check && r.check !== true
+                ? h('span', { class: 'rig-checknote' }, r.check)
+                : null,
+              r.path ? ui.path(r.path) : null,
+              r.fact ? factLine(r.fact[0], r.fact[1], 'span') : null,
+            ),
+          ),
+        )
+      }
+    }
+    return el
+  }
+
+  function bmSheet(m) {
+    const bm = m.bm
+    const fl = flickerNote(m)
+    return sheet([
+      {
+        title: 'Setup',
+        rows: [
+          {
+            k: 'Vertical video',
+            v: 'Enable Vertical Video ON',
+            w: 'Native 9:16; nothing to crop later.',
+            path: ['Settings', 'Camera', 'Enable Vertical Video'],
+          },
+          {
+            k: 'Stabilization',
+            v: bm.stab[0],
+            w: bm.stab[1],
+            path: ['Settings', 'Record', 'Stabilization'],
+            check:
+              'The runbook puts it under Settings › Camera, the kit under Settings › Record.',
+          },
+          {
+            k: 'Noise reduction · sharpening',
+            v: 'OFF · OFF',
+            w: 'Both smear the dark areas and put halos on edges.',
+            path: ['Settings', 'Camera'],
+          },
+          {
+            k: 'Lock WB on record',
+            v: 'ON',
+            w: 'White balance cannot drift mid-take.',
+            path: ['Settings', 'Camera', 'Lock White Balance on Record'],
+          },
+        ],
+      },
+      {
+        title: 'Record',
+        rows: [
+          {
+            k: 'Resolution',
+            v: bm.res,
+            w: 'Room to punch in and still deliver a sharp 1080 × 1920.',
+            path: ['Settings', 'Record', 'Resolution'],
+          },
+          {
+            k: 'Codec · quality',
+            v: 'HEVC (H.265) · Max',
+            w: 'Smaller than H.264 at the same quality. Low bitrate breaks steam and grain into blocks.',
+            path: ['Settings', 'Record', 'Codec'],
+          },
+          {
+            k: 'Color space',
+            v: 'Rec.709 · HDR OFF',
+            w: 'LUTs, CapCut and the platforms expect SDR. No HDR badge on the viewfinder.',
+            path: ['Settings', 'Record', 'Color Space'],
+          },
+        ],
+      },
+      {
+        title: 'Exposure · the HUD, left to right',
+        rows: [
+          {
+            k: 'FPS',
+            v: m.fpsLabel,
+            w: 'Export at the same rate you shoot.',
+            path: ['Tap FPS'],
+          },
+          {
+            k: 'Shutter',
+            v: bm.shutter,
+            w: fl.text,
+            path: ['Tap SHUTTER'],
+          },
+          {
+            k: 'Flicker-free base',
+            v: '60 Hz (US mains)',
+            w: 'Kitchen LEDs and signs pulse at 120 Hz; the wrong base rolls bands on steel.',
+            path: ['Settings', 'Camera', 'Flicker Free Shutter Based On'],
+            check: 'From the kit only; the research did not cover it.',
+            fact: [
+              'bmc_flicker_base',
+              {
+                yes: 'Your build has it: set 60 Hz.',
+                no: 'Not on your build: pick 1/60 or 1/120 by hand.',
+                none: 'Settle it in section 7.',
+              },
+            ],
+          },
+          { k: 'ISO', v: bm.iso[0], w: bm.iso[1], path: ['Tap ISO'] },
+          {
+            k: 'White balance',
+            v: bm.wb[0],
+            w: bm.wb[1],
+            path: ['Tap WB'],
+          },
+          {
+            k: 'Focus',
+            v: 'Tap the subject, then manual',
+            w: 'Steam, hands and headlights make autofocus hunt mid-shot.',
+            path: ['Tap FOCUS'],
+          },
+          {
+            k: 'Lens',
+            v: bm.lens[0],
+            w: bm.lens[1],
+            path: ['Lens buttons on the record screen'],
+          },
+        ],
+      },
+      {
+        title: 'Monitor and look',
+        rows: [
+          {
+            k: 'Zebras',
+            v: 'ON, 95%',
+            w: 'Night: stripes only inside the brightest bulb. Kitchen: fine on oil glints, never on the plate.',
+            path: ['Settings', 'Monitor', 'Zebras'],
+          },
+          {
+            k: 'Focus Assist',
+            v: 'ON (peaking)',
+            w: 'Shows what is sharp on a small screen.',
+            path: ['Settings', 'Monitor', 'Focus Assist'],
+          },
+          {
+            k: 'Display LUT',
+            v: bm.lut[0],
+            w: bm.lut[1],
+            path: ['Settings', 'LUTs', 'LUT Selection', 'Import LUT'],
+          },
+          {
+            k: 'Record LUT to Clip',
+            v: bm.rec[0],
+            w: bm.rec[1],
+            path: ['Settings', 'LUTs', 'Record LUT to Clip'],
+          },
+        ],
+      },
+    ])
+  }
+
+  function pxSheet(m) {
+    const px = m.px
+    return sheet([
+      {
+        title: 'Video settings · bottom left, or swipe up',
+        rows: [
+          {
+            k: 'Resolution',
+            v: px.res,
+            w: 'Never 8K: it only exists through Video Boost.',
+            path: ['Video', 'Video settings', 'Resolution'],
+          },
+          {
+            k: 'Frames/sec',
+            v: `${m.fps} fps`,
+            w: 'Pixel Camera records 24, 30 or 60.',
+            path: ['Video settings', 'Frames/sec'],
+          },
+          {
+            k: '10-bit HDR',
+            v: 'OFF',
+            w: 'HDR clips wash out in CapCut, and every LUT expects SDR.',
+            path: ['Video settings', '10-bit HDR'],
+          },
+          {
+            k: 'Boost and auto',
+            v: px.off,
+            w: px.offWhy,
+            path: ['Video settings', 'Video Boost'],
+          },
+          {
+            k: 'Stabilization',
+            v: px.stab[0],
+            w: px.stab[1],
+            path: ['Video settings', 'Stabilization'],
+          },
+          {
+            k: 'Video format',
+            v: 'HEVC',
+            w: 'Smaller than H.264 at the same quality.',
+            path: ['Settings (gear)', 'More settings', 'Video format'],
+            check:
+              'Exact option labels are unverified; older builds say “Store videos efficiently”.',
+            fact: [
+              'pixel_codec_labels',
+              {
+                yes: 'Your build lists AVC, HEVC and AV1.',
+                no: 'Your build words it differently: pick the HEVC / efficient option.',
+                none: 'Settle it in section 7.',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Pro controls · sliders icon, bottom right',
+        rows: [
+          {
+            k: 'White balance',
+            v: px.wb,
+            w: 'The slider shows Kelvin; right is warmer.',
+            path: ['Sliders icon', 'White balance'],
+          },
+          {
+            k: 'Shutter · ISO',
+            v: `${px.shutter} · ISO ${px.iso}`,
+            w: 'Sources disagree on whether Video shows them on the Pixel 10 Pro.',
+            path: ['Sliders icon'],
+            check: true,
+            fact: [
+              'pixel_video_shutter',
+              {
+                yes: 'Your build shows them in Video.',
+                no: 'Not in Video on your build: use Brightness, or Path A.',
+                none: 'Settle it in section 7.',
+              },
+            ],
+          },
+          {
+            k: 'Brightness',
+            v: px.ev,
+            w: 'Protects the white plate and the lights, the first things to clip.',
+            path: ['Sliders icon', 'Brightness'],
+          },
+          {
+            k: 'Shadows',
+            v: px.shadows,
+            w: 'Night: down drops the walls to black.',
+            path: ['Sliders icon', 'Shadows'],
+            check: 'Shadows in Video is unverified.',
+          },
+          {
+            k: 'Focus',
+            v: px.focus,
+            w: 'Peaking shows in manual focus (confirmed for photos).',
+            path: ['Sliders icon', 'Focus'],
+          },
+          {
+            k: 'Lens selection',
+            v: 'Manual (UW / W / T)',
+            w: 'Stops the app swapping lenses as you move in.',
+            path: ['Settings (bottom left)', 'Pro', 'Lens Selection', 'Manual'],
+            check: 'Confirmed for photos only.',
+            fact: [
+              'pixel_lens_lock',
+              {
+                yes: 'Holds in Video on your phone.',
+                no: 'Does not hold in Video on your phone.',
+                none: 'Settle it in section 7.',
+              },
+            ],
+          },
+          {
+            k: 'Lock',
+            v: 'Tap the subject, then Lock · or touch and hold',
+            w: 'Locks focus and exposure before hands and steam enter the frame.',
+            path: ['Tap subject', 'Lock (top right)'],
+            check:
+              'Google documents tap, then Lock; the runbook and the kit say touch and hold. Keep whichever shows a lock icon.',
+          },
+        ],
+      },
+    ])
+  }
+
+  function presetBody(fmt, m) {
+    const fl = flickerNote(m)
+    const quick = h(
+      'ol',
+      { class: 'rig-quick' },
+      m.quick.map(([k, v], i) =>
+        h(
+          'li',
+          { style: { '--c': `var(--t${(i % 6) + 1})` } },
+          h('b', null, k),
+          h('span', null, v),
+        ),
+      ),
+    )
+    const tabs = ui.tabs(
+      [
+        {
+          id: 'bm',
+          label: 'Path A · Blackmagic Camera',
+          render: el =>
+            el.append(
+              h(
+                'div',
+                { class: 'ln-stack' },
+                hudRow(m),
+                bmSheet(m),
+                factLine('bmc_full_manual', {
+                  yes: 'A fixed shutter puts ISO on manual too, so set ISO by hand every setup.',
+                  no: 'Shutter can hold while ISO floats.',
+                  none: 'One review says a fixed shutter needs full manual on the Pixel 10 Pro. Settle it in section 7.',
+                }),
+                ui.callout(
+                  'verify',
+                  'Labels vary by version; the kit reports that Blackmagic Camera 3.5 has a settings search box, so type the setting name if a path differs. The kit also says the Pixel 10 Pro XL is not yet on Blackmagic’s official device list: record and play back a 5-second test clip after every app update.',
+                ),
+              ),
+            ),
+        },
+        {
+          id: 'px',
+          label: 'Path B · Pixel Camera',
+          render: el =>
+            el.append(
+              h(
+                'div',
+                { class: 'ln-stack' },
+                pxSheet(m),
+                ui.callout(
+                  'verify',
+                  'Pixel Camera labels move between versions (10.1 merged the Advanced menu into one Settings list). Rows marked Check disagree between sources: run the matching item in section 7 once and the answers show here.',
+                ),
+              ),
+            ),
+        },
+      ],
+      { key: 'rig.app' },
+    )
+    return h(
+      'div',
+      { class: 'ln-stack' },
+      h(
+        'div',
+        { class: 'ln-card rig-quickcard' },
+        h(
+          'div',
+          { class: 'rig-quickhead' },
+          h('h3', { class: 'ln-h3' }, 'The 30-second version'),
+          ui.chip(
+            fl.safe ? 'Flicker-safe at 60 Hz' : 'Banding risk at 60 Hz',
+            fl.safe ? 'sage' : 'crimson',
+          ),
+        ),
+        quick,
+        h('p', { class: 'rig-why' }, h('b', null, 'Why. '), m.why),
+        h('p', { class: 'ln-faint ln-small' }, `Source: ${m.src}.`),
+      ),
+      tabs.el,
+    )
+  }
+
+  function hudRow(m) {
     return h(
       'div',
       {
@@ -1332,162 +1971,9 @@
           'div',
           { class: 'rig-dial', role: 'listitem' },
           h('span', null, k),
-          h('b', { class: 'ln-num' }, mode.hud[i]),
+          h('b', { class: 'ln-num' }, m.hud[i]),
         ),
       ),
-    )
-  }
-
-  function presetBody(fmt, mode) {
-    const f60 = flicker(mode.fps, 60, mode.angle)
-    const shutter = `${mode.angle}° = ${fraction(mode.fps, mode.angle)} s`
-    const dials = ui.kv([
-      ['Resolution · fps', `${mode.res} · ${mode.fps} fps`],
-      [
-        'Shutter',
-        h(
-          'span',
-          null,
-          `${shutter}. `,
-          ui.chip(
-            f60.safe ? 'flicker-safe at 60 Hz' : 'banding risk at 60 Hz',
-            f60.safe ? 'sage' : 'crimson',
-          ),
-          ' ',
-          mode.shutterNote,
-        ),
-      ],
-      ['ISO', mode.iso],
-      ['White balance', mode.kelvin],
-      ['Exposure', mode.ev],
-      ['Lens', mode.lens],
-      ['Stabilization', mode.stab],
-      ['HDR', mode.hdr],
-      ['Codec', mode.codec],
-      ['Look', mode.look],
-    ])
-    const bm = mode.bm
-    const pathA = mini(
-      'Path A · Blackmagic Camera',
-      h(
-        'p',
-        { class: 'ln-small ln-muted' },
-        'The runbook default. Settings, once at home:',
-      ),
-      ui.table(
-        ['Menu', 'Set'],
-        [
-          [
-            ui.path('Settings', 'Camera'),
-            `Enable Vertical Video ON · Stabilization ${bm.stab} · Reduce Noise OFF · Increase Sharpening OFF · Lock White Balance on Record ON`,
-          ],
-          [
-            ui.path('Settings', 'Record'),
-            `Resolution ${bm.res} · Codec HEVC · Quality Max · Color space Rec.709 · HDR OFF`,
-          ],
-          [
-            ui.path('Settings', 'Monitor'),
-            'Zebras ON at 95% · Focus Assist ON',
-          ],
-          [
-            ui.path('Settings', 'LUTs', 'LUT Selection', 'Import LUT'),
-            `${/\.cube/.test(mode.look) ? mode.look.split(' ')[0] : 'Optional'} · Display LUT ON · Record LUT to Clip ${bm.rec}`,
-          ],
-        ],
-        { label: 'Blackmagic Camera settings' },
-      ),
-      h(
-        'p',
-        { class: 'ln-small ln-muted' },
-        'Then the dials on the main screen, left to right:',
-      ),
-      hudRow(mode),
-      ui.kv([
-        ['Shutter', bm.shutter],
-        ['ISO', bm.iso],
-        ['WB', bm.wb],
-        ['Lens', bm.lens],
-      ]),
-      factLine('bmc_full_manual', {
-        yes: 'A fixed shutter puts ISO on manual too, so set ISO by hand every setup.',
-        no: 'Shutter can hold while ISO floats.',
-        none: 'One review says a fixed shutter needs full manual on the Pixel 10 Pro. Settle it in section 7.',
-      }),
-    )
-    const px = mode.px
-    const pathB = mini(
-      'Path B · Pixel Camera Pro controls',
-      ui.steps([
-        h('span', null, ui.path('Pixel Camera', 'Video')),
-        h(
-          'span',
-          null,
-          ui.path('Video settings'),
-          ` (bottom left, or swipe up): Resolution ${px.res} · Frames/sec ${mode.fps} · 10-bit HDR OFF · Stabilization ${px.stab}. Turn OFF: ${px.off.join(', ')}.`,
-        ),
-        h(
-          'span',
-          null,
-          ui.path('Settings (gear)', 'More settings', 'Video format'),
-          ': HEVC.',
-        ),
-        h(
-          'span',
-          null,
-          ui.path('Sliders icon (bottom right)', 'White balance'),
-          `: ${px.wb}.`,
-        ),
-        h(
-          'span',
-          null,
-          `Shutter: ${px.shutter}. ISO: ${px.iso}. `,
-          factLine(
-            'pixel_video_shutter',
-            {
-              yes: 'Your build shows them in Video.',
-              no: 'Your build has no shutter or ISO in Video: use Brightness instead, or Path A.',
-              none: 'Shutter and ISO in Video are contradicted; settle it in section 7.',
-            },
-            'span',
-          ),
-        ),
-        `Focus: ${px.focus}. Shadows: ${px.shadows}. Brightness: ${px.ev}.`,
-        h(
-          'span',
-          null,
-          'Lens: ',
-          ui.path('Settings (bottom left)', 'Pro', 'Lens Selection', 'Manual'),
-          '. ',
-          factLine(
-            'pixel_lens_lock',
-            {
-              yes: 'Holds in Video on your phone.',
-              no: 'Does not hold in Video on your phone.',
-              none: 'Confirmed for photos only.',
-            },
-            'span',
-          ),
-        ),
-        'Lock: tap the subject, then tap Lock (top right).',
-      ]),
-      ui.callout(
-        'verify',
-        'Labels vary by Pixel Camera version. Google documents tap, then Lock; the runbook says tap and hold. Try both once and keep the one your build shows with a lock icon.',
-      ),
-    )
-    return h(
-      'div',
-      { class: 'ln-stack' },
-      h(
-        'p',
-        { class: 'rig-why' },
-        h('b', null, 'Why. '),
-        mode.why,
-        ' ',
-        h('span', { class: 'ln-faint ln-small' }, `Source: ${fmt.src}.`),
-      ),
-      mini('The numbers', dials),
-      h('div', { class: 'ln-grid wide' }, pathA, pathB),
     )
   }
 
@@ -1498,9 +1984,41 @@
     const body = h('div')
     const modeHost = h('div')
     const save = () => LN.store.set('rig.preset', { fmt: fmtId, mode: modeSel })
+
+    // The separately built 3D phone (modules/rig-phone.js) shows the app
+    // screens. Mount it here when it exists; the camera map keeps its own
+    // CSS phone for the hardware hotspots.
+    const phoneHost = h('div', { class: 'rig-phone-host' })
+    let phoneApi = null
+    if (LN.rigPhone && typeof LN.rigPhone.mount === 'function') {
+      try {
+        phoneApi = LN.rigPhone.mount(phoneHost, { screen: 'bmd' }) || null
+      } catch (e) {
+        console.error('[rig] LN.rigPhone failed to mount', e)
+        phoneHost.hidden = true
+      }
+    } else phoneHost.hidden = true
+
+    const show = (fmt, m) => {
+      body.replaceChildren(presetBody(fmt, m))
+      onMode(m)
+      LN.bus.emit('rig:preset', {
+        format: fmt.id,
+        mode: m.id,
+        fps: m.fps,
+        hud: m.hud.slice(),
+      })
+      if (phoneApi && typeof phoneApi.setPreset === 'function') {
+        try {
+          phoneApi.setPreset({ format: fmt.id, mode: m.id, hud: m.hud })
+        } catch (_e) {
+          /* optional hook */
+        }
+      }
+    }
     const render = () => {
       const fmt = FORMATS.find(f => f.id === fmtId)
-      let mode = fmt.modes.find(m => m.id === modeSel[fmtId]) || fmt.modes[0]
+      const mode = fmt.modes.find(m => m.id === modeSel[fmtId]) || fmt.modes[0]
       modeHost.replaceChildren()
       if (fmt.modes.length > 1) {
         const seg = ui.seg({
@@ -1510,15 +2028,15 @@
           onChange: v => {
             modeSel[fmtId] = v
             save()
-            mode = fmt.modes.find(m => m.id === v)
-            body.replaceChildren(presetBody(fmt, mode))
-            onMode(mode)
+            show(
+              fmt,
+              fmt.modes.find(m => m.id === v),
+            )
           },
         })
         modeHost.append(seg.el)
       }
-      body.replaceChildren(presetBody(fmt, mode))
-      onMode(mode)
+      show(fmt, mode)
     }
     const fmtSeg = ui.seg({
       label: 'Format',
@@ -1535,10 +2053,11 @@
       {
         eyebrow: '02 · Capture presets',
         title: 'Capture presets by format',
-        lede: 'Pick the format you are shooting tonight. Each one gives the numbers, the Blackmagic menus and dials, and the stock Pixel Camera route. Never mix formats.',
+        lede: 'Pick tonight’s format. Each gives the 30-second version, then the full Blackmagic Camera and Pixel Camera sheets with a reason and a tap path for every setting. Never mix formats.',
         id: 'rig-presets',
       },
       h('div', { class: 'rig-segs' }, fmtSeg.el, modeHost),
+      phoneHost,
       body,
     )
   }
@@ -2240,7 +2759,7 @@
         const a = v === true ? 'YES' : v === false ? 'NO' : 'not checked'
         return `${x.key}: ${a} · ${x.q}`
       })
-      return `Lunar Night OS device facts (Pixel 10 Pro XL)\n${lines.join('\n')}`
+      return `Kubrick device facts (Pixel 10 Pro XL)\n${lines.join('\n')}`
     }
     watchFacts(f => {
       const yes = FACTS.filter(x => f[x.key] === true)

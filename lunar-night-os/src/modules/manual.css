@@ -661,7 +661,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s2);
 }
-.m-manual .mn-tl li {
+.m-manual ol.mn-tl > li {
   display: grid;
   gap: 2px;
   padding-top: 8px;
@@ -875,7 +875,7 @@
   grid-template-columns: minmax(4.5rem, 2fr) minmax(0, 8fr) minmax(0, 5fr);
   gap: 4px;
 }
-.m-manual .mn-legend li {
+.m-manual ol.mn-legend > li {
   display: grid;
   gap: 2px;
   padding-top: 6px;
@@ -944,7 +944,7 @@
   display: grid;
   gap: var(--s2);
 }
-.m-manual .mn-misslist li {
+.m-manual ol.mn-misslist > li {
   display: grid;
   gap: 2px;
   padding: var(--s3) var(--s4);

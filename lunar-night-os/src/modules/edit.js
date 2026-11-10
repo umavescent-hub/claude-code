@@ -2465,6 +2465,32 @@
     )
   }
 
+  /* ------------------------------------------------------------ music edit */
+  function renderMusic(el) {
+    if (LN.beatForge && typeof LN.beatForge.mount === 'function') {
+      try {
+        LN.beatForge.mount(el)
+      } catch (e) {
+        console.error('[LN] Beat Forge failed to mount', e)
+        el.append(
+          h(
+            'div',
+            { class: 'ln-fail' },
+            `Music Edit failed to load: ${e && e.message}`,
+          ),
+        )
+      }
+      return
+    }
+    el.append(
+      ui.callout(
+        'tip',
+        'Music Edit is not available in this build.',
+        'Music Edit',
+      ),
+    )
+  }
+
   /* ------------------------------------------------------------ auto-cut */
   function renderAutocut(el) {
     const mountIt = () => {
@@ -3667,6 +3693,7 @@
           { id: 'ramps', label: 'Speed Ramps', render: renderRamps },
           { id: 'audio', label: 'Audio Spine', render: renderAudio },
           { id: 'autocut', label: 'Auto-Cut', render: renderAutocut },
+          { id: 'music', label: 'Music Edit', render: renderMusic },
           { id: 'captions', label: 'Captions', render: renderCaptions },
           { id: 'plan', label: 'Edit Plan', render: renderPlan },
         ],

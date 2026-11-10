@@ -5,7 +5,8 @@ usage: python3 beats.py BPM FPS SECONDS [OFFSET] [--every]
 
 Prints the grid, the note lengths in whole frames, the 3 s law in beats, and
 one marker row per downbeat (every beat with --every): bar.beat, beat index
-(0 = the first downbeat), seconds, frame, timecode m:ss:ff.
+(0 = the first downbeat), seconds, frame, timecode m:ss:ff. The last row is
+labelled end: the last whole beat that fits the length.
 
 Every frame is computed from its beat index, frame(n) = round(n * fps * 60 / bpm),
 never by adding rounded beat lengths, so nothing drifts. Rounding is half up,
@@ -64,7 +65,7 @@ def main(argv):
     if rows[-1] != total:
         rows.append(total)
     for n in rows:
-        label = "end" if n == total and total % 4 else bar_beat(n)
+        label = "end" if n == total else bar_beat(n)
         f = frame_at(n, bpm, fps, offset)
         t = offset + n * beat
         print(f"| {label} | {n} | {t:.2f} | {f} | {timecode(f, fps)} |")
