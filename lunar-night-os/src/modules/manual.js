@@ -3,12 +3,31 @@
    Chapters come from LN.data.manual (built from manual/NN-slug.md). */
 ;(() => {
   const { h, s, ui } = LN
-  const CHAPTERS = Array.isArray(LN.data && LN.data.manual)
-    ? LN.data.manual
-    : []
+  const pad2 = n => String(n).padStart(2, '0')
+  // Chapters in file-number order, whatever order the build handed them over.
+  // Each gets a unique key (two files with one number would share an id).
+  const CHAPTERS = (
+    Array.isArray(LN.data && LN.data.manual) ? LN.data.manual.slice() : []
+  )
+    .filter(c => c && typeof c === 'object' && typeof c.html === 'string')
+    .sort(
+      (a, b) =>
+        (Number(a.num) || 0) - (Number(b.num) || 0) ||
+        String(a.file || '').localeCompare(String(b.file || '')),
+    )
+  {
+    const seen = new Map()
+    for (const ch of CHAPTERS) {
+      ch.id = ch.id || `ch${pad2(ch.num || 0)}`
+      ch.title = ch.title || ch.file || ch.id
+      const n = seen.get(ch.id) || 0
+      seen.set(ch.id, n + 1)
+      ch.key = n ? `${ch.id}-${n + 1}` : ch.id
+    }
+  }
+  const heads = ch => (Array.isArray(ch.headings) ? ch.headings : [])
   const WPM = 220
   const readMin = ch => Math.max(1, Math.round((ch.words || 0) / WPM))
-  const pad2 = n => String(n).padStart(2, '0')
   const smooth = () => (LN.reducedMotion() ? 'auto' : 'smooth')
   // Small stroke icons for the CapCut-style toolbar (icon + label).
   const ICONS = {
@@ -134,22 +153,63 @@
       x = ((x << 5) + x + str.charCodeAt(i)) | 0
     return (x >>> 0).toString(36)
   }
-  // "> [!RECALL] Question :: Answer" lines in chapter markdown become cards.
-  const RECALL_LINE = /^\s*>\s*\[!RECALL\]\s*(.+?)\s*::\s*(.+?)\s*$/i
-  const chapterCards = ch =>
-    String(ch.md || '')
+  // Card text is shown with textContent, so drop the markdown marks a chapter
+  // author may have used inside a question or answer.
+  const plain = t =>
+    String(t)
+      .replace(/`([^`]*)`/g, '$1')
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/(^|[^\w*])\*([^*\n]+)\*(?!\w)/g, '$1$2')
+      .replace(/(^|[^\w_])_([^_\n]+)_(?!\w)/g, '$1$2')
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+      .replace(/\s+/g, ' ')
+      .trim()
+  // "[!RECALL] Question :: Answer" pairs in one blockquote's text. The same
+  // parser feeds the in-chapter cards (from the rendered blockquote) and the
+  // deck (from the markdown), so both always agree.
+  const recallPairs = text =>
+    String(text)
+      .split(/\[!RECALL\]/i)
+      .map(t => t.trim())
+      .filter(t => t.includes('::'))
+      .map(t => {
+        const i = t.indexOf('::')
+        return { q: plain(t.slice(0, i)), a: plain(t.slice(i + 2)) }
+      })
+      .filter(c => c.q && c.a)
+  // "> [!RECALL] Question :: Answer" lines in chapter markdown become cards:
+  // one per line, or several in one quote, or the pair on the quote's next line.
+  function chapterCards(ch) {
+    const lines = String(ch.md || '')
+      .replace(/\r\n?/g, '\n')
       .split('\n')
-      .map(l => l.match(RECALL_LINE))
-      .filter(Boolean)
-      .map((m, i) => ({
-        id: `${ch.id}-${hash(m[1])}`,
+    const quotes = []
+    let buf = null
+    let fence = false
+    for (const l of lines) {
+      if (/^```/.test(l)) fence = !fence
+      if (!fence && /^\s*>/.test(l)) {
+        if (!buf) buf = []
+        buf.push(l.replace(/^\s*>\s?/, ''))
+      } else if (buf) {
+        quotes.push(buf.join(' '))
+        buf = null
+      }
+    }
+    if (buf) quotes.push(buf.join(' '))
+    return quotes
+      .filter(q => /\[!RECALL\]/i.test(q))
+      .flatMap(recallPairs)
+      .map((c, i) => ({
+        id: `${ch.key}-${hash(c.q)}`,
         n: i + 1,
-        block: `ch:${ch.id}`,
-        q: m[1],
-        a: m[2],
+        block: `ch:${ch.key}`,
+        q: c.q,
+        a: c.a,
         note: '',
         src: `Ch ${pad2(ch.num)} · ${ch.title}`,
       }))
+  }
   const CH_CARDS = CHAPTERS.map(chapterCards)
 
   const DECKS = [
@@ -164,7 +224,7 @@
       cards: PLAYBOOK.filter(c => c.block === k),
     })),
     ...CHAPTERS.map((ch, i) => ({
-      key: `ch:${ch.id}`,
+      key: `ch:${ch.key}`,
       label: `Ch ${pad2(ch.num)} · ${ch.title}`,
       cards: CH_CARDS[i],
     })).filter(d => d.cards.length),
@@ -276,14 +336,8 @@
     for (const bq of LN.$$('blockquote', art)) {
       const txt = bq.textContent.trim()
       if (!/^\[!RECALL\]/i.test(txt)) continue
-      const cards = txt
-        .split(/\[!RECALL\]/i)
-        .map(t => t.trim())
-        .filter(t => t.includes('::'))
-        .map(t => {
-          const i = t.indexOf('::')
-          return { q: t.slice(0, i).trim(), a: t.slice(i + 2).trim() }
-        })
+      const cards = recallPairs(txt)
+      if (!cards.length) continue
       const prev = bq.previousElementSibling
       const group =
         prev && prev.classList.contains('mn-qa-group')
@@ -429,7 +483,7 @@
     const pos = LN.store.get('manual.pos', null)
     let cur = Math.max(
       0,
-      CHAPTERS.findIndex(c => pos && c.id === pos.ch),
+      CHAPTERS.findIndex(c => pos && c.key === pos.ch),
     )
     let activeId = ''
 
@@ -531,7 +585,7 @@
         { class: 'mn-toc' },
         CHAPTERS.map((ch, i) => {
           const on = i === cur
-          const secs = ch.headings.filter(x => x.level >= 2)
+          const secs = heads(ch).filter(x => x.level >= 2 && x.id)
           return h(
             'li',
             { class: `mn-toc-ch${on ? ' on' : ''}` },
@@ -639,7 +693,7 @@
               ),
               ui.btn(
                 [icon('cards'), 'Drill these cards'],
-                () => drill(`ch:${ch.id}`),
+                () => drill(`ch:${ch.key}`),
                 {
                   kind: 'ghost',
                   small: true,
@@ -713,7 +767,7 @@
           b.classList.toggle('on', b.dataset.sec === id)
       }
       LN.store.set('manual.pos', {
-        ch: CHAPTERS[cur].id,
+        ch: CHAPTERS[cur].key,
         sec: id,
         at: Date.now(),
       })
@@ -753,7 +807,7 @@
     function resume() {
       const p = LN.store.get('manual.pos', null)
       const target = resumeBtn.dataset.sec || (p && p.sec)
-      const i = CHAPTERS.findIndex(c => p && c.id === p.ch)
+      const i = CHAPTERS.findIndex(c => p && c.key === p.ch)
       jump(i >= 0 ? i : cur, target)
     }
 
@@ -852,7 +906,7 @@
     showChapter(cur)
     if (pos && pos.sec && cur >= 0) {
       const el = byId(arts[cur], pos.sec)
-      const firstId = CHAPTERS[cur].headings[0]?.id
+      const firstId = (heads(CHAPTERS[cur])[0] || {}).id
       if (el && arts[cur].contains(el) && pos.sec !== firstId) {
         resumeBtn.dataset.sec = pos.sec
         resumeBtn.textContent = `Resume · ${el.textContent.trim().slice(0, 40)}`

@@ -72,7 +72,14 @@ At 60 fps:
 
 ### 1b. The formula, for any BPM
 
-Run this if you have code execution. It prints the beat-marker list.
+With code execution, run the script that ships in this folder. It prints the grid, the note lengths in frames, the 3 s law in beats, and a marker row per downbeat (`--every` for every beat):
+
+```
+python3 scripts/beats.py 92 24 30        # BPM fps seconds
+python3 scripts/beats.py 120 30 30 0.35  # with a 0.35 s offset
+```
+
+Or paste this; it is the same formula.
 
 ```
 bpm, fps, offset, beats = 92, 24, 0.0, 46
@@ -405,7 +412,7 @@ Fast tempo, documentary rules. The montage cuts every 4 beats (1.71 s, the neare
 
 ## 3. Blend-mode cheat sheet
 
-CapCut Mobile: select an overlay, then Blend. The recalled list is Normal, Darken, Screen, Overlay, Multiply, Lighten, Hard light, Soft light, Linear burn, Color burn and Color dodge, with Opacity 0–100. Whether **Add** exists is not established, so **Verify** it. On Desktop, Blend sits in the inspector (**Verify**).
+CapCut Mobile: select an overlay, then Blend (some builds: Splice). The recalled list is Normal, Darken, Screen, Overlay, Multiply, Lighten, Hard light, Soft light, Linear burn, Color burn and Color dodge, with Opacity 0–100. Whether **Add** exists is not established, so **Verify** it. On Desktop, Blend is a Mode dropdown in the inspector under `Video › Basic` (**Verify**; one search result names it).
 
 | Mode | What drops out | Use it for | Stack range |
 |---|---|---|---|
@@ -565,7 +572,7 @@ Copy the blocks you need into the plan with his times filled in. Keep one tap pe
 **M3. Beats (Verify every label)**
 
 1. Tap the music bar.
-2. Tap Beats. (Older builds: Match cut.)
+2. Tap Beats. (Older builds: Match cut; some: Beat.)
 3. Turn on Auto generate. If it shows a Pro badge, skip it and use the beat-marker list.
    - You should see: yellow dots under the music.
 4. Check three dots against the marker list: bar 1, the drop and the last bar.
@@ -636,7 +643,7 @@ Repeat for each V1 row.
 3. Tap Curve.
 4. Tap Custom.
 5. Tap Edit.
-   - You should see: a graph with points on a line at 1x.
+   - You should see: a graph with five points on a flat line at 1x, 0.1x at the bottom and 10x at the top.
 6. Drag the middle point down to 0.4x (in a 24 fps edit) or 0.5x (in a 30 fps edit).
 7. Leave the first and last points at 1x.
 8. Tap the check mark.
@@ -677,7 +684,9 @@ Smooth slow-mo may show a Pro badge; leave it off.
 
 Turn the default ending off once: home-screen gear › Add default ending › off.
 
-### Desktop (CapCut for Windows or Mac; every label is Verify)
+### Desktop (CapCut for Windows or Mac)
+
+Labels marked *seen* were found in Nov 2026 search results, not on his screen. Everything else is **Verify**.
 
 **D1. Project and ratio**
 
@@ -694,8 +703,10 @@ Turn the default ending off once: home-screen gear › Add default ending › of
 2. Put the playhead on the first downbeat he wants.
 3. Press Ctrl+B (Cmd+B on Mac) to split.
 4. Delete the left piece. Drag the music to 00:00.
-5. With the music selected, click the beat-marking button on the timeline toolbar (Auto beat or similar).
+5. With the music selected, look for a beat-marking tool (Beats or Auto beat; **Verify**: no search result names one on Desktop).
    - You should see: beat markers on the music.
+6. If there is none, build the grid by hand from the beat-marker list: click the timecode, type the first downbeat's time, press M (Add marker, *seen*). Repeat for every marker in the list.
+   - You should see: a marker flag on the ruler at each beat.
 
 **D3. Cuts, overlays and plates**
 
@@ -704,24 +715,33 @@ Turn the default ending off once: home-screen gear › Add default ending › of
 3. Drag V2 and V3 media onto new tracks above the main track. The upper track draws on top (**Verify**).
 4. Select a plate. In the inspector, open Video › Basic and set Blend mode and Opacity.
 
-**D4. LUT**
+**D4. LUT** (the path is *seen*: `Adjustment › LUT › Import`)
 
 1. In the top-left panel, click Adjustment.
-2. Click LUT.
-3. Click Import. Pick the .cube file.
-   - You should see: a LUT tile.
-4. Select the clip. In the inspector, open Adjustment and pick the LUT.
-5. Set Intensity to 50–70.
+2. Click LUT in the left column.
+3. Click Import. Pick the .cube or .3dl file (several at once is fine).
+   - You should see: a tile for each LUT.
+4. Hover the tile and click its +.
+   - You should see: an adjustment segment on a track above the clips. It grades everything under it for its length.
+5. Drag its ends across the section it belongs to.
+6. Select the segment. In the inspector, open Adjustment › LUT and set Intensity to 50–70.
+   - You should see: the look at grade strength, not filter strength.
+
+Per clip instead (*seen*, one route): select the clip, inspector `Adjustment › Basic`, tick LUT, pick it from the Name dropdown, set Intensity.
 
 **D5. Speed, text and export**
 
-1. Select the clip. In the inspector, click Speed › Curve › Custom.
-2. Drag the middle point to 0.4x or 0.5x.
-3. Trim back to the next beat marker.
-4. Add text from Text › Default text.
-5. Click Export at the top right.
-6. Set 1080p, the footage frame rate and the highest bitrate. Pick H.264 if it is offered.
-7. Click Export.
+1. Select the clip. In the inspector, click Speed, then Curve (*seen*; the first sub-tab may read Standard rather than Normal).
+2. Click Custom (*seen*).
+   - You should see: an editable curve with draggable points.
+3. Drag the middle point to 0.4x or 0.5x.
+4. Trim back to the next beat marker.
+5. Add text from Text › Default text.
+6. Click Export at the top right (*seen*).
+   - You should see: the Export window with Resolution, Bit rate, Codec and Frame rate rows (*seen*; Codec is the least sure).
+7. Set Resolution 1080P, Bit rate to the highest, Codec H.264, Frame rate to the footage fps.
+8. Click Export.
+   - You should see: a progress bar, then share shortcuts and Open folder.
 
 ## 7. 15-minute verify checklist (do it once, then log the answers)
 
@@ -736,7 +756,7 @@ Turn the default ending off once: home-screen gear › Add default ending › of
 9. **Crop and Background.** Is there a 4:3 crop preset? Does Background › Color offer black?
 10. **LUT.** The 60-second check: look in Adjust and Filters for a LUT or + tile.
 11. **Export.** Note the resolution, fps and bitrate wording, and any codec option.
-12. **Desktop.** Check Adjustment › LUT › Import, where Blend lives, the split shortcut, beat marking and frame stepping.
+12. **Desktop.** Check Adjustment › LUT › Import and the + on the tile, where Blend lives (Video › Basic › Mode?), Ctrl+B / Cmd+B to split, M for a marker, whether any beat detector exists, and frame stepping with the arrow keys.
 
 ## 8. Full beat table, 70–180 BPM
 

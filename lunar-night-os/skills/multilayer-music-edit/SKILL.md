@@ -40,6 +40,8 @@ Don't ask anything else. State your assumptions and go:
 - Frames per beat = fps × 60 ÷ BPM.
 - The cut frame for beat n is round(n × fps × 60 ÷ BPM). Always compute it from n. Never add up rounded beat lengths, because the error drifts.
 - Trim the song so a downbeat sits at 0:00. Then beat n sits at n × 60 ÷ BPM seconds. If it isn't trimmed, add the offset to every time.
+- **Run the script, don't do it in your head.** `scripts/beats.py` in this folder prints the grid, every marker and the note lengths: `python3 scripts/beats.py 92 24 30` (BPM, fps, seconds; a fourth number is the offset in seconds; `--every` lists every beat). Without code execution, use the table below and the formula above.
+- Beat 0 here is the first downbeat. Kubrick's manual calls the same beat 1. The frames are the same; only the label differs.
 
 | BPM | beat s | f/beat 24 | f/beat 30 | f/beat 60 | bar s |
 | --- | --- | --- | --- | --- | --- |
@@ -83,7 +85,7 @@ Notes on the stack:
 
 - **The 4:3 window.** It is 1080 × 810 px, centred in 1080 × 1920, so its top edge is at y 555. Text in the top bar goes at y 130–555.
 - **Plate defaults.** Forge previews plates alone, at a higher opacity. In a stack, use the ranges above.
-- **Overlays on Mobile.** Blend works only on overlay tracks. Which overlay row draws on top is **Verify**: put a plate on Normal 100 and look.
+- **Overlays on Mobile.** Blend (some builds label it Splice) works only on overlay tracks. Which overlay row draws on top is **Verify**: put a plate on Normal 100 and look.
 
 ## 4. Cut patterns
 
@@ -192,7 +194,7 @@ Adapt the step library in reference.md §6. A short sample:
 
 ## 8. Desktop extras
 
-**LUTs.** Go to `Adjustment › LUT › Import`, then pick the .cube file (**Verify**). Apply it at 50–70%; at 100% a LUT is a filter. His files:
+**LUTs.** Top-left panel: `Adjustment › LUT › Import`, pick the .cube (or .3dl). Hover the new tile and click its `+`: the LUT lands as an adjustment segment on a track above the clips and grades everything under it for its length. Select the segment and set Intensity to 50–70; at 100% a LUT is a filter. Per clip instead: select the clip, then inspector `Adjustment › Basic`, tick LUT, pick it, set Intensity. These labels come from Nov 2026 search results, not from his screen, so look before you click. His files:
 
 - `LunarNight_v2_Violet`, `_Blue` and `_Soft`;
 - `Dreamcore_Halation`;
@@ -243,12 +245,15 @@ Write each change as one line he can keep: `project | area | before → after | 
   - Filters/Adjust › Apply to all
   - Text › Add text › Font › Import
   - Default ending off from the home-screen gear
+- **Seen in Nov 2026 search results, not on a device** (say "look for", not "tap"):
+  - Speed › Curve tiles: Custom, Montage, Hero, Bullet, Jump cut, Flash in, Flash out; the Custom graph runs 0.1x to 10x
+  - the 1080P chip beside Export on Mobile
+  - Desktop: Adjustment › LUT › Import and the + on the tile; Export's Resolution, Bit rate, Codec and Frame rate rows; Ctrl+B / Cmd+B to split; M for Add marker
 - **Everything else is Verify**, especially:
-  - Beats and Auto generate
-  - the blend-mode list (whether Add exists)
+  - Beats and Auto generate (older builds: Match cut; some: Beat)
+  - the blend-mode list (whether Add exists; whether the button says Blend or Splice)
   - transition names and placement
-  - Speed › Curve labels
   - Crop ratios
-  - every Desktop path
+  - every other Desktop path, and whether Desktop has a beat detector at all
 - **Mobile .cube import is contradicted.** Assume it isn't there and give the three routes in section 8. Reduce noise is Pro on mobile. A Pro-badge asset can block export, so pick free ones.
 - **Numbers.** Use the canon numbers above or numbers you computed. If you don't know a number, say so and give the on-phone check that finds it.

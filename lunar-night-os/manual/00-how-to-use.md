@@ -10,7 +10,7 @@ The rail along the top numbers the modules in the order the work happens. Each s
 |---|---|
 | **01 Rig** | Pre-flight for the Pixel 10 Pro XL: the camera app, the dials and the checks, set the same way every night. |
 | **02 Shot Bible** | What to shoot, plus the ticket rail every module shares. Queue a shot, fire it, put it on the pass or 86 it. |
-| **03 The Cut** | The CapCut Mobile edit: cut rhythm, speed ramps, the audio spine, auto-cut, captions and an edit plan. |
+| **03 The Cut** | The CapCut Mobile edit: cut rhythm, speed ramps, the audio spine, auto-cut, captions, an edit plan and music edits cut to the beat. |
 | **04 Transitions** | Transitions for the review and documentary cuts, built in CapCut. Lunar Night reels stay on hard cuts. |
 | **05 Grade** | The LunarNight v2 looks as real .cube files, plus the CapCut slider recipe. |
 | **06 Type & HUD** | Reel text and title cards in the house fonts. |
@@ -93,7 +93,7 @@ The rules that keep the block working:
 - **Run the deck again on day 2 and day 7.** Spacing beats one long session.
 - Under 12 out of 15 (80%) means rerun that block tomorrow.
 
-The Recall tab runs all of it: the block timer with its three phases, the playbook's 15 cards, and the day 2 and day 7 dates counted from your first session.
+The Recall tab runs all of it: the block timer with its three phases, the playbook's 15 cards, and the day 2 and day 7 dates counted from your first session. A chapter that ends in recall cards gets a deck of its own, and **Drill these cards** at the end of the chapter opens it.
 
 > [!RECALL] How long is one study block, and how is it split? :: 15 minutes: 2 min on the law lines, 8 min of CapCut drill, 5 min of recall
 
