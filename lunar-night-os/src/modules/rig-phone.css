@@ -1,0 +1,365 @@
+/* modules/rig-phone.css — the 3D Pixel 10 Pro XL and its simulated app screens.
+   Root class .rp-root (mounted inside other modules, so not under one .m-id). */
+.rp-root {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+.rp-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3) var(--s5);
+  align-items: end;
+  min-width: 0;
+}
+.rp-top .ln-field {
+  min-width: 0;
+}
+.rp-grid {
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .rp-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+}
+.rp-model,
+.rp-screen {
+  display: grid;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+/* ---------- stage */
+.rp-stage-wrap {
+  position: relative;
+  border-radius: var(--r3);
+  overflow: hidden;
+  background:
+    radial-gradient(
+      60% 40% at 50% 100%,
+      rgba(0, 200, 215, 0.1),
+      transparent 70%
+    ),
+    linear-gradient(180deg, var(--graphite-2), var(--obsidian));
+}
+.rp-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 560px;
+  touch-action: none;
+  cursor: grab;
+  outline-offset: -2px;
+  overflow: hidden;
+}
+.rp-stage:active {
+  cursor: grabbing;
+}
+.rp-stage canvas {
+  display: block;
+}
+.rp-hotspots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.rp-hot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  will-change: transform;
+}
+.rp-hot i {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--amber);
+  border: 2px solid var(--amber-ink);
+  box-shadow:
+    0 0 0 3px rgba(0, 200, 215, 0.35),
+    0 0 14px rgba(0, 200, 215, 0.6);
+  transition: transform 0.15s;
+}
+.rp-hot.lens i {
+  background: var(--bone);
+  border-color: var(--amber);
+}
+.rp-hot:hover i,
+.rp-hot:focus-visible i {
+  transform: scale(1.3);
+}
+.rp-views {
+  gap: 6px;
+}
+.rp-fallback {
+  margin: 0;
+}
+.rp-approx summary {
+  cursor: pointer;
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  font-weight: 600;
+}
+.rp-approx ul {
+  margin: var(--s2) 0 var(--s2);
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  color: var(--silver-2);
+}
+
+/* ---------- CSS-3D fallback phone */
+.rp-css {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  perspective: 1400px;
+  overflow: hidden;
+}
+.rp-css-phone {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.rp-face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  backface-visibility: hidden;
+  border-radius: var(--r);
+  overflow: visible;
+}
+.rp-face.front {
+  background: #0a0b0d;
+  box-shadow: inset 0 0 0 1.5px #3a3d42;
+}
+.rp-face.back {
+  background: linear-gradient(160deg, #15161a, #0b0c0e 60%, #101114);
+  box-shadow: inset 0 0 0 1.5px #3a3d42;
+}
+.rp-face.edge {
+  background: #2b2d31;
+  border-radius: 4px;
+}
+.rp-css-screen {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  display: block;
+}
+.rp-css-punch {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: #000;
+  box-shadow: inset 0 0 2px #223;
+}
+.rp-css-bar {
+  position: absolute;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #34363b, #202226);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px #45484e;
+}
+.rp-css-glass {
+  position: absolute;
+  border-radius: 999px;
+  background: #050607;
+}
+.rp-css-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: #0b0d14;
+  box-shadow: inset 0 0 0 1.5px #1b1e22;
+}
+.rp-css-dot.lens {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #4b5670 0 12%,
+    #0b0f1a 14%,
+    #050710 70%
+  );
+  box-shadow:
+    0 0 0 1.5px #1b1e22,
+    inset 0 0 0 1px #2a3142;
+}
+.rp-css-dot.flash {
+  background: #efe8d4;
+}
+.rp-css-dot.temp,
+.rp-css-dot.ldaf,
+.rp-css-dot.flicker {
+  background: #0d1016;
+}
+.rp-css-dot.micRear {
+  background: #000;
+}
+.rp-face .rp-hot {
+  pointer-events: auto;
+}
+.rp-face.back .rp-hot {
+  transform: rotateY(180deg);
+}
+
+/* ---------- flat screen */
+.rp-flat {
+  width: min(100%, 300px);
+  margin: 0 auto;
+  aspect-ratio: 640 / 1424;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+  box-shadow:
+    0 0 0 3px #26282c,
+    0 0 0 4px #0a0a0b,
+    0 20px 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+.rp-flat canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: pointer;
+}
+.rp-flat.land {
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 1424 / 640;
+}
+.rp-flat.land canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(100% * 640 / 1424);
+  height: calc(100% * 1424 / 640);
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.rp-caption {
+  margin: 0;
+  text-align: center;
+}
+
+/* ---------- readout */
+.rp-readout {
+  display: grid;
+  gap: var(--s3);
+  background: var(--graphite);
+  border-radius: var(--r2);
+  padding: var(--s4);
+  min-width: 0;
+}
+.rp-readout-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--s3);
+  min-width: 0;
+}
+.rp-readout-head > div {
+  min-width: 0;
+}
+.rp-readout-head b {
+  font-weight: 700;
+  color: var(--bone);
+}
+.rp-rows {
+  display: grid;
+  gap: 2px;
+}
+.rp-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 2px var(--s3);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--t-sm);
+  min-width: 0;
+}
+.rp-row:last-child {
+  border-bottom: 0;
+}
+.rp-k {
+  color: var(--silver-2);
+  font-weight: 600;
+}
+.rp-v {
+  color: var(--bone);
+  font-family: var(--f-data);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.rp-why {
+  grid-column: 1 / -1;
+  color: var(--silver-3);
+  font-family: var(--f-body);
+  line-height: 1.45;
+}
+.rp-verify {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: var(--gold);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.rp-conf {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--silver-2);
+  background: var(--graphite-3);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.rp-conf.confirmed {
+  color: var(--sage);
+  background: var(--sage-soft);
+}
+.rp-conf.likely {
+  color: var(--on-accent-soft);
+  background: var(--amber-soft);
+}
+.rp-conf.contradicted {
+  color: var(--crimson-text);
+  background: var(--crimson-soft);
+}
+.rp-card .ln-kv dd {
+  line-height: 1.6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rp-hot i {
+    transition: none;
+  }
+}
+.rp-stage:focus-visible {
+  outline: 2px solid var(--amber-line);
+  outline-offset: -2px;
+}
