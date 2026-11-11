@@ -26,10 +26,16 @@
     // 6.8 in diagonal at 1344 x 2992 works out to 70.76 x 157.53 mm.
     screen: { w: 70.76, h: 157.53, r: 9 },
     hole: { fromTop: 5.4, r: 1.9 },
-    bar: { w: 61, h: 23.5, lift: 3.3, fromTop: 14.5, bevel: 0.7 },
-    glass: { w: 44, h: 17.5, cx: -8 },
+    // The bar's width, height and distance from the top edge follow the
+    // user's own Jade Shoot Kit model (66 × 24 mm, 9 mm down), trimmed to
+    // the research note that it no longer runs edge to edge.
+    bar: { w: 63, h: 24, lift: 3.2, fromTop: 12, bevel: 0.7 },
+    glass: { w: 44, h: 17.5, cx: -7.5 },
     lensR: 6.2,
   }
+  // Display-to-body margin: the panel is centred, so the bezel is the same
+  // all round.
+  const BEZEL = (MM.h - MM.screen.h) / 2
   const BAR_Y = MM.h / 2 - MM.bar.fromTop - MM.bar.h / 2
   const BAR_Z = MM.d / 2 + MM.bar.lift
 
@@ -51,7 +57,7 @@
       name: 'Wide camera · 1x',
       kind: 'Rear lens',
       face: 'back',
-      at: [-21.5, BAR_Y],
+      at: [-21, BAR_Y],
       zoom: 0,
       rows: [
         ['Resolution', '50 MP, Octa PD', 'confirmed'],
@@ -98,7 +104,7 @@
       name: 'Telephoto camera · 5x',
       kind: 'Rear lens',
       face: 'back',
-      at: [5.5, BAR_Y],
+      at: [5, BAR_Y],
       zoom: 0,
       rows: [
         ['Resolution', '48 MP, Quad PD', 'confirmed'],
@@ -125,7 +131,7 @@
       name: 'Laser autofocus (LDAF)',
       kind: 'Sensor',
       face: 'back',
-      at: [14.2, BAR_Y + 1.7],
+      at: [16.2, BAR_Y + 1.9],
       zoom: 1,
       rows: [
         ['Type', 'Multi-zone laser detect autofocus', 'confirmed'],
@@ -138,7 +144,7 @@
       name: 'Spectral and flicker sensor',
       kind: 'Sensor',
       face: 'back',
-      at: [14.2, BAR_Y - 3.3],
+      at: [16.2, BAR_Y - 3.1],
       zoom: 1,
       rows: [
         [
@@ -155,7 +161,7 @@
       name: 'LED flash',
       kind: 'Light',
       face: 'back',
-      at: [22.4, BAR_Y + 3.7],
+      at: [23.6, BAR_Y + 3.7],
       zoom: 0,
       rows: [
         ['Type', 'LED flash', 'confirmed'],
@@ -168,7 +174,7 @@
       name: 'Temperature sensor',
       kind: 'Sensor',
       face: 'back',
-      at: [22.4, BAR_Y - 4.1],
+      at: [23.6, BAR_Y - 4.1],
       zoom: 1,
       rows: [['Fitted to', 'Pro and Pro XL only', 'confirmed']],
       use: 'Not part of the camera. It sits beside the flash; keep a thumb off it and the lenses stay clean too.',
@@ -178,7 +184,7 @@
       name: 'Rear microphone',
       kind: 'Microphone',
       face: 'back',
-      at: [27.4, BAR_Y],
+      at: [28.4, BAR_Y],
       zoom: 1,
       rows: [
         ['Count', 'One of three microphones', 'confirmed'],

@@ -32,6 +32,7 @@ const VENDOR_MB = path.join(
   SCRATCH,
   'vendor/package/dist/bundles/mediabunny.min.mjs',
 )
+const VENDOR_THREE = path.join(SCRATCH, 'vendor/three/three.min.js')
 
 const args = process.argv.slice(2)
 const flag = n => args.includes(`--${n}`)
@@ -144,6 +145,21 @@ for (const width of widths) {
         contentType: 'application/javascript',
         headers: { 'Access-Control-Allow-Origin': '*' },
         body: fs.readFileSync(VENDOR_MB),
+      })
+    if (url.includes('three.js/r128/three.min.js'))
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: fs.existsSync(VENDOR_THREE)
+          ? fs.readFileSync(VENDOR_THREE)
+          : '/* three.js unavailable offline; CSS fallback */',
+      })
+    if (false)
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: fs.readFileSync(VENDOR_THREE),
       })
     if (/^(file|data|blob):/.test(url)) return route.continue()
     return route.abort()
