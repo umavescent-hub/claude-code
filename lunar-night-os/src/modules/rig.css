@@ -1,0 +1,1026 @@
+/* Lunar Night OS: modules/rig.css. Everything scoped under .m-rig. */
+
+/* ---------- jump nav */
+.m-rig .rig-jump {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: var(--s2);
+  margin-bottom: var(--s5);
+}
+.m-rig .rig-jump::-webkit-scrollbar {
+  display: none;
+}
+.m-rig .rig-jump button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r1);
+  background: var(--graphite);
+  color: var(--silver-2);
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  cursor: pointer;
+}
+.m-rig .rig-jump button span {
+  font-size: var(--t-xs);
+  color: var(--amber);
+}
+.m-rig .rig-jump button:hover {
+  color: var(--bone);
+  border-color: var(--amber-line);
+}
+
+/* ---------- shared bits */
+.m-rig .rig-card {
+  min-width: 0;
+}
+.m-rig .rig-why {
+  font-family: var(--f-body);
+  font-size: var(--t-md);
+  line-height: 1.6;
+  color: var(--silver);
+  max-width: var(--measure);
+}
+.m-rig .rig-why b {
+  color: var(--bone);
+}
+.m-rig .rig-factline {
+  display: block;
+  margin: 0;
+  padding: 6px 0 6px 10px;
+  border-left: 2px solid var(--line-2);
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  color: var(--silver-2);
+}
+.m-rig .rig-factline b {
+  color: var(--bone);
+  font-weight: 500;
+}
+.m-rig .rig-factline[data-state="yes"] {
+  border-left-color: var(--sage);
+}
+.m-rig .rig-factline[data-state="no"] {
+  border-left-color: var(--crimson);
+}
+.m-rig .rig-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.m-rig .rig-parts button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r1);
+  background: var(--graphite-2);
+  color: var(--silver-2);
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  cursor: pointer;
+}
+.m-rig .rig-parts button span {
+  color: var(--amber);
+  font-size: var(--t-xs);
+}
+.m-rig .rig-parts button[aria-pressed="true"] {
+  border-color: var(--amber);
+  background: var(--amber-soft);
+  color: var(--bone);
+}
+.m-rig .rig-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: center;
+}
+
+/* ---------- 3D phone */
+.m-rig .rig-mapcol {
+  justify-items: stretch;
+}
+.m-rig .rig-stage {
+  --pw: 236px;
+  --ph: calc(var(--pw) * 2.125);
+  --pt: calc(var(--pw) * 0.111);
+  --pr: calc(var(--pw) * 0.15);
+  position: relative;
+  height: calc(var(--ph) + 76px);
+  display: grid;
+  place-items: center;
+  perspective: 1400px;
+  border: 1px solid var(--line);
+  border-radius: var(--r3);
+  background: var(--graphite);
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+@media (max-width: 360px) {
+  .m-rig .rig-stage {
+    --pw: 210px;
+  }
+}
+.m-rig .rig-stage.is-dragging {
+  cursor: grabbing;
+}
+.m-rig .rig-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      60% 38% at 50% 0%,
+      color-mix(in srgb, var(--silver) 11%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      34% 5% at 50% calc(100% - 26px),
+      color-mix(in srgb, var(--obsidian) 90%, transparent),
+      transparent 100%
+    ),
+    linear-gradient(180deg, var(--graphite-2), var(--obsidian));
+}
+.m-rig .rig-phone {
+  position: relative;
+  width: var(--pw);
+  height: var(--ph);
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--rx, -8) * 1deg))
+    rotateY(calc(var(--ry, -24) * 1deg));
+}
+.m-rig .rig-phone.is-animating {
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.m-rig .rig-slice {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--pr);
+  background: var(--graphite-3);
+  border: 1px solid color-mix(in srgb, var(--silver) 22%, var(--graphite-3));
+  transform: translateZ(calc((var(--k) / 5 - 0.5) * (var(--pt) - 4px)));
+}
+.m-rig .rig-face {
+  position: absolute;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.m-rig .rig-back,
+.m-rig .rig-front {
+  inset: 0;
+  border-radius: var(--pr);
+  overflow: hidden;
+}
+.m-rig .rig-back {
+  transform: translateZ(calc(var(--pt) / 2));
+  background:
+    radial-gradient(
+      90% 50% at 25% 0%,
+      color-mix(in srgb, var(--silver) 7%, transparent),
+      transparent 65%
+    ),
+    linear-gradient(165deg, var(--graphite-2), var(--obsidian) 72%);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--silver) 26%, var(--graphite-3)),
+    inset 0 0 0 4px var(--obsidian);
+}
+/* Static sheen that follows the turn, plus the slow studio sweep. */
+.m-rig .rig-back::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in srgb, var(--bone) 7%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 300% 100%;
+  background-position-x: calc(50% + var(--ry, -24) * 0.9%);
+}
+.m-rig .rig-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    color-mix(in srgb, var(--bone) 14%, transparent) 50%,
+    transparent 58%
+  );
+  background-size: 300% 100%;
+  background-position-x: 120%;
+  animation: rig-sweep 7.5s ease-in-out infinite;
+}
+@keyframes rig-sweep {
+  0% {
+    background-position-x: 120%;
+  }
+  45%,
+  100% {
+    background-position-x: -20%;
+  }
+}
+.m-rig.rig-paused .rig-sheen {
+  animation-play-state: paused;
+}
+
+/* Camera bar: a pill that stops short of the edges; black glass over the
+   three lenses on the left, flash and sensors on the right. Schematic. */
+.m-rig .rig-bar {
+  position: absolute;
+  left: 5%;
+  width: 90%;
+  top: 6.4%;
+  height: 11%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--graphite-3), var(--graphite));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--silver) 22%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--silver) 12%, transparent),
+    0 8px 18px color-mix(in srgb, var(--obsidian) 80%, transparent);
+}
+.m-rig .rig-bar i {
+  position: absolute;
+  display: block;
+  transform: translate(-50%, -50%);
+}
+.m-rig .rig-glass {
+  position: absolute;
+  left: 2%;
+  top: 10%;
+  width: 58%;
+  height: 80%;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--silver) 10%, transparent),
+      transparent 45%
+    ),
+    var(--obsidian);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+}
+.m-rig .rig-bar .rig-lens {
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--cobalt) 0 9%,
+    var(--obsidian) 24%,
+    var(--graphite-2) 56%,
+    var(--silver-3) 60%,
+    var(--graphite) 66%,
+    var(--obsidian) 72%
+  );
+  box-shadow: 0 0 0 1px var(--line-2);
+}
+.m-rig .rig-bar .rig-lens.uw {
+  left: 16.7%;
+}
+.m-rig .rig-bar .rig-lens.main {
+  left: 50%;
+  width: 32px;
+  height: 32px;
+}
+.m-rig .rig-bar .rig-lens.tele {
+  left: 83.3%;
+  border-radius: 30%;
+}
+.m-rig .rig-flash {
+  left: 69.8%;
+  top: 30%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--bone), var(--silver-2) 60%);
+  box-shadow: 0 0 0 2px var(--graphite);
+}
+.m-rig .rig-temp {
+  left: 79.6%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--silver-3);
+}
+.m-rig .rig-ldaf {
+  left: 89.5%;
+  top: 30%;
+  width: 10px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--obsidian);
+  box-shadow: inset 0 0 0 1px var(--crimson);
+}
+.m-rig .rig-fsensor {
+  left: 69.8%;
+  top: 72%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--obsidian);
+  box-shadow: inset 0 0 0 1px var(--silver-3);
+}
+.m-rig .rig-mic-hole {
+  left: 89.5%;
+  top: 72%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--obsidian);
+}
+
+/* Hotspots */
+.m-rig .rig-pin {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  border: 1px dashed transparent;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+.m-rig .rig-pin:hover {
+  border-color: var(--amber-line);
+}
+.m-rig .rig-pin[aria-pressed="true"] {
+  border: 2px solid var(--amber);
+  background: var(--amber-soft);
+}
+.m-rig .rig-pin-dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--graphite-3);
+  color: var(--amber);
+  border: 1px solid var(--amber-line);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  line-height: 1;
+}
+.m-rig .rig-pin[aria-pressed="true"] .rig-pin-dot {
+  background: var(--amber);
+  color: var(--amber-ink);
+}
+.m-rig .rig-pin-tag {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--silver-2);
+  white-space: nowrap;
+}
+
+/* Screen side */
+.m-rig .rig-front {
+  transform: rotateY(180deg) translateZ(calc(var(--pt) / 2));
+  background: var(--obsidian);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--silver) 26%, var(--graphite-3)),
+    inset 0 0 0 7px var(--obsidian),
+    inset 0 0 0 8px var(--line-2);
+}
+.m-rig .rig-front::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: calc(var(--pr) - 8px);
+  background:
+    radial-gradient(
+      70% 40% at 50% 30%,
+      color-mix(in srgb, var(--cobalt) 30%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(180deg, var(--graphite), var(--obsidian) 70%);
+}
+.m-rig .rig-punch {
+  position: absolute;
+  top: 3.2%;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--obsidian);
+  box-shadow: 0 0 0 1px var(--line-2);
+}
+.m-rig .rig-hud {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--silver);
+}
+.m-rig .rig-hud b {
+  flex: 1 0 100%;
+  color: var(--bone);
+  font-weight: 500;
+  font-size: 11px;
+}
+.m-rig .rig-hud span {
+  padding: 2px 5px;
+  border: 1px solid var(--line-2);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--obsidian) 70%, transparent);
+}
+.m-rig .rig-hud .rig-hud-rec {
+  color: var(--crimson-text);
+  border-color: var(--crimson);
+}
+
+/* Frame edges */
+.m-rig .rig-edge {
+  background: linear-gradient(
+    90deg,
+    var(--graphite-3),
+    color-mix(in srgb, var(--silver) 40%, var(--graphite-3)) 50%,
+    var(--graphite-3)
+  );
+}
+.m-rig .rig-left,
+.m-rig .rig-right {
+  width: var(--pt);
+  height: calc(var(--ph) - 2 * var(--pr));
+  top: var(--pr);
+  left: calc(50% - var(--pt) / 2);
+}
+.m-rig .rig-left {
+  transform: rotateY(-90deg) translateZ(calc(var(--pw) / 2));
+}
+.m-rig .rig-right {
+  transform: rotateY(90deg) translateZ(calc(var(--pw) / 2));
+}
+.m-rig .rig-top,
+.m-rig .rig-bottom {
+  width: calc(var(--pw) - 2 * var(--pr));
+  height: var(--pt);
+  left: var(--pr);
+  top: calc(50% - var(--pt) / 2);
+  background: linear-gradient(
+    180deg,
+    var(--graphite-3),
+    color-mix(in srgb, var(--silver) 40%, var(--graphite-3)) 50%,
+    var(--graphite-3)
+  );
+}
+.m-rig .rig-top {
+  transform: rotateX(90deg) translateZ(calc(var(--ph) / 2));
+}
+.m-rig .rig-bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--ph) / 2));
+}
+.m-rig .rig-edge i {
+  position: absolute;
+  display: block;
+  background: var(--obsidian);
+}
+.m-rig .rig-top .rig-hole,
+.m-rig .rig-bottom .rig-hole {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  top: calc(50% - 2px);
+  left: 40%;
+}
+.m-rig .rig-bottom .rig-hole {
+  left: 64%;
+}
+.m-rig .rig-usb {
+  width: 22px;
+  height: 7px;
+  border-radius: 4px;
+  left: calc(50% - 11px);
+  top: calc(50% - 3.5px);
+}
+.m-rig .rig-grille {
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  left: 18%;
+  top: calc(50% - 1.5px);
+}
+.m-rig .rig-key {
+  width: 60%;
+  left: 20%;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--silver) 30%, var(--graphite-3));
+}
+.m-rig .rig-key.power {
+  top: 18%;
+  height: 8%;
+}
+.m-rig .rig-key.vol {
+  top: 30%;
+  height: 16%;
+}
+
+.m-rig .rig-turns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.m-rig .rig-side {
+  margin-left: auto;
+  font-family: var(--f-mono);
+  color: var(--silver-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Spec panel */
+.m-rig .rig-specpanel {
+  gap: var(--s4);
+}
+.m-rig .rig-spec-title {
+  font-size: var(--t-lg);
+}
+.m-rig .rig-specs {
+  display: grid;
+  grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
+  gap: 8px 12px;
+  margin: 0;
+}
+.m-rig .rig-specs dt {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+  padding-top: 3px;
+}
+.m-rig .rig-specs dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: baseline;
+  font-size: var(--t-sm);
+  color: var(--silver);
+  min-width: 0;
+}
+.m-rig .rig-specs dd .ln-chip {
+  font-size: 10px;
+}
+.m-rig .rig-when {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+}
+.m-rig .rig-when > div {
+  display: grid;
+  gap: 4px;
+  padding: var(--s3);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite-2);
+}
+.m-rig .rig-when b {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.m-rig .rig-when p {
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  line-height: 1.55;
+  color: var(--silver);
+}
+
+/* ---------- presets */
+.m-rig .rig-segs {
+  display: grid;
+  gap: var(--s3);
+}
+.m-rig .rig-segs .ln-seg button,
+.m-rig .rig-fact-ans button {
+  min-height: 40px;
+}
+.m-rig .rig-hudrow {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  padding: 6px;
+  border-radius: var(--r2);
+  background: var(--obsidian);
+  border: 1px solid var(--line-2);
+}
+.m-rig .rig-dial {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  text-align: center;
+  padding: 6px 2px;
+  border-radius: var(--r1);
+  background: var(--graphite);
+  min-width: 0;
+}
+.m-rig .rig-dial span {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+}
+.m-rig .rig-dial b {
+  font-size: var(--t-xs);
+  font-weight: 500;
+  color: var(--bone);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.m-rig .ln-table td .ln-path {
+  white-space: nowrap;
+}
+
+/* ---------- pre-flight */
+.m-rig .rig-pf-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3) var(--s4);
+}
+.m-rig .rig-pf-count {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+}
+.m-rig .rig-pf-count b {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: var(--t-xl);
+  color: var(--bone);
+}
+.m-rig .rig-meter {
+  flex: 1 1 160px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--graphite-3);
+  overflow: hidden;
+}
+.m-rig .rig-meter i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--amber);
+  transition: width 0.3s ease;
+}
+.m-rig .rig-pf-group {
+  margin: 0;
+}
+.m-rig .rig-pf-group legend {
+  padding: 0 4px;
+  margin-left: -4px;
+}
+.m-rig .rig-pf-item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 4px var(--s2);
+  align-items: start;
+}
+.m-rig .rig-pf-item + .rig-pf-item {
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+}
+.m-rig .rig-pf-item input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  margin: 8px 0 0;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r1);
+  background: var(--graphite-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.m-rig .rig-pf-item input::after {
+  content: "";
+  width: 6px;
+  height: 11px;
+  border: solid var(--amber-ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+  opacity: 0;
+}
+.m-rig .rig-pf-item input:checked {
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.m-rig .rig-pf-item input:checked::after {
+  opacity: 1;
+}
+.m-rig .rig-pf-item label {
+  display: grid;
+  gap: 2px;
+  min-height: 40px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.m-rig .rig-pf-item label b {
+  font-weight: 500;
+  color: var(--bone);
+  font-size: var(--t-base);
+}
+.m-rig .rig-pf-item label span {
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  line-height: 1.5;
+  color: var(--silver-2);
+}
+.m-rig .rig-pf-item input:checked + label b {
+  color: var(--silver-2);
+  text-decoration: line-through;
+  text-decoration-color: var(--amber-line);
+}
+.m-rig .rig-pf-path {
+  grid-column: 2;
+  min-width: 0;
+}
+
+/* ---------- calculator */
+.m-rig .rig-calc-out {
+  display: grid;
+  gap: var(--s3);
+  align-content: start;
+  min-width: 0;
+}
+.m-rig .rig-calc-big {
+  display: grid;
+  gap: 2px;
+}
+.m-rig .rig-calc-big b {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: var(--t-3xl);
+  line-height: 1;
+  color: var(--bone);
+}
+.m-rig .rig-calc-big span {
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+}
+.m-rig .rig-alts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.m-rig .rig-alt {
+  display: inline-grid;
+  gap: 1px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r1);
+  background: var(--graphite);
+  font-size: var(--t-xs);
+  color: var(--silver-3);
+}
+.m-rig .rig-alt b {
+  font-size: var(--t-sm);
+  color: var(--bone);
+  font-weight: 500;
+}
+.m-rig .rig-alt em {
+  font-style: normal;
+  color: var(--amber);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.m-rig .rig-alt.is-best {
+  border-color: var(--amber);
+  background: var(--amber-soft);
+}
+.m-rig .rig-notes {
+  margin: 0;
+  padding-left: 1.1em;
+  display: grid;
+  gap: 4px;
+}
+.m-rig .rig-flicker-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.m-rig .rig-fx-win.safe {
+  fill: var(--sage-soft);
+  stroke: var(--sage);
+}
+.m-rig .rig-fx-win.risk {
+  fill: var(--crimson-soft);
+  stroke: var(--crimson);
+}
+.m-rig .rig-fx-wave {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 1.5;
+}
+.m-rig .rig-fx-axis {
+  stroke: var(--line-2);
+}
+.m-rig .rig-fx-t {
+  fill: var(--silver-2);
+  font-family: var(--f-mono);
+  font-size: 10px;
+}
+
+/* ---------- white balance */
+.m-rig .rig-wb-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.m-rig .rig-wb-tick {
+  fill: var(--silver-3);
+  font-family: var(--f-mono);
+  font-size: 10px;
+}
+.m-rig .rig-wb-guide {
+  stroke: var(--line-2);
+  stroke-dasharray: 2 3;
+}
+.m-rig .rig-wb-band {
+  fill: var(--graphite-3);
+  stroke: var(--silver-3);
+}
+.m-rig .rig-wb-label {
+  fill: var(--silver-2);
+  font-family: var(--f-mono);
+  font-size: 11px;
+}
+.m-rig .rig-wb-lane.is-on .rig-wb-band {
+  fill: var(--amber);
+  stroke: var(--amber);
+}
+.m-rig .rig-wb-lane.is-on .rig-wb-label {
+  fill: var(--bone);
+}
+.m-rig .rig-wb-lane.is-on .rig-wb-guide {
+  stroke: var(--amber-line);
+}
+.m-rig .rig-wb-sky line {
+  stroke-width: 2;
+}
+.m-rig .rig-wb-sky .cold {
+  stroke: var(--cobalt);
+  fill: var(--cobalt);
+}
+.m-rig .rig-wb-sky .warm {
+  stroke: var(--amber);
+  fill: var(--amber);
+}
+.m-rig .rig-wb-sky circle {
+  fill: var(--bone);
+}
+.m-rig .rig-wb-cursor {
+  stroke: var(--bone);
+  stroke-width: 1.5;
+}
+.m-rig .rig-wb-detail .ln-h2 {
+  font-size: var(--t-lg);
+}
+
+/* ---------- holding */
+.m-rig .rig-hold {
+  position: relative;
+}
+.m-rig .rig-hold-n {
+  font-family: var(--f-display);
+  font-size: var(--t-xl);
+  line-height: 1;
+  color: var(--amber);
+}
+.m-rig .rig-hold p {
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  line-height: 1.55;
+  color: var(--silver);
+}
+
+/* ---------- device facts */
+.m-rig .rig-facts-sum {
+  gap: var(--s4);
+}
+.m-rig .rig-facts-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s3);
+}
+.m-rig .rig-facts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.m-rig .rig-facts-list li {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: var(--s2);
+  font-size: var(--t-sm);
+  color: var(--silver);
+}
+.m-rig .rig-facts-list li b {
+  font-weight: 500;
+  color: var(--sage);
+}
+.m-rig .rig-facts-list li[data-state="no"] b {
+  color: var(--crimson-text);
+}
+.m-rig .rig-facts-app {
+  margin-top: var(--s4);
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--line);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: var(--t-sm);
+  color: var(--amber);
+}
+.m-rig .rig-fact {
+  border-left: 3px solid var(--line-2);
+}
+.m-rig .rig-fact[data-state="yes"] {
+  border-left-color: var(--sage);
+}
+.m-rig .rig-fact[data-state="no"] {
+  border-left-color: var(--crimson);
+}
+.m-rig .rig-fact-tags code {
+  margin-left: auto;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+.m-rig .rig-fact-check {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 6px;
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+}
+.m-rig .rig-fact-check li {
+  min-width: 0;
+}
+.m-rig .rig-fact-ans {
+  display: flex;
+  width: 100%;
+}
+.m-rig .rig-fact-ans button {
+  flex: 1 1 0;
+}
+.m-rig .rig-fact-result {
+  margin: 0;
+  color: var(--silver);
+}
+
+/* ---------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .m-rig .rig-sheen {
+    animation: none;
+    background-position-x: 50%;
+    opacity: 0.5;
+  }
+  .m-rig .rig-phone.is-animating,
+  .m-rig .rig-meter i {
+    transition: none;
+  }
+}

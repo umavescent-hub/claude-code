@@ -1,0 +1,462 @@
+/* modules/forge-motion.css — Motion Forge (a tab inside Forge).
+   Scoped under .m-forge .fm. A dark grading-suite monitor, a contact sheet of
+   title cards, then the scene data, Fable 5.1 and the render. */
+.m-forge .fm {
+  display: grid;
+  gap: var(--s7);
+  min-width: 0;
+}
+.m-forge .fm-intro {
+  display: grid;
+  gap: var(--s2);
+  max-width: var(--measure);
+  padding-bottom: var(--s2);
+}
+.m-forge .fm-lede {
+  font-family: var(--f-body);
+  font-size: var(--t-md);
+  line-height: 1.6;
+  color: var(--silver-2);
+}
+
+/* ---------- Stage: monitor + contact sheet */
+.m-forge .fm-stage {
+  display: grid;
+  gap: var(--s6);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .m-forge .fm-stage {
+    grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+    gap: var(--s7);
+  }
+}
+.m-forge .fm-monitor {
+  display: grid;
+  gap: var(--s3);
+  justify-items: center;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .m-forge .fm-monitor {
+    position: sticky;
+    top: calc(var(--header-h) + 16px);
+  }
+}
+.m-forge .fm-monhead {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s3);
+  font-size: var(--t-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+  min-width: 0;
+}
+.m-forge .fm-mon-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--silver);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.m-forge .fm-mon-name::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--silver-3);
+}
+.m-forge .fm-monhead.is-live .fm-mon-name::before {
+  background: var(--crimson);
+  box-shadow: 0 0 0 3px var(--crimson-soft);
+}
+.m-forge .fm-mon-spec {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.m-forge .fm-screen {
+  --ar: 0.5625;
+  position: relative;
+  width: min(100%, calc(62vh * var(--ar)));
+  aspect-ratio: var(--ar);
+  background: #000;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r2);
+  overflow: hidden;
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+.m-forge .fm-screen.is-land {
+  width: 100%;
+}
+.m-forge .fm-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Safe area: TikTok/Reels UI covers top 130, right 140, bottom 484 px of 1080 × 1920 */
+.m-forge .fm-safe {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.m-forge .fm-safe i {
+  position: absolute;
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--crimson-text) 22%, transparent) 0 5px,
+    transparent 5px 11px
+  );
+  border: 0 dashed color-mix(in srgb, var(--crimson-text) 55%, transparent);
+}
+.m-forge .fm-safe .t {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 6.77%;
+  border-bottom-width: 1px;
+}
+.m-forge .fm-safe .b {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 25.21%;
+  border-top-width: 1px;
+}
+.m-forge .fm-safe .r {
+  right: 0;
+  top: 6.77%;
+  bottom: 25.21%;
+  width: 12.96%;
+  border-left-width: 1px;
+}
+.m-forge .fm-safe span {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  max-width: calc(100% - 16px);
+  padding: 3px 7px;
+  border-radius: var(--r1);
+  background: color-mix(in srgb, var(--obsidian) 82%, transparent);
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  color: var(--crimson-text);
+}
+.m-forge .fm-screen.is-land .fm-safe i {
+  display: none;
+}
+.m-forge .fm-screen.is-land .fm-safe::after {
+  content: "";
+  position: absolute;
+  inset: 5%;
+  border: 1px dashed color-mix(in srgb, var(--crimson-text) 60%, transparent);
+}
+
+/* Transport */
+.m-forge .fm-transport {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--s3);
+  align-items: center;
+}
+.m-forge .fm-play {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--amber-line);
+  background: var(--amber-soft);
+  color: var(--amber);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+}
+.m-forge .fm-play:hover {
+  background: color-mix(in srgb, var(--amber) 22%, transparent);
+}
+.m-forge .fm-tc {
+  font-size: var(--t-sm);
+  color: var(--bone);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.m-forge .fm-ctl {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3) var(--s4);
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.m-forge .fm-ctl .ln-toggle {
+  min-height: 40px;
+}
+
+/* Contact sheet */
+.m-forge .fm-side {
+  display: grid;
+  gap: var(--s4);
+  align-content: start;
+  min-width: 0;
+}
+.m-forge .fm-sidehead {
+  display: grid;
+  gap: 4px;
+}
+.m-forge .fm-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.m-forge .fm-tpl {
+  display: grid;
+  align-content: start;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  color: var(--silver);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  min-width: 0;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.m-forge .fm-tpl canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  background: #000;
+}
+.m-forge .fm-tpl:hover {
+  border-color: var(--line-2);
+}
+.m-forge .fm-tpl[aria-pressed="true"] {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 1px var(--amber);
+}
+.m-forge .fm-tpl-meta {
+  display: grid;
+  gap: 2px;
+  padding: 8px 9px 10px;
+  min-width: 0;
+}
+.m-forge .fm-tpl-meta i {
+  font-style: normal;
+  font-size: var(--t-xs);
+  letter-spacing: 0.16em;
+  color: var(--silver-3);
+}
+.m-forge .fm-tpl[aria-pressed="true"] .fm-tpl-meta i {
+  color: var(--amber);
+}
+.m-forge .fm-tpl-meta b {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: var(--t-md);
+  line-height: 1.12;
+  color: var(--bone);
+  overflow-wrap: anywhere;
+}
+.m-forge .fm-tplnote {
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  line-height: 1.55;
+  color: var(--silver-2);
+  max-width: var(--measure);
+  border-left: 2px solid var(--amber-line);
+  padding-left: var(--s3);
+}
+.m-forge .fm-tplnote b {
+  color: var(--bone);
+  font-weight: 500;
+}
+
+/* ---------- Fable + editor columns */
+.m-forge .fm-cols {
+  display: grid;
+  gap: var(--s7);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  min-width: 0;
+}
+@media (min-width: 1040px) {
+  .m-forge .fm-cols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  }
+}
+.m-forge .fm .ln-section {
+  margin-block: 0;
+  padding-top: var(--s5);
+  border-top: 1px solid var(--line);
+}
+.m-forge .fm-paste {
+  padding-top: var(--s4);
+  border-top: 1px dashed var(--line-2);
+}
+.m-forge .fm-json {
+  min-height: 360px;
+  font-size: var(--t-sm);
+  line-height: 1.55;
+  tab-size: 2;
+}
+
+/* Status lines */
+.m-forge .fm-status {
+  display: grid;
+  gap: 6px;
+  font-size: var(--t-sm);
+  line-height: 1.5;
+  color: var(--silver-2);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.m-forge .fm-status:empty {
+  display: none;
+}
+.m-forge .fm-status.ok {
+  color: var(--sage);
+}
+.m-forge .fm-status.busy {
+  color: var(--amber);
+}
+.m-forge .fm-status.err {
+  color: var(--crimson-text);
+}
+.m-forge .fm-status b {
+  font-weight: 500;
+}
+.m-forge .fm-errs {
+  margin: 0;
+  padding-left: 1.1em;
+  display: grid;
+  gap: 4px;
+}
+.m-forge .fm-warn {
+  color: var(--amber);
+}
+
+/* Collapsible panels */
+.m-forge .fm-details {
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  min-width: 0;
+}
+.m-forge .fm-details > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 44px;
+  padding: 10px 14px;
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--t-xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--silver);
+}
+.m-forge .fm-details > summary::-webkit-details-marker {
+  display: none;
+}
+.m-forge .fm-details > summary::after {
+  content: "+";
+  font-size: var(--t-md);
+  color: var(--amber);
+}
+.m-forge .fm-details[open] > summary::after {
+  content: "\2212";
+}
+.m-forge .fm-details > div {
+  padding: 0 14px 14px;
+  min-width: 0;
+}
+.m-forge .fm-doc .ln-table td:last-child {
+  min-width: 14em;
+}
+.m-forge .fm-doc .ln-table td:first-child {
+  white-space: nowrap;
+}
+
+/* ---------- Render */
+.m-forge .fm-rendergrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s4) var(--s5);
+  align-items: flex-end;
+}
+.m-forge .fm-seghost {
+  min-width: 0;
+  max-width: 100%;
+}
+.m-forge .fm-progress {
+  display: grid;
+  gap: 6px;
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
+  color: var(--silver-2);
+  max-width: 560px;
+}
+.m-forge .fm-bar {
+  height: 3px;
+  background: var(--line-2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.m-forge .fm-bar > i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--amber);
+}
+.m-forge .fm-result {
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: minmax(0, 1fr);
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+}
+@media (min-width: 720px) {
+  .m-forge .fm-result {
+    grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.m-forge .fm-result-media {
+  display: grid;
+  gap: var(--s2);
+  justify-items: center;
+  min-width: 0;
+}
+.m-forge .fm-video {
+  display: block;
+  width: 100%;
+  max-height: 52vh;
+  background: #000;
+  border: 1px solid var(--line);
+  border-radius: var(--r1);
+}
+.m-forge .fm-recipe {
+  max-width: var(--measure);
+  padding-top: var(--s4);
+}

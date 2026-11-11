@@ -1,0 +1,600 @@
+/* Lunar Night OS: modules/edit.css, The Cut (03). Every selector sits under .m-edit. */
+
+/* ---------- shared bits */
+/* Grid items default to min-width: auto; let wide tables scroll inside .ln-scroll. */
+.m-edit .ln-stack > *,
+.m-edit .ln-section > * {
+  min-width: 0;
+}
+.m-edit .edit-two {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  min-width: 0;
+}
+.m-edit .edit-stats {
+  display: grid;
+  gap: var(--s2);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  min-width: 0;
+}
+.m-edit .edit-step {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.m-edit .edit-see {
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  padding-left: var(--s3);
+  border-left: 2px solid var(--sage);
+}
+.m-edit .edit-see b {
+  color: var(--sage);
+  font-weight: 500;
+}
+.m-edit .edit-see.missing {
+  border-left-color: var(--crimson-text);
+  color: var(--crimson-text);
+}
+.m-edit .edit-tl-num,
+.m-edit .edit-hook-lab {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  fill: var(--silver-3);
+}
+.m-edit .edit-hook-lab {
+  font-size: 10px;
+  fill: var(--silver-2);
+}
+
+/* ---------- formats */
+.m-edit .edit-fmt-grid {
+  display: grid;
+  gap: var(--s2);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+}
+.m-edit .edit-fmt {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  text-align: left;
+  min-height: 96px;
+  min-width: 0;
+  padding: var(--s3);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  color: var(--silver);
+  cursor: pointer;
+}
+.m-edit .edit-fmt b {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: var(--t-lg);
+  line-height: 1.1;
+  color: var(--bone);
+}
+.m-edit .edit-fmt small {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+  line-height: 1.4;
+}
+.m-edit .edit-fmt[aria-pressed="true"] {
+  border-color: var(--amber);
+  background: var(--amber-soft);
+  box-shadow: inset 3px 0 0 var(--amber);
+}
+.m-edit .edit-fmt-detail .ln-h2 {
+  font-size: var(--t-xl);
+}
+
+/* structure timelines */
+.m-edit .edit-tl-wrap {
+  margin: 0;
+  display: grid;
+  gap: var(--s2);
+  min-width: 0;
+}
+.m-edit .edit-tl {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.m-edit .edit-tl-seg {
+  fill-opacity: 0.85;
+}
+.m-edit .k-hook {
+  fill: var(--amber);
+  background: var(--amber);
+}
+.m-edit .k-a {
+  fill: var(--cobalt);
+  background: var(--cobalt);
+}
+.m-edit .k-b {
+  fill: var(--graphite-3);
+  background: var(--graphite-3);
+  stroke: var(--line-2);
+}
+.m-edit .k-c {
+  fill: var(--crimson);
+  background: var(--crimson);
+}
+.m-edit .k-d {
+  fill: var(--sage);
+  background: var(--sage);
+}
+.m-edit .edit-tl-lab {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  fill: var(--bone);
+  pointer-events: none;
+}
+.m-edit .edit-tl-band {
+  fill: var(--amber-soft);
+  stroke: var(--amber-line);
+  stroke-dasharray: 3 3;
+}
+.m-edit .edit-tl-cut {
+  stroke: var(--obsidian);
+  stroke-width: 1.5;
+}
+.m-edit .edit-tl-tick {
+  stroke: var(--silver-3);
+}
+.m-edit .edit-tl-mark {
+  stroke: var(--silver-2);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+.m-edit .edit-tl-mark.strong {
+  stroke: var(--amber);
+  stroke-width: 1.5;
+  stroke-dasharray: none;
+}
+.m-edit .edit-tl-marklab {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  fill: var(--amber);
+}
+.m-edit .edit-tl-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px var(--s3);
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+}
+.m-edit .edit-tl-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.m-edit .edit-tl-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+.m-edit .edit-tl-legend .ln-num {
+  color: var(--bone);
+}
+
+/* ---------- algorithm */
+.m-edit .edit-algo-head {
+  align-items: end;
+}
+.m-edit .edit-progress {
+  display: grid;
+  gap: 6px;
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  min-width: 0;
+}
+.m-edit .edit-progress-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.m-edit .edit-progress-bar i {
+  display: block;
+  height: 100%;
+  background: var(--amber);
+  transition: width 0.2s;
+}
+.m-edit .edit-projects .ln-chip {
+  min-height: 32px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+.m-edit .edit-algo {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.m-edit .edit-algo > li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: var(--s3);
+  align-items: start;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+}
+.m-edit .edit-algo > li.done {
+  border-color: rgba(141, 179, 154, 0.35);
+}
+.m-edit .edit-check {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r1);
+  border: 1px solid var(--line-2);
+  background: var(--graphite-2);
+  color: var(--amber);
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  cursor: pointer;
+}
+.m-edit .edit-check[aria-pressed="true"] {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: var(--obsidian);
+  font-weight: 700;
+}
+.m-edit .edit-algo details {
+  min-width: 0;
+}
+.m-edit .edit-algo summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: var(--t-base);
+  color: var(--bone);
+  list-style-position: inside;
+}
+.m-edit .edit-algo li.done summary {
+  color: var(--silver-2);
+  text-decoration: line-through;
+  text-decoration-color: var(--silver-3);
+}
+.m-edit .edit-algo-body {
+  padding: 0 var(--s2) var(--s3) 0;
+}
+.m-edit .edit-law {
+  font-family: var(--f-body);
+  font-size: var(--t-md);
+  line-height: 1.55;
+  color: var(--silver);
+}
+.m-edit .edit-hook-svg,
+.m-edit .edit-meter {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.m-edit .edit-hook-lane {
+  fill: var(--graphite-2);
+  stroke: var(--line);
+}
+.m-edit .edit-hook-shock {
+  fill: var(--cobalt);
+}
+.m-edit .edit-hook-title {
+  fill: var(--amber);
+  fill-opacity: 0.8;
+}
+.m-edit .edit-hook-hit {
+  fill: var(--crimson-text);
+}
+.m-edit .edit-meter-shot {
+  fill: var(--cobalt);
+  fill-opacity: 0.75;
+}
+.m-edit .edit-meter-shot.alt {
+  fill-opacity: 0.45;
+}
+.m-edit .edit-meter-dot {
+  fill: var(--amber);
+}
+.m-edit .edit-meter-gap {
+  fill: var(--crimson-soft);
+  stroke: var(--crimson-text);
+  stroke-width: 1;
+}
+
+/* ---------- speed ramps */
+.m-edit .edit-ramp-card {
+  padding: var(--s2);
+}
+.m-edit .edit-ramp {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.m-edit .edit-ramp-grid {
+  stroke: var(--line);
+}
+.m-edit .edit-ramp-grid.v {
+  stroke-dasharray: 2 4;
+}
+.m-edit .edit-ramp-one {
+  stroke: var(--silver-3);
+}
+.m-edit .edit-ramp-slow {
+  fill: var(--crimson-soft);
+}
+.m-edit .edit-ramp-slowlab {
+  font-family: var(--f-mono);
+  font-size: 8.5px;
+  fill: var(--crimson-text);
+}
+.m-edit .edit-ramp-curve {
+  fill: none;
+  stroke: var(--bone);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.m-edit .edit-ramp-node {
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+}
+.m-edit .edit-ramp-hit {
+  fill: transparent;
+}
+.m-edit .edit-ramp-dot {
+  fill: var(--obsidian);
+  stroke: var(--amber);
+  stroke-width: 2;
+}
+.m-edit .edit-ramp-node.drop .edit-ramp-dot {
+  stroke: var(--crimson-text);
+}
+.m-edit .edit-ramp-node.sel .edit-ramp-dot {
+  fill: var(--amber);
+}
+.m-edit .edit-ramp-node:focus-visible .edit-ramp-hit {
+  stroke: var(--amber);
+  stroke-width: 1.5;
+}
+.m-edit .edit-num {
+  width: 5.5em;
+  min-height: 40px;
+  padding: 6px 8px;
+}
+.m-edit .ln-table .ln-chip {
+  min-height: 32px;
+}
+
+/* ---------- audio spine */
+.m-edit .edit-lanes-card {
+  padding: var(--s3) var(--s2) var(--s2);
+}
+.m-edit .edit-lanes {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.m-edit .edit-lane {
+  fill: var(--graphite-2);
+  stroke: var(--line);
+}
+.m-edit .edit-lane-voice {
+  fill: var(--amber);
+  fill-opacity: 0.85;
+}
+.m-edit .edit-lane-music {
+  fill: var(--cobalt);
+  fill-opacity: 0.5;
+}
+.m-edit .edit-lane-env {
+  fill: none;
+  stroke: var(--silver);
+  stroke-width: 1.5;
+}
+.m-edit .edit-lane-foley {
+  fill: var(--sage);
+  fill-opacity: 0.7;
+}
+.m-edit .edit-lane-off {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  fill: var(--silver-3);
+}
+
+/* ---------- captions */
+.m-edit .edit-cap-style {
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: minmax(0, 180px) minmax(0, 1fr);
+  align-items: start;
+}
+@media (max-width: 520px) {
+  .m-edit .edit-cap-style {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .m-edit .edit-frame-wrap {
+    max-width: 200px;
+  }
+}
+.m-edit .edit-frame {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r2);
+}
+.m-edit .edit-frame-bg {
+  fill: var(--graphite-2);
+}
+.m-edit .edit-frame-unsafe {
+  fill: var(--crimson-soft);
+}
+.m-edit .edit-frame-third {
+  stroke: var(--silver-3);
+  stroke-width: 3;
+  stroke-dasharray: 18 14;
+}
+.m-edit .edit-frame-quarter {
+  stroke: var(--silver-2);
+  stroke-width: 3;
+}
+.m-edit .edit-frame-note {
+  font-family: var(--f-mono);
+  font-size: 34px;
+  fill: var(--crimson-text);
+}
+.m-edit .edit-cap-hook,
+.m-edit .edit-cap-market {
+  font-family: system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 64px;
+}
+.m-edit .edit-cap-market {
+  stroke-width: 6px;
+  paint-order: stroke;
+}
+.m-edit .edit-cap-reel {
+  font-family: system-ui, sans-serif;
+  font-stretch: condensed;
+  font-weight: 600;
+  font-size: 92px;
+  filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.8));
+}
+.m-edit .edit-cap-work {
+  font-family: system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 80px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+}
+.m-edit .edit-cap-databox {
+  fill: var(--obsidian);
+  stroke: var(--silver-3);
+  stroke-width: 3;
+}
+.m-edit .edit-cap-data {
+  font-family: var(--f-mono);
+  font-size: 56px;
+  fill: var(--silver);
+  letter-spacing: 2px;
+}
+.m-edit .edit-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  counter-reset: card;
+}
+.m-edit .edit-cards li {
+  counter-increment: card;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto auto;
+  gap: var(--s2);
+  align-items: center;
+  padding: 4px 4px 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r1);
+  background: var(--graphite);
+  font-size: var(--t-sm);
+  color: var(--bone);
+}
+.m-edit .edit-cards li::before {
+  content: counter(card, decimal-leading-zero);
+  font-size: var(--t-xs);
+  color: var(--amber);
+}
+.m-edit .edit-cards li > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.m-edit .edit-cards li.over {
+  border-color: rgba(232, 121, 111, 0.45);
+}
+.m-edit .edit-hookcard {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r2);
+  border: 1px solid var(--line-2);
+  background: var(--graphite-2);
+  min-width: 0;
+}
+.m-edit .edit-hookcard b {
+  display: inline-block;
+  max-width: 100%;
+  padding: 6px 12px;
+  border-radius: var(--r1);
+  background: var(--bone);
+  color: var(--obsidian);
+  font-family: var(--f-mono);
+  font-size: var(--t-md);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- edit plan */
+.m-edit .edit-plan-head {
+  display: grid;
+  gap: 4px;
+}
+.m-edit .edit-beat {
+  align-content: end;
+}
+.m-edit .edit-plan .ln-table td {
+  min-width: 4ch;
+}
+.m-edit .edit-plan .ln-table td:nth-child(5) {
+  min-width: 18ch;
+}
+.m-edit .edit-issues {
+  margin: 0;
+  padding-left: 1.1em;
+}
+.m-edit .edit-tweaks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s2);
+}
+.m-edit .edit-tweaks li {
+  display: grid;
+  gap: 2px;
+  padding: var(--s2) var(--s3);
+  border-left: 2px solid var(--amber-line);
+  background: var(--graphite);
+  font-size: var(--t-sm);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- overrides that must come last (higher specificity) */
+.m-edit .edit-stats .ln-stat b {
+  font-size: var(--t-lg);
+}
+.m-edit .ln-table tr.sel td {
+  background: var(--amber-soft);
+}
+
+.m-edit .edit-nowrap .ln-table td {
+  white-space: nowrap;
+}
+
+.m-edit .edit-plan .ln-table td:nth-child(-n + 4) {
+  white-space: nowrap;
+}

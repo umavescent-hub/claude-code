@@ -1,0 +1,335 @@
+/* modules/autocut.css — Auto-Cut tab inside The Cut. Scoped under .m-edit .ac-* */
+.m-edit .ac-habit {
+  border-left: 2px solid var(--amber);
+}
+.m-edit .ac-habit-line {
+  font-family: var(--f-display);
+  font-size: var(--t-lg);
+  line-height: 1.25;
+  color: var(--bone);
+  max-width: 34ch;
+}
+.m-edit .ac-habit-svg {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+}
+.m-edit .ac-hs-base {
+  fill: var(--graphite-2);
+}
+.m-edit .ac-hs-cut {
+  fill: rgba(168, 36, 36, 0.32);
+  stroke: var(--crimson);
+  stroke-width: 1;
+}
+.m-edit .ac-hs-keep {
+  fill: rgba(212, 220, 232, 0.16);
+  stroke: var(--silver-2);
+  stroke-width: 1;
+}
+.m-edit .ac-hs-clap {
+  stroke: var(--amber);
+  stroke-width: 2;
+}
+.m-edit .ac-hs-t {
+  font-family: var(--f-body);
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--silver-2);
+}
+.m-edit .ac-hs-t.amber {
+  fill: var(--amber);
+}
+.m-edit .ac-hs-t.crimson {
+  fill: var(--crimson-text);
+}
+
+/* Source */
+.m-edit .ac-src-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+.m-edit .ac-src-id {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.m-edit .ac-src-name {
+  font-weight: 500;
+  color: var(--bone);
+  overflow-wrap: anywhere;
+}
+.m-edit .ac-src-meta {
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+}
+.m-edit .ac-status {
+  color: var(--silver-2);
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  max-width: var(--measure);
+}
+.m-edit .ac-video {
+  display: block;
+  width: 100%;
+  max-height: 40vh;
+  background: #000;
+  border: 1px solid var(--line);
+  border-radius: var(--r1);
+}
+
+/* Waveform */
+.m-edit .ac-wave-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+}
+.m-edit .ac-wave-head .ln-field {
+  min-width: 0;
+}
+.m-edit .ac-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  min-width: 0;
+}
+.m-edit .ac-legend .k {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.m-edit .ac-legend .k::before {
+  content: "";
+  width: 14px;
+  height: 8px;
+  border-radius: 1px;
+}
+.m-edit .ac-legend .keep::before {
+  background: var(--silver);
+}
+.m-edit .ac-legend .cut::before {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--crimson-text) 0 1px,
+    rgba(168, 36, 36, 0.3) 1px 4px
+  );
+}
+.m-edit .ac-legend .clap::before {
+  width: 2px;
+  height: 12px;
+  background: var(--amber);
+}
+.m-edit .ac-legend .thr::before {
+  height: 0;
+  border-top: 1px dashed var(--amber);
+}
+.m-edit .ac-wave {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--obsidian);
+  -webkit-overflow-scrolling: touch;
+}
+.m-edit .ac-wave-inner {
+  position: relative;
+  min-width: 100%;
+}
+.m-edit .ac-canvas {
+  display: block;
+  max-width: none;
+  cursor: pointer;
+  touch-action: pan-x pan-y;
+}
+.m-edit .ac-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 22px;
+  width: 1px;
+  background: var(--bone);
+  box-shadow: 0 0 6px rgba(244, 241, 234, 0.6);
+  pointer-events: none;
+}
+.m-edit .ac-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s2);
+}
+@media (max-width: 520px) {
+  .m-edit .ac-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.m-edit .ac-stats .ln-stat {
+  padding: var(--s2) var(--s3);
+}
+.m-edit .ac-wave-actions {
+  justify-content: flex-end;
+}
+
+/* Segments */
+.m-edit .ac-seglist {
+  display: grid;
+  gap: 4px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+.m-edit .ac-seg {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "n tc tag"
+    "n len tag";
+  gap: 0 var(--s3);
+  align-items: center;
+  min-height: 44px;
+  padding: 6px 10px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: var(--r1);
+  background: var(--graphite-2);
+  cursor: pointer;
+  min-width: 0;
+}
+.m-edit .ac-seg:hover {
+  border-color: var(--line-2);
+}
+.m-edit .ac-seg.keep {
+  border-left-color: var(--silver);
+}
+.m-edit .ac-seg.cut,
+.m-edit .ac-seg.take {
+  border-left-color: var(--crimson);
+  background:
+    linear-gradient(90deg, var(--crimson-soft), transparent 60%),
+    var(--graphite-2);
+}
+.m-edit .ac-seg .n {
+  grid-area: n;
+  font-size: var(--t-xs);
+  color: var(--silver-3);
+}
+.m-edit .ac-seg .tc {
+  grid-area: tc;
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-sm);
+  color: var(--bone);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.m-edit .ac-seg .len {
+  grid-area: len;
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+}
+.m-edit .ac-seg .tag {
+  grid-area: tag;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  color: var(--silver-2);
+  white-space: nowrap;
+}
+.m-edit .ac-seg .tag.keep {
+  color: var(--silver);
+  border-color: var(--silver-3);
+}
+.m-edit .ac-seg .tag.cut,
+.m-edit .ac-seg .tag.take {
+  color: var(--crimson-text);
+  border-color: rgba(232, 121, 111, 0.4);
+}
+.m-edit .ac-seg.manual .len {
+  color: var(--amber);
+}
+.m-edit .ac-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+}
+
+/* Export */
+.m-edit .ac-exports {
+  align-items: start;
+}
+.m-edit .ac-exp .ln-seg {
+  flex-wrap: wrap;
+}
+.m-edit .ac-btns {
+  display: grid;
+  gap: var(--s2);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+}
+.m-edit .ac-exp .ln-copyblock pre {
+  max-height: 260px;
+}
+.m-edit .ac-progress {
+  display: grid;
+  gap: 8px;
+}
+.m-edit .ac-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.m-edit .ac-bar > i {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: var(--amber);
+  transition: width 0.15s linear;
+}
+.m-edit .ac-prog-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+  min-width: 0;
+}
+.m-edit .ac-prog-row > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.m-edit .ac-result {
+  display: grid;
+  gap: var(--s2);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+.m-edit .ac-file {
+  font-size: var(--t-sm);
+  color: var(--bone);
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-edit .ac-bar > i {
+    transition: none;
+  }
+}

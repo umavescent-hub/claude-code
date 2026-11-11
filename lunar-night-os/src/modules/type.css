@@ -1,0 +1,485 @@
+/* modules/type.css — Type & HUD. Scoped under .m-type.
+   A grading-suite monitor on the left (sticky), a quiet control column on the right;
+   one column on the phone with the 16:9 monitor pinned under the header. */
+
+/* ---------- in-page index */
+.m-type .ty-index {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: var(--s6);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.m-type .ty-index::-webkit-scrollbar {
+  display: none;
+}
+.m-type .ty-index button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-height: 40px;
+  padding: 10px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--silver-2);
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.m-type .ty-index .n {
+  font-size: var(--t-xs);
+  color: var(--amber);
+}
+.m-type .ty-index button:hover {
+  color: var(--bone);
+}
+
+/* ---------- designer layout */
+.m-type .ty-designer {
+  display: grid;
+  gap: var(--s5);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .m-type .ty-designer {
+    grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr);
+  }
+  .m-type .ty-stage {
+    position: sticky;
+    top: calc(var(--header-h) + var(--s4));
+  }
+}
+
+/* ---------- the monitor */
+.m-type .ty-stage {
+  display: grid;
+  gap: var(--s2);
+  min-width: 0;
+  z-index: 2;
+  background: var(--obsidian);
+}
+@media (max-width: 899px) {
+  /* Pin a landscape monitor under the header so sliders update in view. */
+  .m-type .ty-stage.is-land {
+    position: sticky;
+    /* Tuck 12px under the header so no content peeks through the seam. */
+    top: calc(var(--header-h) - 12px + env(safe-area-inset-top, 0px));
+    padding-block: 14px var(--s2);
+    border-bottom: 1px solid var(--line);
+  }
+}
+.m-type .ty-frame {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--obsidian);
+  position: relative;
+}
+.m-type .ty-frame::before,
+.m-type .ty-frame::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--silver-3);
+  pointer-events: none;
+}
+.m-type .ty-frame::before {
+  top: 4px;
+  left: 4px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.m-type .ty-frame::after {
+  right: 4px;
+  bottom: 4px;
+  border-left: 0;
+  border-top: 0;
+}
+.m-type .ty-canvas,
+.m-type .ty-guide-canvas {
+  display: block;
+  max-width: 100%;
+  /* Preview-only checkerboard: dark and quiet so the type reads, never in the file. */
+  background-color: var(--graphite);
+  background-image:
+    linear-gradient(45deg, var(--graphite-2) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--graphite-2) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--graphite-2) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--graphite-2) 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  box-shadow: 0 0 0 1px var(--line-2);
+}
+.m-type .ty-readout {
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-xs);
+  letter-spacing: 0.14em;
+  color: var(--silver-3);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- controls */
+.m-type .ty-controls {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+.m-type .ty-group {
+  margin: 0;
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  min-width: 0;
+}
+.m-type .ty-group legend {
+  padding: 0 6px;
+  margin-left: -6px;
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.m-type .ty-group-body {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+.m-type .ty-two {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+}
+.m-type .ty-toggles {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+}
+.m-type .ty-toggles .ln-toggle,
+.m-type .ty-save-row .ln-toggle {
+  min-height: 40px;
+}
+.m-type .ty-desc {
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  line-height: 1.5;
+  color: var(--silver-2);
+  max-width: var(--measure);
+}
+.m-type .ln-input[aria-invalid="true"] {
+  border-color: var(--crimson-text);
+}
+
+/* colour swatches */
+.m-type .ty-swatches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.m-type .ty-swatch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r1);
+  background: var(--graphite-2);
+  color: var(--silver-2);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+.m-type .ty-swatch i {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line-2);
+}
+.m-type .ty-swatch span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.m-type .ty-swatch[aria-pressed="true"] {
+  border-color: var(--amber);
+  color: var(--bone);
+  background: var(--amber-soft);
+}
+
+/* save block */
+.m-type .ty-save {
+  display: grid;
+  gap: var(--s3);
+  min-width: 0;
+}
+.m-type .ty-save-row {
+  justify-content: space-between;
+}
+.m-type .ty-equiv {
+  display: grid;
+  gap: var(--s2);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- mattes */
+.m-type .ty-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: end;
+  justify-content: space-between;
+}
+.m-type .ty-mattes {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+}
+.m-type .ty-matte {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: var(--s4);
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--obsidian);
+  min-width: 0;
+}
+.m-type .ty-thumb-box {
+  display: grid;
+  place-items: center;
+  height: 116px;
+  background: var(--graphite);
+  border-radius: var(--r1);
+}
+.m-type .ty-thumb {
+  width: 104px;
+  height: auto;
+  display: block;
+}
+.m-type .ty-thumb.port {
+  width: auto;
+  height: 104px;
+}
+.m-type .ty-thumb .pic {
+  fill: var(--graphite-3);
+}
+.m-type .ty-thumb .bar {
+  fill: var(--obsidian);
+  stroke: var(--line-2);
+  stroke-width: 6;
+}
+.m-type .ty-matte-body {
+  display: grid;
+  gap: var(--s2);
+  align-content: start;
+  min-width: 0;
+}
+.m-type .ty-matte-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+}
+.m-type .ty-matte-head b {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: var(--t-lg);
+  color: var(--bone);
+  line-height: 1.1;
+}
+.m-type .ty-matte .ty-desc {
+  font-size: var(--t-sm);
+}
+.m-type .ty-nums {
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
+  color: var(--silver-2);
+  overflow-wrap: anywhere;
+}
+
+/* safe-zone guide */
+.m-type .ty-guide {
+  display: grid;
+  gap: var(--s5);
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  min-width: 0;
+}
+@media (min-width: 720px) {
+  .m-type .ty-guide {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+}
+.m-type .ty-guide-view {
+  display: flex;
+  justify-content: center;
+}
+.m-type .ty-guide-canvas {
+  width: 220px;
+  height: auto;
+  border-radius: var(--r1);
+}
+
+/* ---------- font specimens */
+.m-type .ty-specs {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+.m-type .ty-spec {
+  display: grid;
+  gap: var(--s4);
+  align-content: space-between;
+  padding: var(--s4);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--obsidian);
+  min-width: 0;
+}
+.m-type .ty-spec-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px var(--s3);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.14em;
+  color: var(--silver-3);
+}
+.m-type .ty-sample {
+  display: grid;
+  gap: 8px;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ty-film-bone, var(--bone));
+  text-shadow: 0 0 22px var(--ty-film-glow, transparent);
+  overflow-wrap: anywhere;
+}
+.m-type .ty-act {
+  font-family: var(--f-mono);
+  font-style: normal;
+  font-weight: 500;
+  font-size: var(--t-xs);
+  letter-spacing: 0.24em;
+  color: var(--ty-film-amber, var(--amber));
+}
+.m-type .ty-f-cormorant {
+  font-family: "Cormorant Garamond", Georgia, serif;
+}
+.m-type .ty-f-instrument {
+  font-family: "Instrument Serif", Georgia, serif;
+}
+.m-type .ty-f-playfair {
+  font-family: "Playfair Display", Georgia, serif;
+}
+.m-type .ty-f-jetbrains {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 500;
+}
+.m-type .ty-f-spacemono {
+  font-family: "Space Mono", ui-monospace, monospace;
+}
+.m-type .ty-f-courier {
+  font-family: "Courier Prime", "Courier New", monospace;
+}
+.m-type .ty-meta-sample {
+  display: grid;
+  gap: 0;
+  font-size: var(--t-xs);
+  line-height: 2;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ty-film-silver, var(--silver));
+}
+.m-type .ty-meta-sample p {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.m-type .ty-meta-sample p:first-child {
+  color: var(--ty-film-amber, var(--amber));
+}
+.m-type .ty-spec-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: end;
+  justify-content: space-between;
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+}
+.m-type .ty-spec-foot > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 180px;
+}
+.m-type .ty-spec-foot b {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  font-size: var(--t-sm);
+  color: var(--bone);
+}
+.m-type .ty-spec-foot p {
+  font-family: var(--f-body);
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  line-height: 1.45;
+}
+
+/* role rules above the specimens */
+.m-type .ty-roles {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+.m-type .ty-role {
+  display: grid;
+  gap: 4px;
+  padding: var(--s3) var(--s4);
+  border-left: 2px solid var(--amber);
+  background: var(--graphite);
+  border-radius: 0 var(--r1) var(--r1) 0;
+  min-width: 0;
+}
+.m-type .ty-role b {
+  color: var(--bone);
+  font-weight: 600;
+}
+.m-type .ty-role span {
+  font-family: var(--f-data, var(--f-mono));
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  overflow-wrap: anywhere;
+}

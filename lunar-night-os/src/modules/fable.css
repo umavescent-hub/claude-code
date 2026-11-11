@@ -1,0 +1,522 @@
+/* Lunar Night OS: Fable 5.1 Studio (modules/fable.js), a tab inside Forge.
+   Every selector is scoped under .m-forge; studio classes start with fs-. */
+
+.m-forge .fs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s2);
+  min-width: 0;
+}
+.m-forge .fs .ln-section {
+  grid-template-columns: minmax(0, 1fr);
+}
+.m-forge .fs .ln-btn.small {
+  min-height: 40px;
+}
+
+/* ---------- Studio header */
+.m-forge .fs-head {
+  display: grid;
+  gap: var(--s2);
+  padding-bottom: var(--s3);
+  max-width: var(--measure);
+  min-width: 0;
+}
+.m-forge .fs-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.m-forge .fs-head p {
+  margin: 0;
+  color: var(--silver-2);
+  font-size: var(--t-sm);
+  line-height: 1.55;
+}
+.m-forge .fs-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+}
+.m-forge .fs-badge::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--silver-3);
+}
+.m-forge .fs-badge.live {
+  color: var(--sage);
+  border-color: rgba(141, 179, 154, 0.4);
+}
+.m-forge .fs-badge.live::before {
+  background: var(--sage);
+}
+.m-forge .fs-badge.copy {
+  color: var(--amber);
+  border-color: var(--amber-line);
+}
+.m-forge .fs-badge.copy::before {
+  background: var(--amber);
+}
+
+/* Sub-tabs sit inside Forge's own tab bar: keep them quieter. */
+.m-forge .fs .ln-tabs {
+  margin-bottom: var(--s3);
+  border-bottom-style: dashed;
+}
+.m-forge .fs .ln-section:first-child {
+  margin-top: var(--s4);
+}
+
+/* ---------- Shared pieces */
+.m-forge .fs-card {
+  min-width: 0;
+}
+.m-forge .fs-form {
+  display: grid;
+  gap: var(--s3);
+  min-width: 0;
+}
+.m-forge .fs-sub {
+  margin: 0;
+}
+.m-forge .fs-blurb {
+  margin: 0;
+  font-family: var(--f-body);
+  font-size: var(--t-md);
+  color: var(--silver);
+  line-height: 1.5;
+}
+.m-forge .fs-live {
+  display: grid;
+  gap: var(--s2);
+}
+.m-forge .fs-status {
+  margin: 0;
+  min-height: 1.2em;
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  color: var(--silver-3);
+}
+.m-forge .fs-status:empty {
+  display: none;
+}
+.m-forge .fs-status.busy {
+  color: var(--amber);
+}
+.m-forge .fs-status.err {
+  color: var(--crimson-text);
+}
+.m-forge .fs-offline {
+  margin: 0;
+  padding: var(--s3);
+  border: 1px dashed var(--amber-line);
+  border-radius: var(--r2);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  line-height: 1.6;
+  color: var(--silver-2);
+}
+.m-forge .fs-list {
+  margin: 0;
+  padding-left: 1.1em;
+  display: grid;
+  gap: 4px;
+}
+
+/* Prompt boxes: the request shows, Copy adds the Brand Brain. */
+.m-forge .fs-prompt-text {
+  margin: 0;
+  max-height: 320px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  line-height: 1.6;
+  color: var(--silver-2);
+}
+.m-forge .fs-prompt .fs-prompt-text {
+  padding: var(--s3);
+}
+.m-forge .fs-prompt-foot {
+  padding: var(--s2) var(--s3);
+  border-top: 1px solid var(--line);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+}
+.m-forge .fs-stream {
+  padding: var(--s3);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--obsidian);
+}
+.m-forge .fs-details {
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  min-width: 0;
+}
+.m-forge .fs-details summary {
+  cursor: pointer;
+  padding: 10px var(--s3);
+  min-height: 40px;
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  color: var(--silver);
+}
+.m-forge .fs-details[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+.m-forge .fs-details .fs-prompt-text {
+  padding: var(--s3);
+  max-height: 420px;
+}
+.m-forge .fs-result {
+  display: grid;
+  gap: var(--s3);
+  min-width: 0;
+}
+.m-forge .fs-result:empty {
+  display: none;
+}
+
+/* ---------- Brand Brain */
+.m-forge .fs-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 130px), 1fr));
+  gap: var(--s2);
+}
+.m-forge .fs-guide {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  line-height: 1.65;
+  min-height: 260px;
+}
+.m-forge .fs-dirty {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  color: var(--silver-3);
+}
+.m-forge .fs-dirty.on {
+  color: var(--amber);
+}
+.m-forge .fs-entries {
+  display: grid;
+  gap: var(--s2);
+  min-width: 0;
+}
+.m-forge .fs-entry {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s3);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--amber-line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  min-width: 0;
+}
+.m-forge .fs-entry header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.m-forge .fs-entry-title {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.m-forge .fs-entry-title b {
+  color: var(--bone);
+  font-weight: 500;
+}
+.m-forge .fs-entry-title span {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+}
+.m-forge .fs-entry .ln-kv {
+  font-size: var(--t-sm);
+}
+.m-forge .fs-entry .ln-kv dd {
+  overflow-wrap: anywhere;
+}
+.m-forge .fs-context {
+  max-height: 480px;
+}
+
+/* ---------- Asset recipes */
+.m-forge .fs-picks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s2);
+}
+@media (min-width: 720px) {
+  .m-forge .fs-picks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1080px) {
+  .m-forge .fs-picks {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+.m-forge .fs-pick {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  min-width: 0;
+  min-height: 56px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  color: var(--silver);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.m-forge .fs-pick:hover {
+  border-color: var(--line-2);
+}
+.m-forge .fs-pick b {
+  font-family: var(--f-display);
+  font-size: var(--t-md);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--bone);
+}
+.m-forge .fs-pick-tag {
+  font-family: var(--f-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+}
+.m-forge .fs-pick[aria-pressed="true"] {
+  border-color: var(--amber-line);
+  background: var(--amber-soft);
+}
+.m-forge .fs-pick[aria-pressed="true"] .fs-pick-tag {
+  color: var(--amber);
+}
+.m-forge .fs-recipe {
+  display: grid;
+  gap: var(--s5);
+  margin-top: var(--s3);
+  min-width: 0;
+}
+.m-forge .fs-howto .ln-steps {
+  font-size: var(--t-sm);
+}
+
+/* ---------- Shoot planner */
+.m-forge .fs-plan-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+.m-forge .fs-plan-head > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 200px;
+}
+.m-forge .fs-plan-head b {
+  font-family: var(--f-mono);
+  font-weight: 500;
+  color: var(--bone);
+}
+.m-forge .fs-plan {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+  counter-reset: fsplan;
+}
+.m-forge .fs-plan li {
+  counter-increment: fsplan;
+  position: relative;
+  display: grid;
+  gap: 3px;
+  padding: var(--s3) 0 var(--s3) 34px;
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+.m-forge .fs-plan li::before {
+  content: counter(fsplan, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: var(--s3);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  color: var(--amber);
+}
+.m-forge .fs-plan-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s2);
+  min-width: 0;
+}
+.m-forge .fs-plan-name b {
+  color: var(--bone);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.m-forge .fs-plan-meta {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  color: var(--silver-2);
+  overflow-wrap: anywhere;
+}
+.m-forge .fs-plan p {
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  line-height: 1.5;
+}
+
+/* ---------- Frame doctor */
+.m-forge .fs-frame-wrap {
+  display: grid;
+  place-items: center;
+  padding: var(--s3);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: #000;
+  min-width: 0;
+}
+.m-forge .fs-frame {
+  display: block;
+  max-width: 100%;
+  max-height: 440px;
+  width: auto;
+  height: auto;
+  border-radius: var(--r1);
+}
+.m-forge .fs-num {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px var(--s3);
+  padding: var(--s2) 0;
+  border-top: 1px solid var(--line);
+}
+.m-forge .fs-num-label {
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+}
+.m-forge .fs-num b {
+  grid-row: span 2;
+  grid-column: 2;
+  grid-row-start: 1;
+  font-family: var(--f-mono);
+  font-size: var(--t-lg);
+  font-weight: 500;
+  color: var(--bone);
+  text-align: right;
+}
+.m-forge .fs-num-target,
+.m-forge .fs-num-extra {
+  grid-column: 1 / -1;
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.m-forge .fs-num .ln-chip {
+  justify-self: start;
+  grid-column: 1 / -1;
+}
+.m-forge .fs-swatch {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--line-2);
+}
+.m-forge .fs-hist {
+  width: 100%;
+  height: auto;
+  margin-top: var(--s2);
+}
+.m-forge .fs-hist-bar {
+  fill: var(--silver-3);
+}
+.m-forge .fs-hist-band {
+  fill: var(--amber-soft);
+}
+.m-forge .fs-hist-mark {
+  stroke: var(--amber);
+  stroke-width: 1;
+}
+.m-forge .fs-hist-label {
+  fill: var(--silver-3);
+  font-family: var(--f-mono);
+  font-size: 9px;
+}
+.m-forge .fs-read {
+  margin: 0;
+  font-family: var(--f-body);
+  font-size: var(--t-md);
+  line-height: 1.5;
+  color: var(--silver);
+}
+.m-forge .fs-fixes {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: var(--s3);
+}
+.m-forge .fs-fixes p {
+  margin: 4px 0 0;
+  font-size: var(--t-sm);
+  color: var(--silver-2);
+}
+.m-forge .fs-fix-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+.m-forge .fs-fix-head b {
+  color: var(--bone);
+  font-weight: 500;
+}
+.m-forge .fs-fix-val {
+  font-family: var(--f-mono);
+  color: var(--amber);
+}
+
+/* ---------- Higgsfield */
+.m-forge .fs-higgs {
+  margin-top: var(--s2);
+}
+.m-forge .fs-higgs .fs-prompt-text {
+  max-height: 240px;
+}

@@ -1,0 +1,46 @@
+/* Shot Bible */
+.m-shots .shots-list {
+  display: grid;
+  gap: 10px;
+}
+@media (min-width: 900px) {
+  .m-shots .shots-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.m-shots .shots-card {
+  text-align: left;
+  display: grid;
+  gap: 6px;
+  background: var(--graphite);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--silver);
+  font: inherit;
+  cursor: pointer;
+}
+.m-shots .shots-card:hover,
+.m-shots .shots-card:focus-visible {
+  border-color: var(--amber);
+  outline: none;
+}
+.m-shots .shots-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+.m-shots .shots-card-set {
+  font-family: var(--f-data);
+  color: var(--on-accent-soft);
+}
+.m-shots .ln-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.shots-detail .ln-lede {
+  font-size: 16px;
+  line-height: 1.5;
+}

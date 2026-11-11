@@ -1,0 +1,306 @@
+/* Lunar Night OS: Forge shell + Overlay Forge (modules/forge.js, forge-video.js).
+   Every selector is scoped under .m-forge; Overlay Forge classes start with fv-. */
+
+/* ---------- Shell */
+.m-forge .forge-note {
+  margin: 0;
+  padding: var(--s4);
+  border: 1px dashed var(--line-2);
+  border-radius: var(--r2);
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  color: var(--silver-3);
+  max-width: var(--measure);
+}
+
+/* ---------- Overlay Forge */
+/* Phone tap targets stay at 40 px, even for the compact buttons. */
+.m-forge .fv .ln-btn.small {
+  min-height: 40px;
+}
+.m-forge .fv-note {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: var(--silver-3);
+  min-width: 0;
+}
+.m-forge .fv-note b {
+  color: var(--silver);
+  font-weight: 500;
+}
+
+/* Plate cards: the selected one animates with the live preview. */
+.m-forge .fv-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s2);
+}
+@media (min-width: 900px) {
+  .m-forge .fv-cards {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+.m-forge .fv-card {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  min-width: 0;
+  padding: 5px 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  background: var(--graphite);
+  color: var(--silver-2);
+  font-family: var(--f-mono);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.m-forge .fv-card:hover {
+  border-color: var(--line-2);
+}
+.m-forge .fv-card[aria-pressed="true"] {
+  border-color: var(--amber-line);
+  background: var(--graphite-2);
+  color: var(--bone);
+}
+.m-forge .fv-card:disabled {
+  cursor: progress;
+  opacity: 0.55;
+}
+.m-forge .fv-thumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 4px;
+  border-radius: 2px;
+  background: #000;
+}
+.m-forge .fv-card-name {
+  padding-inline: 2px;
+  font-size: var(--t-sm);
+  letter-spacing: 0.04em;
+}
+.m-forge .fv-card-tag {
+  padding-inline: 2px;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.m-forge .fv-card[aria-pressed="true"] .fv-card-tag {
+  color: var(--amber);
+}
+
+/* Stage: monitor beside the controls on wide screens, stacked on the phone. */
+.m-forge .fv-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s5);
+  align-items: start;
+}
+.m-forge .fv-left,
+.m-forge .fv-right {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+@media (min-width: 980px) {
+  .m-forge .fv-stage {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: var(--s6);
+  }
+  .m-forge .fv-left {
+    position: sticky;
+    top: calc(var(--header-h) + var(--s4));
+  }
+}
+
+/* Monitor */
+.m-forge .fv-monitor {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.m-forge .fv-mon-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s3);
+  min-width: 0;
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-3);
+}
+.m-forge .fv-mon-bar > span {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.m-forge .fv-mon-bar > span:first-child {
+  color: var(--silver-2);
+}
+.m-forge .fv-screen {
+  --fv-ar: 0.5625;
+  --fv-maxh: min(56vh, 600px);
+  position: relative;
+  width: min(100%, calc(var(--fv-maxh) * var(--fv-ar)));
+  aspect-ratio: var(--fv-ar);
+  margin-inline: auto;
+  background: #000;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r1);
+  overflow: hidden;
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.9);
+}
+@media (min-width: 980px) {
+  .m-forge .fv-screen {
+    --fv-maxh: min(68vh, 720px);
+  }
+}
+.m-forge .fv-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.m-forge .fv-view {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--s3);
+  min-width: 0;
+}
+.m-forge .fv-view-acts {
+  justify-content: flex-end;
+}
+
+/* Look */
+.m-forge .fv-look-head {
+  display: grid;
+  gap: 6px;
+}
+.m-forge .fv-blurb {
+  font-family: var(--f-body);
+  font-size: var(--t-base);
+  line-height: 1.55;
+  color: var(--silver-2);
+}
+.m-forge .fv-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.m-forge .fv-preset {
+  min-height: 40px;
+  padding: 6px 12px;
+}
+.m-forge .fv-preset:hover {
+  border-color: var(--silver-3);
+  color: var(--bone);
+}
+.m-forge .fv-preset[aria-pressed="true"]:hover {
+  color: var(--amber-ink);
+}
+.m-forge .fv-params {
+  display: grid;
+  gap: var(--s3) var(--s4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+}
+.m-forge .fv-seed {
+  display: flex;
+  align-items: end;
+  gap: var(--s2);
+  min-width: 0;
+}
+.m-forge .fv-seed .ln-field {
+  flex: 1 1 auto;
+  max-width: 180px;
+}
+.m-forge .fv-seed .ln-btn {
+  min-height: 40px;
+}
+
+/* Output */
+.m-forge .fv-two {
+  display: grid;
+  gap: var(--s3) var(--s4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+}
+.m-forge .fv-actions {
+  display: grid;
+  gap: var(--s2);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+}
+.m-forge .fv-progress {
+  display: grid;
+  gap: 8px;
+}
+.m-forge .fv-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.m-forge .fv-bar > i {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: var(--amber);
+  transition: width 0.15s linear;
+}
+.m-forge .fv-prog-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  letter-spacing: 0.06em;
+  color: var(--silver-2);
+}
+.m-forge .fv-prog-row > span {
+  min-width: 0;
+}
+.m-forge .fv-result {
+  display: grid;
+  gap: var(--s2);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--line);
+}
+.m-forge .fv-file {
+  font-family: var(--f-mono);
+  font-size: var(--t-sm);
+  color: var(--bone);
+  overflow-wrap: anywhere;
+}
+
+/* Recipe */
+.m-forge .fv-recipe .ln-steps {
+  max-width: 72ch;
+}
+.m-forge .fv-why {
+  font-family: var(--f-body);
+  font-size: var(--t-md);
+  line-height: 1.6;
+  color: var(--silver);
+  max-width: var(--measure);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-forge .fv-bar > i {
+    transition: none;
+  }
+}
