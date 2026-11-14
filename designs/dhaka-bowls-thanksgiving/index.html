@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dhaka Bowls Thanksgiving Flier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Palette */
+  :root {
+    --forest: #143524;
+    --cream: #f5eddc;
+    --saffron: #e9a23b;
+    --saffron-light: #f3c26b;
+    --chili: #8c1d18;
+    --ink: #1c1a15;
+    --serif: 'Instrument Serif', serif;
+    --sans: Archivo, Helvetica, sans-serif;
+  }
+
+  /* Desk + page card on screen; one full-bleed Letter sheet in print. */
+  html, body { margin: 0; }
+  body {
+    background: #f5f5f4;
+    padding: 48px 24px;
+    box-sizing: border-box;
+    min-height: 100vh;
+  }
+  .page {
+    position: relative;
+    width: min(8.5in, 100%);
+    margin: 0 auto;
+    aspect-ratio: 8.5 / 11;
+    container-type: size;
+    overflow: hidden;
+    border-radius: 7px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page { size: 8.5in 11in; margin: 0; }
+  @media print {
+    body { background: none; padding: 0; min-height: 0; }
+    .page { width: 8.5in; height: 11in; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
+  }
+
+  a { color: var(--forest); }
+  a:hover { color: var(--chili); }
+
+  /* Flier — all sizes in container units so it scales with the page. */
+  .flier {
+    position: relative; width: 100cqw; height: 100cqh; overflow: hidden;
+    background: var(--cream); color: var(--ink); font-family: var(--sans);
+  }
+  .band { position: absolute; left: 0; top: 0; width: 100cqw; height: 44cqh; background: var(--forest); }
+
+  .masthead {
+    position: absolute; left: 5cqw; right: 5cqw; top: 4.6cqh;
+    display: flex; justify-content: space-between; align-items: baseline; color: var(--cream);
+  }
+  .brand { font-family: var(--serif); font-size: 4.2cqw; line-height: 1; }
+  .eyebrow {
+    font-size: 1.75cqw; font-weight: 600; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--saffron);
+  }
+
+  .hero {
+    position: absolute; right: -4cqw; top: 19cqh; width: 42cqw; height: 42cqw;
+    border-radius: 50%; overflow: hidden; background: var(--forest);
+    box-shadow: 0 0 0 .7cqw var(--cream), 0 0 0 1cqw var(--saffron);
+  }
+  .hero img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.22); display: block; }
+
+  h1 {
+    position: absolute; left: 5cqw; top: 9cqh; margin: 0;
+    font-family: var(--serif); font-weight: 400; font-size: 12cqw; line-height: .93;
+    letter-spacing: -.02em; color: var(--cream);
+  }
+  h1 em { font-style: italic; color: var(--saffron); }
+
+  .lede {
+    position: absolute; left: 5cqw; top: 37.2cqh; width: 48cqw; margin: 0;
+    font-size: 2.1cqw; line-height: 1.4; color: var(--cream); text-wrap: pretty;
+  }
+
+  .price {
+    position: absolute; right: 5cqw; top: 11.5cqh; width: 17cqw; height: 17cqw;
+    border-radius: 50%; background: var(--saffron); color: var(--forest);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transform: rotate(-8deg); box-shadow: 0 .6cqw 0 var(--chili);
+  }
+  .price-amount { font-family: var(--serif); font-size: 6cqw; line-height: .9; }
+  .price-unit {
+    font-size: 1.75cqw; font-weight: 700; letter-spacing: .16em;
+    text-transform: uppercase; margin-top: .6cqw;
+  }
+
+  .menu {
+    position: absolute; left: 5cqw; right: 5cqw; top: 53.5cqh;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6cqw;
+  }
+  .plate { display: flex; flex-direction: column; gap: 1.7cqh; --accent: var(--forest); }
+  .plate--turkey { --accent: var(--chili); }
+  .plate-head {
+    border-bottom: .35cqw solid var(--accent); padding-bottom: 1cqh;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .plate-name { font-family: var(--serif); font-size: 5.6cqw; line-height: 1; color: var(--accent); margin: 0; font-weight: 400; }
+  .plate-tag {
+    font-size: 1.75cqw; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .dish-name { font-family: var(--serif); font-size: 3.5cqw; line-height: 1.1; }
+  .dish-desc { font-size: 1.96cqw; line-height: 1.35; margin-top: .3cqh; }
+
+  .footer {
+    position: absolute; left: 0; bottom: 0; width: 100cqw; height: 14cqh;
+    background: var(--chili); color: var(--cream);
+    display: flex; align-items: center; justify-content: space-between; gap: 3cqw;
+    padding: 0 5cqw 1cqh; box-sizing: border-box;
+  }
+  .cta-label {
+    font-size: 1.75cqw; font-weight: 700; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--saffron-light);
+  }
+  .cta-email {
+    display: block; font-family: var(--serif); font-size: 5.4cqw; line-height: 1.05;
+    margin-top: .4cqh; color: inherit; text-decoration: none;
+  }
+  .cta-email:hover { color: var(--saffron-light); }
+  .delivery { text-align: right; font-size: 1.96cqw; font-weight: 600; line-height: 1.35; }
+</style>
+</head>
+<body>
+<section class="page" id="flier" aria-label="Dhaka Bowls Thanksgiving flier">
+  <div class="flier">
+    <div class="band"></div>
+
+    <div class="masthead">
+      <div class="brand">Dhaka Bowls</div>
+      <div class="eyebrow">Bangladeshi–Indian Inspired</div>
+    </div>
+
+    <div class="hero">
+      <img id="hero-photo" src="uploads/vegetable-dal.jpeg" alt="From the Dhaka Bowls kitchen">
+    </div>
+
+    <h1>Thanksgiving,<br><em>the Dhaka<br>way.</em></h1>
+
+    <p class="lede">Two plates. Fresh ingredients, aromatic spices, traditional flavors.</p>
+
+    <div class="price">
+      <div class="price-amount">$39.99</div>
+      <div class="price-unit">per plate</div>
+    </div>
+
+    <div class="menu">
+      <div class="plate plate--vegan">
+        <div class="plate-head">
+          <h2 class="plate-name">Vegan Plate</h2>
+          <div class="plate-tag">Plant-based</div>
+        </div>
+        <div><div class="dish-name">Vegetable Pulao</div><div class="dish-desc">Fragrant basmati rice with seasonal vegetables and mild spices.</div></div>
+        <div><div class="dish-name">Saag Tofu</div><div class="dish-desc">Tender tofu cooked with leafy greens and aromatic spices.</div></div>
+        <div><div class="dish-name">Gazar Halwa</div><div class="dish-desc">Slow-cooked carrots with milk-free ingredients, cardamom and nuts.</div></div>
+      </div>
+      <div class="plate plate--turkey">
+        <div class="plate-head">
+          <h2 class="plate-name">Turkey Plate</h2>
+          <div class="plate-tag">Classic</div>
+        </div>
+        <div><div class="dish-name">Pulao</div><div class="dish-desc">Fragrant basmati rice with mild spices and aromatic herbs.</div></div>
+        <div><div class="dish-name">Turkey Curry</div><div class="dish-desc">Tender turkey simmered in a flavorful South Asian–style curry.</div></div>
+        <div><div class="dish-name">Gazar Halwa</div><div class="dish-desc">Slow-cooked carrots with milk, cardamom and nuts.</div></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>
+        <div class="cta-label">Order now</div>
+        <a class="cta-email" href="mailto:dhakabowls@gmail.com">dhakabowls@gmail.com</a>
+      </div>
+      <div class="delivery">Delivered<br>Thanksgiving Day<br>morning</div>
+    </div>
+  </div>
+</section>
+<script>
+  // Hero photo: ?photo=vegetable-dal | egg-curry | saag-dal (default vegetable-dal,
+  // matching the design's heroPhoto prop). Falls back to saag-dal if a file is missing.
+  (function () {
+    var PHOTOS = {
+      'vegetable-dal': 'uploads/vegetable-dal.jpeg',
+      'egg-curry': 'uploads/egg-curry.jpeg',
+      'saag-dal': 'uploads/saag-dal.jpeg'
+    };
+    var FALLBACK = PHOTOS['saag-dal'];
+    var img = document.getElementById('hero-photo');
+    var key = new URLSearchParams(location.search).get('photo');
+    img.onerror = function () {
+      if (img.getAttribute('src') !== FALLBACK) img.src = FALLBACK;
+    };
+    img.src = PHOTOS[key] || PHOTOS['vegetable-dal'];
+  })();
+</script>
+</body>
+</html>
